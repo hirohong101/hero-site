@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>皇者天下英雄資料庫</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Microsoft JhengHei",sans-serif;
+    background:#f3f4f6;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#333;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+input,select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.hero-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.hero-card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.hero-name{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.hero-camp{
+    color:#666;
+    margin-bottom:15px;
+}
+
+.stat{
+    margin-bottom:12px;
+}
+
+.stat-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:4px;
+}
+
+.bar{
+    width:100%;
+    height:12px;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    border-radius:10px;
+}
+
+.strength{background:#e74c3c;}
+.intelligence{background:#3498db;}
+.charisma{background:#f1c40f;}
+.leadership{background:#2ecc71;}
+</style>
+</head>
+<body>
+
+<h1>⚔ 皇者天下英雄資料庫 ⚔</h1>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="搜尋英雄名稱">
+    
+    <select id="sort">
+        <option value="name">名稱</option>
+        <option value="strength">武力</option>
+        <option value="intelligence">智力</option>
+        <option value="charisma">魅力</option>
+        <option value="leadership">統御</option>
+    </select>
+</div>
+
+<div class="hero-container" id="heroes"></div>
+
+<script>
+
+const heroes = [
+{
+    name:"典韋",
+    camp:"魏",
+    strength:100,
+    intelligence:35,
+    charisma:60,
+    leadership:92
+},
+{
+    name:"趙雲",
+    camp:"蜀",
+    strength:98,
+    intelligence:82,
+    charisma:95,
+    leadership:96
+},
+{
+    name:"諸葛亮",
+    camp:"蜀",
+    strength:30,
+    intelligence:100,
+    charisma:98,
+    leadership:97
+},
+{
+    name:"呂布",
+    camp:"群",
+    strength:100,
+    intelligence:25,
+    charisma:85,
+    leadership:88
+},
+{
+    name:"曹操",
+    camp:"魏",
+    strength:78,
+    intelligence:96,
+    charisma:99,
+    leadership:98
+}
+];
+
+function createCard(hero){
+
+return `
+<div class="hero-card">
+
+<div class="hero-name">${hero.name}</div>
+<div class="hero-camp">${hero.camp}</div>
+
+${createStat("武力",hero.strength,"strength")}
+${createStat("智力",hero.intelligence,"intelligence")}
+${createStat("魅力",hero.charisma,"charisma")}
+${createStat("統御",hero.leadership,"leadership")}
+
+</div>
+`;
+}
+
+function createStat(name,value,color){
+
+return `
+<div class="stat">
+
+<div class="stat-header">
+<span>${name}</span>
+<span>${value}</span>
+</div>
+
+<div class="bar">
+<div class="fill ${color}" style="width:${value}%"></div>
+</div>
+
+</div>
+`;
+}
+
+function renderHeroes(){
+
+const keyword =
+document.getElementById("search").value;
+
+const sortType =
+document.getElementById("sort").value;
+
+let filtered =
+heroes.filter(hero =>
+hero.name.includes(keyword)
+);
+
+if(sortType !== "name"){
+filtered.sort(
+(a,b)=>b[sortType]-a[sortType]
+);
+}
+
+document.getElementById("heroes").innerHTML =
+filtered.map(createCard).join("");
+}
+
+document.getElementById("search")
+.addEventListener("input",renderHeroes);
+
+document.getElementById("sort")
+.addEventListener("change",renderHeroes);
+
+renderHeroes();
+
+</script>
+
+</body>
+</html>
