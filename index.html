@@ -1,227 +1,1140 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>皇者天下英雄資料庫</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>皇者天下 - 英雄配裝工具</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+    :root {
+      --gold: #c8a84b;
+      --gold-bright: #e8c96a;
+      --gold-dim: #7a6020;
+      --bg-deep: #0a0c0a;
+      --bg-panel: #0d120e;
+      --bg-card: #111810;
+      --bg-card-hover: #182018;
+      --sidebar-w: 200px;
+      --border: #1e2e1a;
+      --text: #b8c8b0;
+      --text-dim: #4a5e44;
+    }
 
-body{
-    font-family:"Microsoft JhengHei",sans-serif;
-    background:#f3f4f6;
-    padding:20px;
-}
+    body {
+      font-family: "Noto Serif TC", "Microsoft JhengHei", serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
 
-h1{
-    text-align:center;
-    margin-bottom:20px;
-    color:#333;
-}
+    /* ===== 推薦裝備左側面板 ===== */
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); opacity: 0.5; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+    .equip-close-btn:hover { color: var(--gold-bright); }
+    .equip-slot {
+      margin-bottom: 20px;
+    }
+    .equip-slot-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .equip-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      transition: border-color 0.2s;
+    }
+    .equip-item:hover { border-color: var(--gold-dim); }
+    .equip-item-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .equip-item-effect {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+    }
+    .equip-item-reason {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-style: italic;
+    }
+    .equip-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-dim);
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+    .equip-empty-icon { font-size: 40px; opacity: 0.3; margin-bottom: 12px; }
 
-.controls{
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-}
+    .equip-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      line-height: 1.6;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--gold-dim);
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
 
-input,select{
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:16px;
-}
+    .equip-section-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--text-dim);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .baowu-slot {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 8px;
+      text-align: center;
+      transition: border-color 0.2s;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .baowu-slot:hover { border-color: var(--gold-dim); }
+    .baowu-slot-type {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      padding: 2px 8px;
+      border-radius: 10px;
+      width: 100%;
+    }
+    .baowu-slot-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      letter-spacing: 1px;
+      line-height: 1.4;
+    }
+    .baowu-slot-effect {
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.6;
+      letter-spacing: 0.3px;
+    }
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .skill-slot {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 10px;
+      text-align: center;
+      min-height: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: border-color 0.2s;
+    }
+    .skill-slot:hover { border-color: #4a8abf; }
+    .skill-slot-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #a0d4ff;
+      letter-spacing: 1px;
+    }
+    .skill-slot-level {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+    .skill-slot-empty {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
 
-.hero-container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-}
+    .beast-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .beast-col-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--gold-bright);
+      text-align: center;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+    .beast-col { display: flex; flex-direction: column; gap: 8px; }
+    .beast-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .beast-slot {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: border-color 0.2s;
+    }
+    .beast-slot:hover { border-color: #8a5abf; }
+    .beast-slot-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      padding: 2px 8px;
+      border-radius: 10px;
+      width: 100%;
+    }
+    .beast-slot-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #c0a0ff;
+      letter-spacing: 1px;
+    }
+    .beast-slot-effect {
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .beast-slot-empty {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin: auto;
+    }
 
-.hero-card{
-    background:white;
-    border-radius:15px;
-    padding:20px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.1);
-}
+    .deputy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .deputy-slot:hover { border-color: var(--gold-dim); }
+    .deputy-slot-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      padding: 2px 8px;
+      border-radius: 10px;
+      width: 100%;
+    }
+    .deputy-slot-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      letter-spacing: 2px;
+    }
+    .deputy-slot-effect {
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-.hero-name{
-    font-size:24px;
-    font-weight:bold;
-    margin-bottom:5px;
-}
+    .baowu-slot-empty {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
 
-.hero-camp{
-    color:#666;
-    margin-bottom:15px;
-}
+    /* ===== 左側選單 ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 100;
+    }
 
-.stat{
-    margin-bottom:12px;
-}
+    .sidebar-logo {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    .sidebar-logo .title {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 4px;
+      text-shadow: 0 0 18px rgba(255,215,0,0.4);
+      line-height: 1.4;
+    }
+    .sidebar-logo .subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
 
-.stat-header{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:4px;
-}
+    .sidebar-nav {
+      padding: 16px 12px;
+      flex: 1;
+    }
+    .nav-section-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      padding: 8px 8px 6px;
+      text-transform: uppercase;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-dim);
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+    }
+    .nav-item:hover {
+      background: var(--bg-card);
+      color: var(--text);
+    }
+    .nav-item.active {
+      background: rgba(212, 168, 75, 0.12);
+      color: var(--gold-bright);
+      border-color: rgba(212, 168, 75, 0.25);
+      font-weight: 700;
+    }
+    .nav-item .icon {
+      font-size: 18px;
+      width: 22px;
+      text-align: center;
+    }
+    .nav-item .badge {
+      margin-left: auto;
+      background: var(--gold-dim);
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
 
-.bar{
-    width:100%;
-    height:12px;
-    background:#ddd;
-    border-radius:10px;
-    overflow:hidden;
-}
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 1px;
+    }
 
-.fill{
-    height:100%;
-    border-radius:10px;
-}
+    /* ===== 主內容區 ===== */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-.strength{background:#e74c3c;}
-.intelligence{background:#3498db;}
-.charisma{background:#f1c40f;}
-.leadership{background:#2ecc71;}
-</style>
+    .topbar {
+      padding: 20px 32px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-bottom: 16px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .filter-sep {
+      width: 1px;
+      height: 24px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+    .filter-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+    .filter-btn:hover {
+      border-color: var(--gold-dim);
+      color: var(--text);
+    }
+    .filter-btn.active {
+      background: rgba(212,168,75,0.15);
+      border-color: var(--gold);
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .search-wrap {
+      margin-left: auto;
+      position: relative;
+    }
+    .search-wrap .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+    #search, #baowuSearch {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 16px 8px 34px;
+      width: 200px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #search:focus, #baowuSearch:focus {
+      border-color: var(--gold-dim);
+    }
+    #search::placeholder, #baowuSearch::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* ===== 英雄格 ===== */
+    .content {
+      padding: 24px 32px;
+      flex: 1;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--rarity-color, var(--border));
+      transition: opacity 0.2s;
+      opacity: 0;
+    }
+    .hero-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--gold-dim);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .hero-card:hover::before { opacity: 1; }
+
+    .hero-card[data-rarity="國士"] { --rarity-color: #d4a84b; }
+    .hero-card[data-rarity="名將"] { --rarity-color: #7b9bd4; }
+    .hero-card[data-rarity="良才"] { --rarity-color: #6daa6d; }
+    .hero-card[data-rarity="巾幗"] { --rarity-color: #d4789a; }
+
+    .rarity-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    [data-rarity="國士"] .rarity-dot { background: #d4a84b; }
+    [data-rarity="名將"] .rarity-dot { background: #7b9bd4; }
+    [data-rarity="良才"] .rarity-dot { background: #6daa6d; }
+    [data-rarity="巾幗"] .rarity-dot { background: #d4789a; }
+
+    .hero-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e8d9b0;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .hero-meta {
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+    .hero-stats-mini {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .stat-chip {
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-dim);
+    }
+    .stat-chip span { color: var(--text); font-weight: 700; }
+
+    .no-result {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-dim);
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+    /* ===== 寶物頁 ===== */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      color: var(--text-dim);
+      text-align: center;
+      gap: 16px;
+    }
+    .empty-icon { font-size: 52px; opacity: 0.3; }
+    .empty-title { font-size: 18px; letter-spacing: 3px; }
+    .empty-sub { font-size: 13px; letter-spacing: 1px; }
+
+    /* ===== Modal ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      backdrop-filter: blur(3px);
+    }
+    .modal-content {
+      position: absolute;
+      top: 0; right: 0;
+      width: min(520px, 100%);
+      height: 100%;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--gold-dim);
+      overflow-y: auto;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.6);
+      animation: slideIn 0.28s cubic-bezier(0.22,1,0.36,1);
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0.5; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    .modal-header {
+      background: linear-gradient(160deg, rgba(200,168,75,0.12), rgba(200,168,75,0.02));
+      padding: 36px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .modal-rarity-bar {
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .modal-name {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+    }
+    .modal-type-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      margin-right: 6px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 26px;
+      cursor: pointer;
+      color: var(--text-dim);
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      font-family: inherit;
+      line-height: 1;
+    }
+    .close-btn:hover { color: var(--gold-bright); }
+    .equip-open-btn:hover {
+      background: rgba(200,168,75,0.22);
+      border-color: var(--gold-bright);
+    }
+
+    .modal-body { padding: 28px 32px 40px; flex: 1; }
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 17px;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--text-dim); letter-spacing: 1px; }
+    .stat-bar-wrap { flex: 1; margin: 0 16px; height: 4px; background: var(--border); border-radius: 2px; }
+    .stat-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright)); transition: width 0.6s ease; }
+    .stat-val { font-weight: 700; color: var(--gold-bright); min-width: 30px; text-align: right; font-size: 18px; }
+
+    .skill-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .skill-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .skill-name {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+    .skill-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .skill-item {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid #c8a84b;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      position: relative;
+    }
+
+    .awaken-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .awaken-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .awaken-name {
+      font-size: 18px;
+      font-weight: 900;
+      color: #a0d4ff;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+    .awaken-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .awaken-item {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+      background: rgba(100,160,255,0.05);
+      border-left: 2px solid #4a8abf;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .reincarn-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .reincarn-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .reincarn-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .reincarn-item {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+      background: rgba(180,120,255,0.05);
+      border-left: 2px solid #8a5abf;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .destiny-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .destiny-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .destiny-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .destiny-item {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+      background: rgba(255,160,80,0.05);
+      border-left: 2px solid #bf7a30;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+    }
+    .destiny-name {
+      color: #e8c080;
+      font-weight: 700;
+    }
+
+    .note-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .note-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+    .note-text {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.9;
+      letter-spacing: 1px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid #4a7a4a;
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+    }
+    .note-empty {
+      font-size: 13px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      font-style: italic;
+      padding: 8px 0;
+    }
+
+    .talent-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .talent-label {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+    .talent-text {
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.8;
+      letter-spacing: 1px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--gold-dim);
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+    }
+  </style>
 </head>
 <body>
 
-<h1>⚔ 皇者天下英雄資料庫 ⚔</h1>
+  <!-- 左側選單 -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="title">皇者天下</div>
+      <div class="subtitle">配裝工具</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">資料庫</div>
+      <div class="nav-item active" id="navHero" onclick="switchTab('hero')">
+        <span class="icon">⚔</span>
+        <span>英雄</span>
+        <span class="badge" id="heroBadge">29</span>
+      </div>
+      <div class="nav-item" id="navBaowu" onclick="switchTab('baowu')">
+        <span class="icon">💎</span>
+        <span>寶物</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">v1.0 · 皇者天下</div>
+  </aside>
 
-<div class="controls">
-    <input type="text" id="search" placeholder="搜尋英雄名稱">
-    
-    <select id="sort">
-        <option value="name">名稱</option>
-        <option value="strength">武力</option>
-        <option value="intelligence">智力</option>
-        <option value="charisma">魅力</option>
-        <option value="leadership">統御</option>
-    </select>
-</div>
+  <!-- 主內容 -->
+  <div class="main">
 
-<div class="hero-container" id="heroes"></div>
+    <!-- 英雄頁 -->
+    <div id="heroPage">
+      <div class="topbar">
+        <div class="topbar-title">英雄列表</div>
+        <div class="filters">
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all" onclick="filterByRarity(this)">全部</button>
+            <button class="filter-btn" data-filter="國士" onclick="filterByRarity(this)">國士</button>
+            <button class="filter-btn" data-filter="名將" onclick="filterByRarity(this)">名將</button>
+            <button class="filter-btn" data-filter="良才" onclick="filterByRarity(this)">良才</button>
+            <button class="filter-btn" data-filter="巾幗" onclick="filterByRarity(this)">巾幗</button>
+          </div>
+          <div class="filter-sep"></div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-type="all" onclick="filterByJob(this)">全部職業</button>
+            <button class="filter-btn" data-type="文官" onclick="filterByJob(this)">文官</button>
+            <button class="filter-btn" data-type="全才" onclick="filterByJob(this)">全才</button>
+            <button class="filter-btn" data-type="武將" onclick="filterByJob(this)">武將</button>
+          </div>
+          <div class="search-wrap">
+            <span class="icon">🔍</span>
+            <input type="text" id="search" placeholder="搜尋英雄..." onkeyup="filterHeroes()">
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="hero-grid" id="heroGrid"></div>
+      </div>
+    </div>
 
-<script>
+    <!-- 寶物頁 -->
+    <div id="baowuPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">寶物資料庫</div>
+        <div class="filters">
+          <div class="search-wrap">
+            <span class="icon">🔍</span>
+            <input type="text" id="baowuSearch" placeholder="搜尋寶物...">
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">📦</div>
+          <div class="empty-title">寶物資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
 
-const heroes = [
-{
-    name:"典韋",
-    camp:"魏",
-    strength:100,
-    intelligence:35,
-    charisma:60,
-    leadership:92
-},
-{
-    name:"趙雲",
-    camp:"蜀",
-    strength:98,
-    intelligence:82,
-    charisma:95,
-    leadership:96
-},
-{
-    name:"諸葛亮",
-    camp:"蜀",
-    strength:30,
-    intelligence:100,
-    charisma:98,
-    leadership:97
-},
-{
-    name:"呂布",
-    camp:"群",
-    strength:100,
-    intelligence:25,
-    charisma:85,
-    leadership:88
-},
-{
-    name:"曹操",
-    camp:"魏",
-    strength:78,
-    intelligence:96,
-    charisma:99,
-    leadership:98
-}
-];
+  </div>        <div class="equip-subtitle">推　薦　裝　備</div>
+      </div>
+      <div class="equip-body" id="equipBody"></div>
+    </div>
+  </div>
 
-function createCard(hero){
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <div class="modal-rarity-bar" id="modalRarityBar"></div>
+        <div class="modal-name" id="modalName"></div>
+        <div id="modalTags"></div>
+      </div>
+      <div class="modal-body" id="modalStats"></div>
+    </div>
+  </div>
 
-return `
-<div class="hero-card">
+  <script>
+    const heroes = [
+      { id: "simayi",   name: "神·司馬懿", type: "文官", rarity: "國士", force: 64,  intel: 99,  charm: 91, command: 100, talent: "魏國權臣，西晉奠基人，善謀奇策。斬孟達，平遼東，兩度抵禦諸葛亮北伐，戰功赫赫。", skillName: "鷹視狼顧", skills: ["己方每戰損 100 兵力，司馬懿便引導冤魂纏繞敵方，反噬敵軍 5 兵力，對戰文官時反噬七倍", "己方兵力缺損，攻擊不會衰減（原本最多衰減 40%）", "每提升 1 點統御，方士基礎攻防 +8，且【離間】有額外 3% 幾率導致【內訌】", "每提升 1 級【剛毅】，騎兵兵力 +60，方士兵力 +20"], awakens: ["每學習一種相關統禦的任意類型技能，前後軍兵力各 +150", "若【農耕】達到 20 級，統禦 +1，戰鬥開始時發動【軍屯】，增援我方 5% 的最大兵力，且我方的不良狀態抗性 +50%"], reincarn: ["全軍傷害和免傷 +30%。對戰文官時傷害額外 +25%，且反噬兵力的效果提升至 15 倍", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵免傷 +16%", "英雄可自由分配四維 +4"], destiny: [{name:"千里決勝", hero:"合擊技", effect:"與任意文官同時上陣，戰鬥開始時對敵後軍造成 80% 的傷害，有 40% 的幾率導致敵軍內訌，持續 1 回合"}, {name:"不戰屈人", hero:"諸葛亮", effect:"前軍兵力 +120、後軍兵力 +80"}, {name:"劍閣崢嶸", hero:"張郃", effect:"前軍對步兵傷害 +20%"}, {name:"賢能舉薦", hero:"荀彧", effect:"魅力 +5"}] },
+      { id: "lvbu",     name: "神·呂布",   type: "武將", rarity: "國士", force: 100, intel: 63,  charm: 86, command: 89, talent: "數次易主，被譏為三姓家奴。但武力冠絕於世，當之無愧的三國第一猛將。", skillName: "蓋世無雙", skills: ["遠戰第二回合，【無雙】就能額外發動一次", "遠戰回合部隊傷害減免 +15%", "每提升 1 級【無雙】，騎兵基礎攻擊 +5，騎兵基礎防禦 +2"], awakens: ["【亂舞】可連發 2 次，且每擊有額外 10% 幾率造成混亂", "若【咒印】達到 15 級，武力 +5"], reincarn: ["武力 +10，所有武將類英雄主動技，傷害強度 +50%，並額外提高 40% 暴擊率。對戰全才時，傷害和免傷 +15%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"迷情飛將", hero:"貂蟬", effect:"同時上陣，戰鬥開始時對敵軍造成 115% 的傷害，有 20% 的幾率導致敵軍內訌，持續 1 回合"}, {name:"白門樓上", hero:"張遼", effect:"對全才傷害 +20%"}, {name:"虎牢關下", hero:"華雄", effect:"前軍對步兵傷害 +20%"}, {name:"詭計猛將", hero:"陳宮", effect:"統御 +5"}] },
+      { id: "zhouyu",   name: "神·周瑜",   type: "全才", rarity: "國士", force: 74,  intel: 98,  charm: 99, command: 95, talent: "世間豪傑英雄士、江左風流美丈夫，周瑜於赤壁之戰大破曹軍，奠定三分天下基礎。", skillName: "江左美才", skills: ["【業火】傷害增加 15%，且遠戰首回合有 60% 幾率額外發動一次【業火】", "每提升 1 點魅力，提高英雄技能傷害 2%（最多 50%）", "每提升 1 級【火箭】，弓兵基礎攻防 +7", "每提升 1 級【業火】，前後軍兵力 +12"], awakens: ["每提升 1 點統御，魅力 +1", "若統御達到 115，【火箭】可連發 3 次，且每擊有額外 30% 機率造成火災"], reincarn: ["攻擊處於【火災】狀態的目標時，傷害強度 +50%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"水火無情", hero:"合擊技", effect:"與任意武將同時上陣，戰鬥開始時對敵軍造成 105% 的傷害，若智力高於對手，額外造成 30% 的傷害"}, {name:"苦肉之計", hero:"黃蓋", effect:"前軍攻擊 +40、後軍攻擊 +60"}, {name:"水路並進", hero:"魯肅", effect:"後軍對騎兵傷害 +10%"}, {name:"情困荊州", hero:"小喬", effect:"魅力 +5"}] },
+      { id: "menghuo",  name: "神·孟獲",   type: "武將", rarity: "國士", force: 98,  intel: 71,  charm: 88, command: 97, talent: "南蠻之王，為人光明磊落，勇猛無畏，深得民心，曾起兵叛蜀，後終於誠心歸順。", skillName: "南蠻大王", skills: ["國戰攻城時，若孟獲傲氣低於 3，則攻防各提升 30%，且【巨象】可在戰鬥開始額外發動一次", "受到按比例損失兵力的效果減半，但受到【火災】狀態的燃燒傷害加倍", "每提升 1 級【巨象】，所有兵種技能傷害 +2%", "每提升 1 級【增員】，騎兵基礎攻防 +2，弓兵基礎攻防 +6"], awakens: ["國戰攻城時，傷害 +30%", "若【行軍】達到 20 級，全軍基礎攻擊 +100，全軍基礎防禦 +20"], reincarn: ["免傷 +15%，國戰攻城時，若敵方有傲氣，己方攻防額外 +30%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "兵種主動技傷害 +15%", "英雄可自由分配四維 +4"], destiny: [{name:"蠻荒之力", hero:"祝融", effect:"同時上陣，【巨象】傷害提升 30%"}, {name:"丞相之恩", hero:"姜維", effect:"對全才傷害 +30%"}, {name:"心隨蜀向", hero:"馬岱", effect:"前軍受到弓兵傷害 -20%"}, {name:"七擒七縱", hero:"諸葛亮", effect:"統御 +2"}] },
+      { id: "sunce",    name: "神·孫策",   type: "武將", rarity: "國士", force: 97,  intel: 80,  charm: 90, command: 96, talent: "名將孫堅長子，對外攻無不克，對內善於用人，漸有小霸王之稱，是孫吳版圖主要奠基者。", skillName: "鐵血霸王", skills: ["對戰全才時，戰鬥中攻擊和防禦提高 16%", "對戰武將時，武力 +10", "每提升 1 級【反擊】，步兵基礎攻擊 +4，步兵格擋率 +1.5%"], awakens: ["【反擊】可同時攻擊敵軍全體，且傷害提升 25%", "若【業火】達到 15 級，【裂甲】額外增加 30% 暴擊率"], reincarn: ["【反擊】可無視敵方 30% 的防禦，且在遠戰回合也可發動", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "步兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"武烈龍鳳", hero:"孫尚香", effect:"同時上陣，戰鬥開始時對敵前軍或後軍造成 5 次 30% 的傷害，每次有 10% 的機率導致敵軍遲緩，持續 2 回合"}, {name:"江東雙壁", hero:"周瑜", effect:"對全才傷害 +20%"}, {name:"擲戟知己", hero:"太史慈", effect:"後軍對弓兵傷害 +20%"}, {name:"錦帆知遇", hero:"甘寧", effect:"後軍攻擊 +3%"}] },
+      { id: "zhangliao",name: "神·張遼",   type: "全才", rarity: "國士", force: 95,  intel: 84,  charm: 85, command: 93, talent: "曹魏五子良將，曾以八百虎士大破孫吳十萬大軍，威震天下，從此止啼江東。", skillName: "五子為先", skills: ["【突擊】技能傷害 +20%，且發動【突擊】時對敵後軍也能造成同等傷害", "騎兵對步兵傷害 +50%", "每提升 1 級【突擊】，就有 2% 的概率造成敵軍【混亂】，持續 1 回合（最多 40% 概率）"], awakens: ["每提升 1 點武力，統御 +1", "若【剛毅】達到 15 級，【突擊】可額外消滅目標當前兵力的 30%"], reincarn: ["【突擊】必定暴擊，且可在近戰首回合可額外發動一次", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"神兵奇謀", hero:"郭嘉", effect:"同時上陣，【突擊】傷害提升 30%"}, {name:"虎騎縱橫", hero:"徐晃", effect:"對文官傷害 +25%"}, {name:"嚴陣以待", hero:"于禁", effect:"前軍對方士傷害 +20%"}, {name:"義棄前嫌", hero:"樂進", effect:"前軍攻擊 +3%"}] },
+      { id: "guojia",   name: "神·郭嘉",   type: "文官", rarity: "國士", force: 56,  intel: 98,  charm: 91, command: 92, talent: "曹操帳下著名謀士，有「才策謀略，世之奇士」的美譽，被曹操譽為自己的「奇佐」。", skillName: "達人無跡", skills: ["【奇策】技能傷害 +30%", "遭受文官或武將攻擊時減免 25% 的傷害", "每提升 1 級【疾風】，【奇策】技能傷害 +2.5%，方士基礎攻擊 +6"], awakens: ["每提升 1 點統御，智力 +1", "若【落雷】達到 15 級，【奇策】可同時攻擊全體，並忽略敵方被動技能"], reincarn: ["發動【奇策】後，立即發動【乘高決水】，按敵方每個部隊已損失兵力的 150%，消滅其剩餘兵力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"魏武智勇", hero:"張遼", effect:"同時上陣，戰鬥開始時對敵軍全體造成 75% 的傷害，有 20% 的幾率造成敵軍虛弱，持續 1 回合"}, {name:"智絕天下", hero:"賈詡", effect:"對武將傷害 +20%"}, {name:"勝敗之論", hero:"荀彧", effect:"前軍受到騎兵傷害 -10%"}, {name:"直言不諱", hero:"王司徒", effect:"前軍對弓兵傷害 +20%"}] },
+      { id: "luxun",    name: "神·陸遜",   type: "全才", rarity: "國士", force: 78,  intel: 97,  charm: 97, command: 98, talent: "江東望族出身的俊傑。其為人深謀遠慮，忠誠耿直。一生出將入相，被贊為「社稷之臣」。", skillName: "謙遜儒將", skills: ["英雄技造成的每次傷害都會引發灼燒，追加 25% 傷害，並額外消滅敵方當前兵力的 3%", "【業火】達到 15 級後，【業火】可造成 2 連擊傷害", "每提升 1 級【誘敵】，弓兵基礎攻擊 +11，兵力 +50", "每提升 1 點任意四維，步兵攻防額外 +7"], awakens: ["每學習一種相關魅力的任意類型技能，前後軍防禦各 +60", "若【育林】達到 20 級，陸遜四維各 +1，且引發灼燒的效果加倍"], reincarn: ["弓兵免傷 +20%。【業火】不會觸發敵方【無懈】，且【業火】發動後，立即增援我方全軍 15% 的最大兵力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"火燒連營", hero:"合擊技", effect:"與任意國士同時上陣，戰鬥開始時對敵全軍造成 30% 的傷害，並有 50% 的幾率導致敵方【火災】，每回合損失 10% 當前兵力，持續 2 回合"}, {name:"忍辱負重", hero:"關羽", effect:"對文官傷害 +30%"}, {name:"雙星閃耀", hero:"呂蒙", effect:"後軍對方士傷害 +15%"}, {name:"社稷之臣", hero:"周瑜", effect:"後軍傷害 +20%"}] },
+      { id: "dongzhuo", name: "神·董卓",   type: "武將", rarity: "國士", force: 96,  intel: 89,  charm: 85, command: 97, talent: "西涼軍閥，勇猛有謀，力建戰功。後以討宦之名，進軍國都，掌控朝政，從此權勢滔天。", skillName: "權傾朝野", skills: ["遭受文官或者全才攻擊時減免 25% 的傷害", "裝備七星刀，武力 +5，統御 +5", "每提升 1 級【金剛】，步兵兵力 +40，前後軍基礎攻防各 +3", "【金剛】的減傷效果能夠減少敵軍前軍傷害"], awakens: ["每學習一種相關武力的任意類型技能，前後軍攻擊各 +80", "若【富豪】達到 20 級，武力 +1，戰鬥開始時發動【威壓】，消滅敵方全體最大兵力的 5%，並令其在本次對決中所有技能發動率降低 15%"], reincarn: ["兵種技傷害 +15%，前後軍基礎兵力各 +300，當我方剩餘兵力高於對手時，造成的所有傷害 +40%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"魔君降臨", hero:"貂蟬", effect:"同時上陣，戰鬥開始時對敵軍造成 115% 的傷害，有 30% 的幾率導致敵軍虛弱，持續 1 回合"}, {name:"西涼鐵騎", hero:"張遼", effect:"對全才傷害 +30%"}, {name:"一夫當關", hero:"華雄", effect:"近戰回合，對敵軍造成的所有傷害增加 20%"}, {name:"西涼智囊", hero:"賈詡", effect:"前軍對騎兵傷害 +20%"}] },
+      { id: "jiaxu",    name: "神·賈詡",   type: "文官", rarity: "國士", force: 61,  intel: 97,  charm: 80, command: 95, talent: "三國著名謀士，魏朝開國元勳，奇謀百出，算無遺策。曾獻離間計大敗渭南群雄。", skillName: "深謀遠慮", skills: ["【策謀】效果提升 5%，且智力高於對手時，英雄主動技傷害提升 20%", "每提升 1 級【盾牆】，遭受敵後軍攻擊時部隊減免 1% 的傷害（最多減免 20%）"], awakens: ["智力 +3，料敵先機，禁止敵方發動任意兵種主動技能", "若【金汁】達到 15 級，禁止敵方發動任意兵種被動技能"], reincarn: ["對武將傷害 +15%，智力 +5。若智力高於對手，受到敵方英雄技和副將技的傷害 -50%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"智勇之極", hero:"呂布", effect:"同時上陣，【策謀】效果提升 10%"}, {name:"同謀殊途", hero:"荀彧", effect:"對武將傷害 +25%"}, {name:"計打惡來", hero:"典韋", effect:"後軍攻擊 +3%"}, {name:"明哲保身", hero:"荀攸", effect:"前軍受到騎兵傷害 -10%"}] },
+      { id: "hanxiandi",name: "神·漢獻帝", type: "全才", rarity: "國士", force: 70,  intel: 70,  charm: 70, command: 70, talent: "東漢末帝，一生經歷極為坎坷。但能在亂世中苟活半百有餘，說明他有足夠的利用價值。", skillName: "挾令諸侯", skills: ["學習任意技能時不受職業和屬性限制", "可擔當任意英雄的任意兵種副將", "作為副將時，可依照漢獻帝品質，為主將提供額外加成：紫色以上品質：主將前後軍速度各 +2　金色以上品質：主將前後軍兵力各 +100　紅色品質：主將武力、智力、魅力、統御各 +1"], awakens: ["作為副將時，主將免傷 +5%", "作為前軍副將時，副將主動技能鎖定為【王者風範】：遠戰第二回合發動，以我方前軍最大兵力作為攻擊，對敵方前軍造成傷害，並為我方前軍添加強力護盾，護盾存在期間不良狀態抗性 +20%"], reincarn: ["（無）"], destiny: [{name:"（無）", hero:"", effect:""}] },
+      { id: "zhaoyun",  name: "神·趙雲",   type: "全才", rarity: "國士", force: 96,  intel: 86,  charm: 92, command: 90, talent: "出身白馬義從，與劉備一見如故。隨先主征戰多年，於險境兩扶幼主，可謂一身是膽也！", skillName: "一身是膽", skills: ["戰鬥中每回合攻擊和防禦都會累積提高 7%（最多提升 49%）", "每提升 1 級【堅守】，步兵攻防 +3，英雄主動技能傷害提升 1%"], awakens: ["【無雙】額外增加 2 次英雄攻擊", "若【金剛】達到 15 級，步兵攻防 +100，弓兵攻防 +300", "四維中每有一維高於對手，我方的不良狀態抗性 +25%"], reincarn: ["我方步兵無不良狀態時，步兵免傷 +25%，我方弓兵無不良狀態時，弓兵傷害 +50%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害和免傷各 +4%", "英雄可自由分配四維 +4"], destiny: [{name:"聖心龍膽", hero:"關羽", effect:"同時上陣，戰鬥開始時對敵後軍造成 105% 的傷害，有 20% 的幾率導致敵軍混亂，持續 1 回合"}, {name:"長阪雙虎", hero:"張飛", effect:"對文官傷害 +20%"}, {name:"戎馬伉儷", hero:"馬雲祿", effect:"前軍受到方士傷害 -10%"}, {name:"天下無雙", hero:"呂布", effect:"前軍對方士傷害 +20%"}] },
+      { id: "zhugeliang",name:"神·諸葛亮", type: "文官", rarity: "國士", force: 59,  intel: 100, charm: 98, command: 97, talent: "世人稱其為「臥龍先生」，有經天緯地之才，鬼神莫測之機。一生輔佐蜀漢，乃「千古良相」。", skillName: "臥龍出世", skills: ["若智力高於對手，己方發起的武力、魅力、統御比拼亦算勝出", "每提升 1 點智力，所有傷害 +1%，免傷 +1%（最多 35%）", "每提升 1 級【落雷】，步兵基礎攻防 +4，方士基礎攻防 +5", "每提升 1 級【天命】，步兵兵力 +15，方士兵力 +10"], awakens: ["每學習一種相關智力的任意類型技能，全軍暴擊率 +2%", "若【口才】達到 20 級，智力 +1，戰鬥開始時發動【舌戰】，對敵方前軍造成隨機傷害，並有 30% 的機率觸發【羞辱】，直接罵死敵方文官英雄"], reincarn: ["受到兵種技傷害 -15%，且近戰首回合，額外發動【東風破】，對敵方全體造成 400% 的戰計傷害（智力每比對手高 1，該戰計傷害 +10%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "造成的戰計傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"雷霆萬鈞", hero:"合擊技", effect:"戰鬥開始時對敵軍全體進行雷擊，造成 25% 的傷害，在同時上陣者中，文官、武將、全才每存在 1 類，傷害增加 1 倍"}, {name:"山容二虎", hero:"關羽", effect:"前軍防禦 +60、後軍防禦 +40"}, {name:"鞠躬盡瘁", hero:"周瑜", effect:"前軍對騎兵傷害 +10%"}, {name:"結髮夫妻", hero:"黃月英", effect:"受到傷害 -20%"}] },
+      { id: "pangtong", name: "神·龐統",   type: "文官", rarity: "國士", force: 65,  intel: 98,  charm: 77, command: 99, talent: "劉備帳下重要謀士，有「鳳雛」之稱，具有王霸之策，是輔佐劉入蜀得川的主要謀士。", skillName: "乾坤連環", skills: ["【乾坤】傷害增加 30%，且近戰首回合可額外發動一次【乾坤】", "對戰全才時，傷害 +30%", "單場對決中，己方前後軍可分別豁免一次會導致全滅的攻擊傷害", "每提升 1 級【乾坤】，減免 3% 的英雄主動技能傷害（最多減免 45%）"], awakens: ["每提升 1 點智力，統御 +1", "若智力達到 120，【地刺】可連發 2 次，且每擊有額外 15% 機率造成混亂"], reincarn: ["受到全才傷害 -15%。統御每比敵方高 1，【乾坤】和【地刺】的傷害強度 +1%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "兵種主動技傷害 +15%", "英雄可自由分配四維 +4"], destiny: [{name:"巧施連環", hero:"合擊技", effect:"與任意全才同時上陣，戰鬥開始時對敵軍全體造成 40% 的傷害，有 25% 的幾率導致敵軍混亂，持續 1 回合"}, {name:"雙翼齊飛", hero:"張飛", effect:"對武將傷害 +25%"}, {name:"風火連綿", hero:"周瑜", effect:"後軍對步兵傷害 +20%"}, {name:"龍鳳爭功", hero:"諸葛亮", effect:"傷害 +15%"}] },
+      { id: "guanyu",   name: "神·關羽",   type: "武將", rarity: "國士", force: 97,  intel: 81,  charm: 93, command: 93, talent: "三國名將，中國武聖，忠義驍勇，與其主劉備情同兄弟。後水淹七軍，盡滅魏師，威震華夏。", skillName: "千秋武聖", skills: ["發動【武聖】時，若武力高於對手且剩餘兵力高於對手，有 70% 的幾率直接斬落敵方英雄", "每提升 1 級【武聖】，騎兵基礎攻擊 +6，弓兵兵力 +20"], awakens: ["戰鬥開始時，有 20% 的幾率額外發動一次【武聖】", "若【豪傑】達到 15 級，遠戰首回合可再額外發動一次【武聖】"], reincarn: ["騎兵基礎兵力 +400，【武聖】斬落敵方英雄後，全軍獲得 60% 免傷效果，保持於本次對決", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍暴擊率 +15%", "英雄可自由分配四維 +4"], destiny: [{name:"碧盔銀甲", hero:"趙雲", effect:"同時上陣，【武聖】傷害提升 30%"}, {name:"萬人之敵", hero:"張飛", effect:"對全才傷害 +25%"}, {name:"手起一刀", hero:"顏良", effect:"前軍兵力 +3%"}, {name:"溫酒之間", hero:"華雄", effect:"前軍對步兵傷害 +20%"}] },
+      { id: "wenyang",  name: "神·文鴦",   type: "武將", rarity: "國士", force: 100, intel: 87,  charm: 78, command: 77, talent: "魏末晉初名將，盡忠職守，神武非常。曾單騎沖陣駭斃敵將，大破鮮卑名震天下。", skillName: "所向披靡", skills: ["若戰力低於對手，【沖陣】可額外連發 1 次", "若戰力高於對手，沖陣可導致敵方【潰逃】，持續 2 回合。【潰逃】期間，每回合損失 5% 的最大兵力", "戰鬥中每回合攻擊和暴擊率都會積累提高 6%", "每提升 1 級【沖陣】，【無雙】和【槍王】的技能傷害 +5%"], awakens: ["若武力高於對手，戰鬥中對手發起的智力、魅力、統御比拼也算失效", "若【合圍】達到 20 級，遠戰回合騎兵免傷 +30%，且近戰第二回合可額外發動一次【合圍】"], reincarn: ["對全才傷害和免傷 +15%。我方每發動一次英雄主動技，全軍疊加 1 層【迅猛】，速度 +5，暴擊傷害 +10%（最高疊加 8 次，不可驅散）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍暴擊傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"四海無敵", hero:"呂布", effect:"同時上陣，近戰首回合可額外發動【沖陣】，並正常判定連發"}, {name:"七進七出", hero:"趙雲", effect:"對全才傷害 +20%"}, {name:"槍絕天下", hero:"童淵", effect:"智力 +2、武力 +2"}, {name:"文家愚勇", hero:"文醜", effect:"前軍傷害 +15%"}] },
+      { id: "caopi",    name: "神·曹丕",   type: "全才", rarity: "國士", force: 88,  intel: 95,  charm: 86, command: 96, talent: "善擊劍騎射，好博弈彈棋，在立嗣鬥爭中拔得頭籌。帝二代魏文帝曹丕，妥妥的人生贏家。", skillName: "大魏文帝", skills: ["遠戰首回合可額外發動一次【攻心】", "每提升 1 級【龍怒】，【攻心】可造成的直接傷害提升 2%", "每提升 1 級【策謀】，步兵兵力 +40，方士基礎攻擊 +13"], awakens: ["【攻心】可造成的直接傷害 +30%，且近戰首回合可額外發動一次【攻心】", "若武力、智力、魅力、統御均高於 100，【攻心】每造成一次直接傷害，都有 20% 的幾率使目標【內訌】 1 回合"], reincarn: ["全軍傷害和免傷 +10%。攻擊處於【潰逃】或【內訌】的目標時，可無視 60% 的防禦，且傷害強度 +35%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"養虎為患", hero:"司馬懿", effect:"同時上陣，己方每戰損 1,000 兵力，便引導冤魂纏繞敵方，反噬敵軍 100 兵力"}, {name:"毒士智囊", hero:"賈詡", effect:"對文官傷害 +20%"}, {name:"奪妻專寵", hero:"甄姬", effect:"後軍傷害 +15%"}, {name:"梟雄遺風", hero:"曹操", effect:"魅力 +2、統御 +2"}] },
+      { id: "liushan",  name: "神·劉禪",   type: "文官", rarity: "國士", force: 79,  intel: 91,  charm: 97, command: 88, talent: "幼年劫難有驚無險，順繼蜀漢群臣環伺。至尊強運當屬阿斗，樂不思蜀有苦自知。", skillName: "福澤後主", skills: ["可擔當任意英雄的任意兵種副將", "作為副將時，可依照劉禪品質，為主將提供額外加成", "受到反噬類效果時，減免 15% 損失；紫色以上品質：近戰回合受到的傷害 -5%；金色以上品質：魅力 +1，統御 +1；紅色品質：遠戰回合受到的傷害 -5%；劉禪自身作為主將時，更可依照品質，解鎖以上全部 4 倍的加成效果"], awakens: ["從戰鬥開始起，每回合我方英雄行動結束時，若我方存在至少 1 個增益狀態，可發動【樂不思蜀】，消滅敵方前軍和後軍最大兵力的 8%", "若【福佑】達到 20 級，智力 +5，魅力 +5，【福佑】在戰鬥開始時的發動幾率 +30%，且近戰首回合可額外發動一次【福佑】"], reincarn: ["敵方發動任意英雄技時，若其兵力不足一半，則劉禪發動【大智若愚】，阻止敵方技能發動", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"亞父守護", hero:"諸葛亮", effect:"同時上陣，福佑的護盾量提升 300%"}, {name:"單騎救主", hero:"趙雲", effect:"對武將傷害 +20%"}, {name:"賢內勇外", hero:"張星彩", effect:"傷害 +10%"}, {name:"虎父犬子", hero:"劉備", effect:"受到傷害 -10%"}] },
+      { id: "xuchu",    name: "神·許褚",   type: "武將", rarity: "名將", force: 96,  intel: 61,  charm: 67, command: 80, talent: "典韋的繼任者，力大無窮。曾于談判中嚇退馬超，虎癡之名從此為天下稱道。", skillName: "裸衣虎癡", skills: ["戰鬥中，己方步兵每受到一次敵方傷害，攻擊就提升 5%（最多 30%）", "每提升 1 級【反擊】，前後軍兵力各 +10"], awakens: ["遠戰第二回合許褚發動【癡戰】，令己方傷兵戰意狂漲前仆後繼，立即治療 90% 的傷兵", "每提升 1 級【盾牆】，步兵攻防 +20"], reincarn: ["步兵傷害和免傷 +15%。遠戰首回合，己方步兵每次受到敵方部隊的攻擊，都可發動【虎軀無畏】，自損 15% 的當前兵力（對戰NPC時不損失兵力），消滅攻擊來源 50% 的當前兵力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "我方的不良狀態抗性 +10%", "英雄可自由分配四維 +4"], destiny: [{name:"舉火鏖戰", hero:"馬超", effect:"同時上陣，【激戰】傷害提升 30%"}, {name:"虎癡惡鬼", hero:"典韋", effect:"對全才傷害 +18%"}, {name:"堅不可摧", hero:"曹仁", effect:"前軍對弓兵傷害 +20%"}] },
+      { id: "zhangfei", name: "神·張飛",   type: "武將", rarity: "名將", force: 99,  intel: 71,  charm: 74, command: 90, talent: "蜀漢虎將，性格暴烈，武藝高強，百萬軍中取上將首級如探囊取物。但待人處事粗中有細。", skillName: "粗中有細", skills: ["【暴烈】傷害 +10%，且禁止任何對手的【策謀】技能生效", "每提升 1 級【暴烈】，減免 1% 文官或全才造成的傷害（最多減免 20%）"], awakens: ["若武力高於對手，己方發起的智力、魅力、統御比拼亦算勝出", "若【捨身】達到 15 級，武力 +2，騎兵暴擊率 +40%"], reincarn: ["遠戰首回合發動【燕人怒吼】，震懾敵膽，使敵方部隊在接下來的 2 回合，無法發動任何兵種主被動技能，並導致【潰逃】，持續 2 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"桃園之義", hero:"關羽", effect:"同時上陣，騎兵攻擊提升 30%"}, {name:"各為其主", hero:"張郃", effect:"對全才傷害 +18%"}, {name:"遠親之情", hero:"夏侯霸", effect:"後軍對騎兵傷害 +20%"}] },
+      { id: "machao",   name: "神·馬超",   type: "武將", rarity: "名將", force: 97,  intel: 72,  charm: 90, command: 89, talent: "名將之後，西涼軍閥。曾以威名兵不血刃拿下益州。因折服於你的氣度，甘願追隨你。", skillName: "遊刃有餘", skills: ["發動【突擊】後，騎兵有 50% 幾率可再攻擊一次", "每提升 1 級【鐵蹄】，【突擊】技能傷害 +1%（最多 20%）"], awakens: ["騎兵速度 +30，騎兵基礎攻擊 +40，騎兵免傷 +55%，且騎兵免疫按比例損失兵力的效果", "若武力達到 110，騎兵每回合都能發動一次【奔襲】，且傷害 +50%"], reincarn: ["所有騎兵主動技都有 50% 的幾率連發 2 次，且暴擊率 +10%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"槍破虎侯", hero:"許褚", effect:"同時上陣，戰鬥開始時對敵軍造成 95% 的傷害"}, {name:"銀槍蛇矛", hero:"張飛", effect:"對全才傷害 +15%"}, {name:"同仇敵愾", hero:"徐庶", effect:"前軍對步兵傷害 +20%"}] },
+      { id: "xunyu",    name: "神·荀彧",   type: "文官", rarity: "名將", force: 51,  intel: 94,  charm: 91, command: 65, talent: "荀彧作為曹操統一北方的首席謀臣和功臣，居中持重達十數年，被曹操稱為「吾之子房」。" },
+      { id: "xiahoudun",name: "神·夏侯惇", type: "武將", rarity: "名將", force: 93,  intel: 75,  charm: 83, command: 90, talent: "曹操心腹猛將，拔矢啖睛的事蹟流傳千古。但平日裡虛心求學，為人簡樸，愛惜士卒。", skillName: "拔矢啖睛", skills: ["戰鬥中，己方騎兵每受到一次敵方後軍傷害，攻擊就提升 10%（最多提升 40%）", "每提升 1 級【不屈】，騎兵基礎攻擊 +3，騎兵暴擊率 +2%"], awakens: ["【鐵蹄】在所有回合都能發動，且效果提升 35%", "若【暴烈】達到 15 級，武力 +6，魅力 +10，且受到文官傷害 -40%"], reincarn: ["遠戰第二回合若敵方仍有弓兵存活，我方發動【一箭之仇】，以我方騎兵攻擊力的 100% 作為傷害，對敵方弓兵造成致命打擊（無視免傷和防禦）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵的不良狀態抗性 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"兄弟情深", hero:"夏侯淵", effect:"同時上陣，騎兵攻擊提升 15%，防禦提升 15%"}, {name:"文韜武略", hero:"荀彧", effect:"對全才傷害 +18%"}, {name:"柱國棟樑", hero:"程普", effect:"前軍對步兵傷害 +20%"}] },
+      { id: "jiangwei", name: "神·姜維",   type: "全才", rarity: "名將", force: 90,  intel: 92,  charm: 87, command: 94, talent: "文武全才，深受諸葛亮器重，為蜀漢後期軍事重臣，長期於遝中屯田，伺機北伐。", skillName: "膽大如鬥", skills: ["【蝕甲】無視防禦效果 +30%", "每提升 1 級【蝕甲】，方士基礎攻擊 +5"], awakens: ["【離間】傷害提升 30%，可作用於敵軍全體，且遠戰首回合即可額外發動一次【離間】", "若【天命】達到 15 級，武力、智力、魅力、統御各 +7"], reincarn: ["【離間】造成【內訌】的幾率 +40%，且敵方全軍受到的【內訌】傷害 +200%（額外受雙方智力差影響）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"蜀中無將", hero:"廖化", effect:"同時上陣，方士攻擊提升 30%"}, {name:"末世雙傑", hero:"夏侯霸", effect:"對文官傷害 +18%"}, {name:"治國能臣", hero:"法正", effect:"後軍對弓兵傷害 +20%"}] },
+      { id: "ganning",  name: "神·甘寧",   type: "武將", rarity: "名將", force: 95,  intel: 73,  charm: 85, command: 86, talent: "原為錦帆賊，崇尚奢華。後一朝頓悟，熟讀諸子，成文武全才，終留威名于江淮之間。", skillName: "錦帆遊俠", skills: ["遠戰回合，全軍攻擊和防禦提升 25%", "每提升 1 級【激戰】，步兵基礎攻擊 +5"], awakens: ["遠戰首回合可額外發動一次【激戰】，且【激戰】可額外追加 2 次打擊", "若【疾風】達到 15 級，【衝鋒】可同時攻擊敵軍全體，且傷害提升 50%"], reincarn: ["步兵傷害 +20%，我方步兵的每段打擊，都可額外附加自身最大兵力的 10% 作為攻擊力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "步兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"摒棄父仇", hero:"淩統", effect:"同時上陣，步兵攻擊提升 15%，速度提升 10"}, {name:"江南勇將", hero:"太史慈", effect:"對全才傷害 +18%"}, {name:"折衝將軍", hero:"韓當", effect:"前軍對弓兵傷害 +20%"}] },
+      { id: "lumeng",   name: "神·呂蒙",   type: "全才", rarity: "名將", force: 87,  intel: 93,  charm: 83, command: 95, talent: "原為吳下阿蒙，以膽氣稱。後讀史為鑒，終成大將。也因此白衣渡江，拿下荊州。", skillName: "吳下阿蒙", skills: ["統御高於對手時，免傷 +20%", "每提升 1 級【兵法】，英雄主動技能傷害提升 5%"], awakens: ["【乾坤】可同時攻擊敵軍全體，且每提升 1 級【乾坤】，方士被動免傷 +3%（最高免傷 75%）", "若【軍略】達到 15 級，統御 +5，智力 +6，武力 +8"], reincarn: ["當敵方剩餘總兵力低於 25% 時，我方發動【士別三日】，直接消滅敵方部隊，並宣告勝利", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"士別三日", hero:"魯肅", effect:"同時上陣，方士攻擊提升 15%，速度提升 10"}, {name:"升堂拜母", hero:"諸葛瑾", effect:"對文官傷害 +18%"}, {name:"身先軍陣", hero:"周泰", effect:"前軍傷害 +20%"}] },
+      { id: "taishici", name: "神·太史慈", type: "武將", rarity: "名將", force: 94,  intel: 75,  charm: 82, command: 91, talent: "孫吳大將，勇武不在小霸王之下，有著「丈夫生世，當帶三尺之劍，以升天子之階」的抱負。", skillName: "矢志不渝", skills: ["單場對決中，己方前後軍可分別豁免一次會導致全滅的攻擊傷害", "每提升 1 級【火箭】，弓兵基礎攻擊 +2，弓兵暴擊率 +2%"], awakens: ["【強弩】在所有回合都能發動，且效果提升 35%", "若【閃避】達到 15 級，全軍暴擊率 +30%，且受到武將傷害 -40%"], reincarn: ["己方弓兵不會早于步兵全滅，且遠戰首回合開始，每經過一回合步兵免傷 +10%，弓兵無視敵方防禦效果 +20%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵的不良狀態抗性 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"悍勇難當", hero:"甘寧", effect:"同時上陣，弓兵攻擊提升 15%，防禦提升 15%"}, {name:"投戟知己", hero:"孫策", effect:"對全才傷害 +18%"}, {name:"立劍抬棺", hero:"龐德", effect:"後軍對方士傷害 +20%"}] },
+      { id: "huangzhong",name: "神·黃忠",   type: "武將", rarity: "名將", force: 93,  intel: 80,  charm: 75, command: 92, talent: "年過花甲才名傳天下的老將軍。箭術無雙，可拉兩石之弓，乃老當益壯的典範。", skillName: "老當益壯", skills: ["英雄等級每提升 1 級，攻擊和防禦額外提升 0.5%（最多提升 30%）", "每提升 1 級【強弩】，【火箭】技能傷害提升 1%（最多 20%）"], awakens: ["弓兵基礎攻擊 +200，戰鬥開始，己方弓兵就能額外發動一次超強力【遠射】", "若【不屈】達到 15 級，【回射】可同時攻擊敵軍全體，且傷害加倍"], reincarn: ["弓兵免傷 +20%，每提升 1 點武力，弓兵基礎攻擊 +3，弓兵的不良狀態抗性 +1%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"惺惺相惜", hero:"趙雲", effect:"同時上陣，弓兵攻擊提升 30%"}, {name:"老當益壯", hero:"法正", effect:"對全才傷害 +18%"}, {name:"斬于馬下", hero:"夏侯淵", effect:"後軍對方士傷害 +20%"}] },
+      { id: "weiyan",    name: "魏延",   type: "武將", rarity: "名將", force: 92,  intel: 76,  charm: 70, command: 87, talent: "蜀漢大將，有勇有謀，深受劉備器重。曾獻子午谷奇謀于孔明，卻因過於冒險而棄用。", skillName: "出其不意", skills: ["遠戰首回合有 50% 幾率發動一次【衝鋒】，且【衝鋒】技能傷害提高 20%", "每提升 1 級【衝鋒】，步兵基礎攻擊 +3"] },
+      { id: "fafa",      name: "法正",   type: "文官", rarity: "名將", force: 58,  intel: 94,  charm: 79, command: 82, talent: "蜀地謀士，常因不遇明主而感歎自己的遭遇。得知劉備入蜀，便助其入主成都。", skillName: "睚眥必報", skills: ["不會觸發敵軍弓兵【回射】", "每提升 1 級【罡氣】，【罡氣】發動時格擋率 +3%"] },
+      { id: "xushu",     name: "徐庶",   type: "文官", rarity: "名將", force: 67,  intel: 95,  charm: 84, command: 85, talent: "初為劉備帳下謀士，擅長臨陣破敵，一改劉備連戰皆敗的頹勢。但因母被曹操所獲而出仕曹操。", skillName: "折節學問", skills: ["對戰武將時，免傷 +15%", "每提升 1 級【回射】，減免 2% 的英雄主動技能傷害（最多減免 40%）"] },
+      { id: "xiahoudun2", name: "夏侯淵",   type: "武將", rarity: "名將", force: 92,  intel: 77,  charm: 80, command: 88, talent: "曹魏名將，擅長千里奔襲作戰，常常出敵不意。但勇猛有餘，卻不重視謀略，曹操常以此誡之。", skillName: "兵貴神速", skills: ["【奔襲】技能傷害 +15%", "每提升 1 級【行軍】，提升攻擊和防禦 1%（最多 20%）"] },
+      { id: "zhanghe",   name: "張郃",   type: "全才", rarity: "名將", force: 92,  intel: 87,  charm: 82, command: 92, talent: "郃識變數，善處營陳，料戰勢地形，無不如計，劉備及諸葛亮都極為忌憚他。", skillName: "因敵制宜", skills: ["攻擊和防禦提升 10%，且己方兵力缺損，攻擊不會衰減（原本最多衰減 40%）", "每提升 1 級【奔襲】，英雄主動技能傷害提高 2%（最多提高 30%）"] },
+      { id: "dianwei",  name: "神·典韋",   type: "武將", rarity: "良才", force: 99,  intel: 65,  charm: 61, command: 76, talent: "曹操親衛大將，相貌魁梧，膂力過人，身披雙鎧，手持雙戟，每戰先登，攻無不克！" },
+      { id: "zhoutai",  name: "神·周泰",   type: "武將", rarity: "良才", force: 95,  intel: 68,  charm: 70, command: 81, talent: "周泰身經百戰，戰則如熊虎，數次於危難間護得孫權周全。受創幾十次，傷疤如雕畫一般。" },
+      { id: "daqiao",    name: "神·大喬",   type: "文官", rarity: "巾幗", force: 59,  intel: 90,  charm: 100, command: 91, talent: "廬江喬國老長女，國色天香，儀態萬千。後嫁於剛剛攻下皖城的孫策，英雄美人，天作之合。", skillName: "國色天香", skills: ["【福佑】護盾量提升 50%，且戰鬥開始必定發動", "大喬每有一種文官類英雄技達到 15 級，所有傷害 +10%", "每提升 1 級【福佑】，前後軍基礎防禦 +5，兵力各 +15", "每提升 1 級【修養】，智力 +1，魅力額外 +1"], awakens: ["對戰武將時，免傷 +35%", "若與小喬、孫策、周瑜同時上陣，每回合都有 30% 的幾率發動【琴瑟和鳴】，消滅敵方 5% 的最大兵力，並驅散己方全部不良狀態"], reincarn: ["對戰時，敵方英雄武力 -50，且敵方發動英雄技時，若不滿足學習條件，則使之失效", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"羨煞四方", hero:"合擊技", effect:"與任意男性英雄同時上陣，戰鬥開始時對敵軍全體造成 110% 的傷害"}, {name:"春風得意", hero:"孫策", effect:"對武將傷害 +35%"}, {name:"英姿妹婿", hero:"周瑜", effect:"對女性英雄傷害 +15%"}, {name:"銅雀二喬", hero:"小喬", effect:"對男性英雄傷害 +15%"}] },
+      { id: "xiaoqiao",  name: "神·小喬",   type: "全才", rarity: "巾幗", force: 57,  intel: 94,  charm: 100, command: 85, talent: "廬江喬國老次女，秀美絕倫，貌壓群芳。後嫁於剛剛攻下皖城的周瑜，成為令人稱羨的一對璧人。", skillName: "出水芙蓉", skills: ["對戰武將時，免傷 +40%", "小喬不會受到不良狀態的影響", "每提升 1 級【悲歌】，弓兵基礎攻防 +6，弓兵兵力 +6", "【悲歌】達到 15 級，前後軍兵力各 +200，且遠戰第二回合可再次釋放【悲歌】"], awakens: ["對戰文官時，免傷 +35%", "裝備落香傘，魅力額外 +5，且當己方即將按比例損失兵力時，減免一半效果"], reincarn: ["【悲歌】可額外消滅目標當前兵力的 15%，且【悲慟】效果額外持續 1 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"紅裳蝶舞", hero:"周瑜", effect:"同時上陣，戰鬥開始時對敵後軍造成 105% 的傷害，有 25% 的幾率導致敵軍混亂，持續 1 回合"}, {name:"姐夫不要", hero:"孫策", effect:"對文官傷害 +20%"}, {name:"姐妹情深", hero:"孫尚香", effect:"後軍傷害 +20%"}, {name:"萬里相惜", hero:"祝融", effect:"統御 +5"}] },
+      { id: "hehanghou", name: "神·何皇后", type: "文官", rarity: "巾幗", force: 74,  intel: 96,  charm: 90,  command: 91, talent: "因天生麗質被選入皇宮，成為漢靈帝的妃子，後生下皇子劉辯成為皇后，史稱何皇后。", skillName: "蛇蠍美人", skills: ["遠戰首回合結束時發動【宦海浮沉】，忽略敵方被動技能，消滅敵方全軍 4% 的最大兵力，並使其獲得 1 級【罪狀】的特殊效果", "【罪狀】：每次攻擊前提升 1 級，若達到 4 級及以上，觸發【罪惡當誅】，忽略自身被動技能，自損【罪狀】級數 × 4% 的最大兵力", "若智力高於對手，我方免傷 +20%", "我方方士的任意攻擊可忽略敵方被動技能，且每學 10 級任意方士技，方士基礎攻擊 +20，暴擊率和暴擊傷害 +2%"], awakens: ["遠戰第二回合若敵方前後軍皆存活，我方發動【臨朝亂政】，令敵方前後軍立即互相攻擊 1 次，各消滅 10% 的當前兵力", "對戰攜帶步兵的英雄時，敵方智力 -30，且【宦海浮沈】可直接令敵方步兵獲得 3 級【罪狀】"], reincarn: ["智力 +8，我方全軍被暴擊率 -20%，對戰武將時被暴擊率額外 -40%，且前後軍可各豁免 3 次導致全滅的攻擊傷害", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"宮鬥傳奇", hero:"班育雙姝", effect:"前後軍免傷各 +10%、前軍最終免傷 +10%、後軍最終免傷 +10%"}, {name:"兩宮之爭", hero:"甄姬", effect:"對武將傷害 +25%"}, {name:"寵冠後宮", hero:"貂蟬", effect:"對戰武將時，受到按比例損失兵力的效果減免 40%"}, {name:"母儀浮夢", hero:"漢獻帝", effect:"智力 +3、武力 +5"}] },
+      { id: "wuguotai",  name: "神·吳國太", type: "文官", rarity: "巾幗", force: 54,  intel: 93,  charm: 90,  command: 98, talent: "孫堅正妻武烈皇后的妹妹，也嫁給了孫堅。在吳國輩分極高，說話講求公道不徇私情。", skillName: "武烈國母", skills: ["可擔當任意英雄的任意兵種副將", "作為副將時，可依照吳國太品質，為主將提供額外加成", "【集智】觸發時，我方自損 2% 的當前兵力，額外使技能傷害強度 +12%；紫色以上品質：全軍免傷 +4%；金色以上品質：統御 +2；紅色品質：全軍受到按比例損失兵力的效果 -15%；吳國太自身作為主將時，更可依照品質，解鎖以上全部 4 倍的加成效果"], awakens: ["每提升 1 點統御，武力 +1", "若本場對決中己方戰損首次超過 5,000 兵力，吳國太行動時發動【止殤】，立即治療前軍 50% 的傷兵，後軍架起強度為 110% 的護盾（受己方最大兵力加成）"], reincarn: ["我方兵種技傷害 +15%。【集智】觸發時不自損兵力，且智力或統御高於對手時，我方發動兵種主動技時也可觸發【集智】", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny: [{name:"乘龍快婿", hero:"劉備", effect:"受到武將傷害 -15%"}, {name:"甘露促婚", hero:"孫尚香", effect:"對武將傷害 +15%"}, {name:"外事問決", hero:"周瑜", effect:"英雄技能傷害 +20%"}, {name:"順天恤民", hero:"漢獻帝", effect:"魅力 +5、統御 +1"}] },
+      { id: "lvlingqi",  name: "神·呂玲綺", type: "武將", rarity: "巾幗", force: 94,  intel: 78,  charm: 96,  command: 96, talent: "呂布之女，冷酷高豔天賦異稟，擅用兵器十字戰戟，揮舞起來滴水不漏，無物可近身。", skillName: "將門虎女", skills: ["【萬箭】改為遠戰第二回合發動，且有 100%/80%/40%/10% 的幾率可連續發動 2/3/4/5 次", "己方弓兵不會受到不良狀態的影響", "每提升 1 級【鼓舞】，騎兵基礎防禦 +5", "每提升 1 級【殺意】，弓兵暴擊率 +2%，弓兵兵力 +10"], awakens: ["每次發動【萬箭】後，增援我方 1% 的最大兵力", "每提升 1 點武力，遠戰第二回合己方所有傷害 +2%"], reincarn: ["對男性英雄傷害 +10%，【萬箭】每發動 1 次，下次【萬箭】的傷害強度 +100%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny: [{name:"父女齊心", hero:"呂布", effect:"同時上陣，前後軍攻擊 +10%，前後軍速度 +5"}, {name:"口蜜腹劍", hero:"貂蟬", effect:"受到男性英雄傷害 -15%"}, {name:"絕世巾幗", hero:"祝融", effect:"受到傷害 -15%"}, {name:"弓弩連營", hero:"陸遜", effect:"傷害 +15%"}] },
+      { id: "buLianshi", name: "神·步練師", type: "全才", rarity: "巾幗", force: 61,  intel: 91,  charm: 99,  command: 83, talent: "美貌端莊，寬容慈惠，有淑懿之德。嫁與孫權，寵冠後庭，並生下兩位絕色公主。", skillName: "雍容雅步", skills: ["可擔當任意英雄的任意兵種副將", "作為副將時，可依照步練師品質，為主將提供額外加成", "【奇策】有 25% 的幾率可在戰鬥開始額外發動一次；紫色以上品質：步兵基礎攻防 +20；金色以上品質：智力 +2；紅色品質：步兵格擋率 +15%，步兵速度 +3；步練師自身作為主將時，更可依照品質，解鎖以上全部 4 倍的加成效果"], awakens: ["魅力 +5，步兵基礎兵力 +200，步兵免傷 +30%，步兵攻擊處於【遲緩】狀態的目標時，傷害強度 +100%", "若【奇策】達到 10 級，每次發動【奇策】後，我方步兵可額外發動【奇襲】，對敵方後軍造成 200% 的傷害，並有 50% 的幾率導致【混亂】，持續 2 回合"], reincarn: ["步兵免傷 +25%。【奇策】導致敵方遲緩的幾率 +30%，且【奇策】可在近戰首回合額外發動一次", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "步兵傷害 +25%", "英雄可自由分配四維 +4"], destiny: [{name:"江東奠基", hero:"孫策", effect:"受到文官傷害 -15%"}, {name:"排外撫內", hero:"周瑜", effect:"對文官傷害 +15%"}, {name:"大虎小虎", hero:"班育雙姝", effect:"受到傷害 -10%"}, {name:"共承天地", hero:"孫權", effect:"傷害 +10%"}] },
+      { id: "huaman",    name: "神·花鬘",   type: "武將", rarity: "巾幗", force: 95,  intel: 88,  charm: 98,  command: 80 }
+    ];
 
-<div class="hero-name">${hero.name}</div>
-<div class="hero-camp">${hero.camp}</div>
+    const rarityColor = { "國士": "#d4a84b", "名將": "#7b9bd4", "良才": "#6daa6d", "巾幗": "#d4789a" };
+    const rarityBg    = { "國士": "rgba(212,168,75,0.15)",  "名將": "rgba(123,155,212,0.15)", "良才": "rgba(109,170,109,0.15)", "巾幗": "rgba(212,120,154,0.15)" };
+    const jobColor    = { "文官": "#e8a0a0", "全才": "#a0d4b8", "武將": "#a0b8e8" };
 
-${createStat("武力",hero.strength,"strength")}
-${createStat("智力",hero.intelligence,"intelligence")}
-${createStat("魅力",hero.charisma,"charisma")}
-${createStat("統御",hero.leadership,"leadership")}
+    let currentRarity = "all";
+    let currentJob    = "all";
 
-</div>
-`;
-}
+    document.getElementById('heroBadge').textContent = heroes.length;
 
-function createStat(name,value,color){
+    function switchTab(tab) {
+      document.getElementById('heroPage').style.display  = tab === 'hero'  ? 'block' : 'none';
+      document.getElementById('baowuPage').style.display = tab === 'baowu' ? 'block' : 'none';
+      document.getElementById('navHero').classList.toggle('active',  tab === 'hero');
+      document.getElementById('navBaowu').classList.toggle('active', tab === 'baowu');
+    }
 
-return `
-<div class="stat">
+    function renderHeroes(list) {
+      const grid = document.getElementById('heroGrid');
+      grid.innerHTML = '';
+      if (!list.length) {
+        grid.innerHTML = `<div class="no-result">— 沒有符合條件的英雄 —</div>`;
+        return;
+      }
+      list.forEach(h => {
+        const card = document.createElement('div');
+        card.className = 'hero-card';
+        card.setAttribute('data-rarity', h.rarity);
+        card.innerHTML = `
+          <div class="hero-name">${h.name}</div>
+          <div class="hero-meta">
+            <span class="rarity-dot"></span>${h.rarity}・${h.type}
+          </div>
+          <div class="hero-stats-mini">
+            <div class="stat-chip">武<span>${h.force}</span></div>
+            <div class="stat-chip">智<span>${h.intel}</span></div>
+            <div class="stat-chip">魅<span>${h.charm}</span></div>
+            <div class="stat-chip">統<span>${h.command}</span></div>
+          </div>
+        `;
+        card.onclick = () => showModal(h);
+        grid.appendChild(card);
+      });
+    }
 
-<div class="stat-header">
-<span>${name}</span>
-<span>${value}</span>
-</div>
+    function filterHeroes() {
+      const kw = document.getElementById('search').value.toLowerCase();
+      let list = heroes;
+      if (currentRarity !== "all") list = list.filter(h => h.rarity === currentRarity);
+      if (currentJob    !== "all") list = list.filter(h => h.type   === currentJob);
+      list = list.filter(h => h.name.toLowerCase().includes(kw));
+      renderHeroes(list);
+    }
 
-<div class="bar">
-<div class="fill ${color}" style="width:${value}%"></div>
-</div>
+    function filterByRarity(btn) {
+      document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentRarity = btn.dataset.filter;
+      filterHeroes();
+    }
 
-</div>
-`;
-}
+    function filterByJob(btn) {
+      document.querySelectorAll('.filter-btn[data-type]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentJob = btn.dataset.type;
+      filterHeroes();
+    }
 
-function renderHeroes(){
+    function showModal(h) {
+      currentHero = h;
+      document.getElementById('modalName').textContent = h.name;
+      document.getElementById('modalRarityBar').style.background = rarityColor[h.rarity] || '#555';
 
-const keyword =
-document.getElementById("search").value;
+      document.getElementById('modalTags').innerHTML = `
+        <span class="modal-type-tag" style="background:${rarityBg[h.rarity]};color:${rarityColor[h.rarity]}">${h.rarity}</span>
+        <span class="modal-type-tag" style="background:rgba(255,255,255,0.06);color:${jobColor[h.type]}">${h.type}</span>
+      `;
 
-const sortType =
-document.getElementById("sort").value;
+      const stats = [
+        { label: "武力", val: h.force },
+        { label: "智力", val: h.intel },
+        { label: "魅力", val: h.charm },
+        { label: "統御", val: h.command },
+      ];
+      const reincarnHTML = h.reincarn && h.reincarn.length ? `
+        <div class="reincarn-section">
+          <div class="reincarn-label">輪　迴</div>
+          <ul class="reincarn-list">
+            ${h.reincarn.map(r => `<li class="reincarn-item">${r}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
 
-let filtered =
-heroes.filter(hero =>
-hero.name.includes(keyword)
-);
+      const destinyHTML = h.destiny && h.destiny.length ? `
+        <div class="destiny-section">
+          <div class="destiny-label">宿　命</div>
+          <ul class="destiny-list">
+            ${h.destiny.map(d => `<li class="destiny-item"><span class="destiny-name">${d.name}</span>（${d.hero}）${d.effect}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
 
-if(sortType !== "name"){
-filtered.sort(
-(a,b)=>b[sortType]-a[sortType]
-);
-}
+      const awakenHTML = h.awakens && h.awakens.length ? `
+        <div class="awaken-section">
+          <div class="awaken-label">覺　醒</div>
+          ${h.awakenName ? `<div class="awaken-name">${h.awakenName}</div>` : ''}
+          <ul class="awaken-list">
+            ${h.awakens.map(a => `<li class="awaken-item">${a}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
 
-document.getElementById("heroes").innerHTML =
-filtered.map(createCard).join("");
-}
+      const skillHTML = h.skills && h.skills.length ? `
+        <div class="skill-section">
+          <div class="skill-label">天　賦</div>
+          ${h.skillName ? `<div class="skill-name">${h.skillName}</div>` : ''}
+          <ul class="skill-list">
+            ${h.skills.map(s => `<li class="skill-item">${s}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
 
-document.getElementById("search")
-.addEventListener("input",renderHeroes);
+      const talentHTML = h.talent ? `
+        <div class="talent-section">
+          <div class="talent-label">傳　記</div>
+          <div class="talent-text">${h.talent}</div>
+        </div>
+      ` : '';
 
-document.getElementById("sort")
-.addEventListener("change",renderHeroes);
+      document.getElementById('modalStats').innerHTML = stats.map(s => `
+        <div class="stat-row">
+          <span class="stat-label">${s.label}</span>
+          <div class="stat-bar-wrap"><div class="stat-bar" style="width:${s.val}%"></div></div>
+          <span class="stat-val">${s.val}</span>
+        </div>
+      `).join('') + talentHTML + skillHTML + awakenHTML + reincarnHTML + destinyHTML;
 
-renderHeroes();
+      document.getElementById('modal').style.display = 'flex';
+    }
 
-</script>
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
 
+    let currentHero = null;
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal')) closeModal();
+    });
+
+    renderHeroes(heroes);
+  </script>
 </body>
 </html>
