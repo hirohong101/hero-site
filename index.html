@@ -29,79 +29,6 @@
       min-height: 100vh;
       display: flex;
     }
-
-    /* ===== 推薦裝備左側面板 ===== */
-    @keyframes slideInLeft {
-      from { transform: translateX(-100%); opacity: 0.5; }
-      to   { transform: translateX(0);     opacity: 1; }
-    }
-    .equip-close-btn:hover { color: var(--gold-bright); }
-    .equip-slot {
-      margin-bottom: 20px;
-    }
-    .equip-slot-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      color: var(--text-dim);
-      margin-bottom: 8px;
-    }
-    .equip-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      transition: border-color 0.2s;
-    }
-    .equip-item:hover { border-color: var(--gold-dim); }
-    .equip-item-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--gold-bright);
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-    }
-    .equip-item-effect {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.7;
-      letter-spacing: 0.5px;
-    }
-    .equip-item-reason {
-      font-size: 12px;
-      color: var(--text-dim);
-      margin-top: 6px;
-      font-style: italic;
-    }
-    .equip-empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-dim);
-      font-size: 15px;
-      letter-spacing: 2px;
-    }
-    .equip-empty-icon { font-size: 40px; opacity: 0.3; margin-bottom: 12px; }
-
-    .equip-note {
-      font-size: 12px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      line-height: 1.6;
-      background: rgba(255,255,255,0.03);
-      border-left: 2px solid var(--gold-dim);
-      padding: 8px 12px;
-      border-radius: 0 6px 6px 0;
-      margin-bottom: 20px;
-      font-style: italic;
-    }
-
-    .equip-section-label {
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: var(--text-dim);
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
     .baowu-slot {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -633,10 +560,6 @@
       line-height: 1;
     }
     .close-btn:hover { color: var(--gold-bright); }
-    .equip-open-btn:hover {
-      background: rgba(200,168,75,0.22);
-      border-color: var(--gold-bright);
-    }
 
     .modal-body { padding: 28px 32px 40px; flex: 1; }
     .stat-row {
@@ -843,6 +766,48 @@
       padding: 10px 14px;
       border-radius: 0 6px 6px 0;
     }
+
+    /* ===== 動畫效果 ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ripple {
+      0%   { transform: scale(0); opacity: 0.5; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+    @keyframes pageFade {
+      from { opacity: 0; transform: translateX(8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* 卡片載入動畫 */
+    .hero-card, .baowu-card-anim {
+      animation: fadeInUp 0.35s ease both;
+    }
+
+    /* 頁面切換淡入 */
+    .page-enter {
+      animation: pageFade 0.25s ease both;
+    }
+
+    /* 漣漪效果 */
+    .ripple-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(212, 168, 75, 0.25);
+      width: 20px;
+      height: 20px;
+      margin-top: -10px;
+      margin-left: -10px;
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+
   </style>
 </head>
 <body>
@@ -856,13 +821,39 @@
     <nav class="sidebar-nav">
       <div class="nav-section-label">資料庫</div>
       <div class="nav-item active" id="navHero" onclick="switchTab('hero')">
-        <span class="icon">⚔</span>
-        <span>英雄</span>
+        <span class="icon">⚔</span><span>英雄</span>
         <span class="badge" id="heroBadge">29</span>
       </div>
       <div class="nav-item" id="navBaowu" onclick="switchTab('baowu')">
-        <span class="icon">💎</span>
-        <span>寶物</span>
+        <span class="icon">💎</span><span>寶物</span>
+        <span class="badge" id="baowuBadge">58</span>
+      </div>
+      <div class="nav-item" id="navSkill" onclick="switchTab('skill')">
+        <span class="icon">✨</span><span>技能</span>
+      </div>
+      <div class="nav-item" id="navFormation" onclick="switchTab('formation')">
+        <span class="icon">🏯</span><span>陣法</span>
+      </div>
+      <div class="nav-item" id="navBeast" onclick="switchTab('beast')">
+        <span class="icon">🐉</span><span>獸靈</span>
+      </div>
+      <div class="nav-item" id="navSoul" onclick="switchTab('soul')">
+        <span class="icon">🔮</span><span>魂玉</span>
+      </div>
+      <div class="nav-item" id="navBattlePlan" onclick="switchTab('battleplan')">
+        <span class="icon">📜</span><span>戰計</span>
+      </div>
+      <div class="nav-item" id="navReincarn" onclick="switchTab('reincarnCond')">
+        <span class="icon">♾</span><span>輪迴條件</span>
+      </div>
+      <div class="nav-item" id="navGod" onclick="switchTab('god')">
+        <span class="icon">🌟</span><span>神靈</span>
+      </div>
+      <div class="nav-item" id="navPuppet" onclick="switchTab('puppet')">
+        <span class="icon">🎭</span><span>魁儡</span>
+      </div>
+      <div class="nav-item" id="navHolyAwaken" onclick="switchTab('holyawaken')">
+        <span class="icon">💫</span><span>聖覺醒</span>
       </div>
     </nav>
     <div class="sidebar-footer">v1.0 · 皇者天下</div>
@@ -906,25 +897,164 @@
       <div class="topbar">
         <div class="topbar-title">寶物資料庫</div>
         <div class="filters">
+          <div class="filter-group">
+            <button class="filter-btn active" data-cat="all" onclick="filterBaowuCat(this)">全部</button>
+            <button class="filter-btn" data-cat="神兵" onclick="filterBaowuCat(this)">神兵</button>
+            <button class="filter-btn" data-cat="坐騎" onclick="filterBaowuCat(this)">坐騎</button>
+            <button class="filter-btn" data-cat="寶典" onclick="filterBaowuCat(this)">寶典</button>
+          </div>
+          <div class="filter-sep"></div>
+          <select id="baowuSetFilter" onchange="filterBaowuList()" style="background:#111810;color:#b8c8b0;border:1px solid #1e2e1a;border-radius:20px;padding:6px 14px;font-size:15px;font-family:inherit;cursor:pointer;outline:none;">
+            <option value="">全部套裝</option>
+            <option value="天罰套裝">天罰套裝</option>
+            <option value="武帝套裝">武帝套裝</option>
+            <option value="羽林套裝">羽林套裝</option>
+            <option value="鬥神套裝">鬥神套裝</option>
+            <option value="蓬萊套裝">蓬萊套裝</option>
+          </select>
+          <select id="baowuSourceFilter" onchange="filterBaowuList()" style="background:#111810;color:#b8c8b0;border:1px solid #1e2e1a;border-radius:20px;padding:6px 14px;font-size:15px;font-family:inherit;cursor:pointer;outline:none;">
+            <option value="">全部來源</option>
+            <option value="免單">免單</option>
+            <option value="限定禮包">限定禮包</option>
+            <option value="擂臺商店">擂臺商店</option>
+            <option value="仙靈台">仙靈台</option>
+
+            <option value="巾幗活動輪盤">巾幗活動輪盤</option>
+          </select>
+          <select id="baowuOpenFilter" onchange="filterBaowuList()" style="background:#111810;color:#b8c8b0;border:1px solid #1e2e1a;border-radius:20px;padding:6px 14px;font-size:15px;font-family:inherit;cursor:pointer;outline:none;">
+            <option value="">開放時機</option>
+            <option value="新服">新服</option>
+          </select>
           <div class="search-wrap">
             <span class="icon">🔍</span>
-            <input type="text" id="baowuSearch" placeholder="搜尋寶物...">
+            <input type="text" id="baowuSearch" placeholder="搜尋寶物..." oninput="filterBaowuList()">
           </div>
         </div>
       </div>
       <div class="content">
+        <div class="hero-grid" id="baowuGrid"></div>
+      </div>
+    </div>
+
+    <!-- 技能頁 -->
+    <div id="skillPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">技能</div>
+      </div>
+      <div class="content">
         <div class="empty-state">
-          <div class="empty-icon">📦</div>
-          <div class="empty-title">寶物資料即將上架</div>
+          <div class="empty-icon">✨</div>
+          <div class="empty-title">技能資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 陣法頁 -->
+    <div id="formationPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">陣法</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">🏯</div>
+          <div class="empty-title">陣法資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 獸靈頁 -->
+    <div id="beastPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">獸靈</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">🐉</div>
+          <div class="empty-title">獸靈資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 魂玉頁 -->
+    <div id="soulPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">魂玉</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">🔮</div>
+          <div class="empty-title">魂玉資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 戰計頁 -->
+    <div id="battleplanPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">戰計</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">📜</div>
+          <div class="empty-title">戰計資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 輪迴條件頁 -->
+    <div id="reincarnCondPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">輪迴條件</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">♾</div>
+          <div class="empty-title">輪迴條件資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 神靈頁 -->
+    <div id="godPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">神靈</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">🌟</div>
+          <div class="empty-title">神靈資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 魁儡頁 -->
+    <div id="puppetPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">魁儡</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">🎭</div>
+          <div class="empty-title">魁儡資料即將上架</div>
+          <div class="empty-sub">敬請期待</div>
+        </div>
+      </div>
+    </div>
+    <!-- 聖覺醒頁 -->
+    <div id="holyawakenPage" style="display:none;">
+      <div class="topbar">
+        <div class="topbar-title">聖覺醒</div>
+      </div>
+      <div class="content">
+        <div class="empty-state">
+          <div class="empty-icon">💫</div>
+          <div class="empty-title">聖覺醒資料即將上架</div>
           <div class="empty-sub">敬請期待</div>
         </div>
       </div>
     </div>
 
-  </div>        <div class="equip-subtitle">推　薦　裝　備</div>
-      </div>
-      <div class="equip-body" id="equipBody"></div>
-    </div>
+
   </div>
 
   <!-- Modal -->
@@ -995,11 +1125,494 @@
 
     document.getElementById('heroBadge').textContent = heroes.length;
 
+
+    // ==================== 寶物資料 ====================
+    const baowuList = [
+      { id: "fangtianhualji", name: "方天畫戟", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "武力比 95 每高 1，前軍暴擊率提升 1%" },
+        { grade: "綠", effect: "武力 +1" },
+        { grade: "藍", effect: "武力 +1，受到英雄技能傷害 -5%" },
+        { grade: "紫", effect: "武力 +2" },
+        { grade: "金", effect: "武力 +3，英雄技能傷害 +5%" }
+      ]},
+      { id: "qixingdao", name: "七星刀", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "魅力 +1" },
+        { grade: "綠", effect: "武力 +1" },
+        { grade: "藍", effect: "若【衝鋒】達到 12 級，武力 +1，前軍基礎攻擊 +15" },
+        { grade: "紫", effect: "英雄品質達到金色以上，英雄技能傷害 +20%" },
+        { grade: "金", effect: "若【勇武】達到 5 級，部隊攻擊無視敵方部隊 12% 的防禦" }
+      ]},
+      { id: "yitianjian", name: "倚天劍", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +2" },
+        { grade: "綠", effect: "近戰回合，前軍傷害 +10%" },
+        { grade: "藍", effect: "魅力 +2，統御 +2" },
+        { grade: "紫", effect: "遠戰回合，部隊受到傷害 -20%" },
+        { grade: "金", effect: "英雄品質達到金色以上，英雄技能傷害 +20%" }
+      ]},
+      { id: "wolongshan", name: "臥龍扇", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "魅力 +1" },
+        { grade: "藍", effect: "統御 +1" },
+        { grade: "紫", effect: "英雄智力達到 110 以上，前後軍攻擊 +100，前後軍兵力 +100" },
+        { grade: "金", effect: "智力 +1，方士傷害 +15%" }
+      ]},
+      { id: "luoxiangsan", name: "落香傘", cat: "神兵", source: "免單", openTime: "新服", grades: [
+        { grade: "白", effect: "魅力 +2" },
+        { grade: "綠", effect: "前軍基礎攻擊 +40，後軍基礎攻擊 +50" },
+        { grade: "藍", effect: "魅力 +2；女性英雄魅力額外 +2" },
+        { grade: "紫", effect: "英雄技能傷害 +10%" },
+        { grade: "金", effect: "英雄魅力達到 120 以上，【傾國】傷害 +50%，【虛弱】觸發機率 +30%" }
+      ]},
+      { id: "zhangsheqiangmao", name: "丈八蛇矛", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "前軍基礎攻擊 +20" },
+        { grade: "綠", effect: "前軍基礎攻擊 +30" },
+        { grade: "藍", effect: "武力 +2", note: "3合紫氣東來" },
+        { grade: "紫", effect: "武力 +3", note: "3合紫氣東來" },
+        { grade: "金", effect: "武力 +3，統御 +2；張飛或張星彩裝備時，武力額外 +2，戰鬥開始時有 80% 幾率發動【瞋目橫矛】，使前後軍各完全免疫 3 次損傷", note: "3合紫氣東來" }
+      ]},
+      { id: "cixiongsjj", name: "雌雄雙股劍", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "步兵基礎攻擊 +10" },
+        { grade: "綠", effect: "若【反擊】達到 15 級，【反擊】傷害 +15%" },
+        { grade: "藍", effect: "魅力 +2；若武力低於對手，前軍傷害 +20%" },
+        { grade: "紫", effect: "統御 +3；兵力小於對手時，步兵傷害 +30%" },
+        { grade: "金", effect: "魅力 +3；我方任意增援兵力的效果提升 35%；若我方英雄行動時總兵力低於 50%，全軍獲得【逆襲】狀態，傷害 +25%，保持於本次戰鬥", note: "3合紫氣東來" }
+      ]},
+      { id: "liuxingchui", name: "流星錘", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "方士基礎攻擊 +30" },
+        { grade: "綠", effect: "方士基礎攻擊 +40" }
+      ]},
+      { id: "changtieqiao", name: "長柄鐵錘", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "步兵基礎攻擊 +20" },
+        { grade: "綠", effect: "步兵基礎攻擊 +30" }
+      ]},
+      { id: "zhurofeijiao", name: "祝融飛刀", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +1；女性英雄武力額外 +1" },
+        { grade: "綠", effect: "魅力 +1；女性英雄魅力額外 +1" },
+        { grade: "藍", effect: "方士基礎攻擊 +40" },
+        { grade: "紫", effect: "武力 +2；若【不屈】達到 15 級，【奔襲】額外無視 10% 防禦" },
+        { grade: "金", effect: "武力 +2，魅力 +2，英雄技能傷害 +25%；戰鬥開始方士可發動【紅蓮爆裂】，對敵方全體造成 100% 傷害，並有 80% 機率造成【火災】狀態，持續 2 回合", note: "4合紫氣東來" }
+      ]},
+      { id: "tietaibow", name: "鐵胎弓", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "弓兵基礎攻擊 +30" },
+        { grade: "綠", effect: "弓兵基礎攻擊 +40" }
+      ]},
+      { id: "zhugeliannu", name: "諸葛連弩", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "對騎兵傷害 +10%" },
+        { grade: "藍", effect: "近戰回合，後軍傷害 +15%" },
+        { grade: "紫", effect: "若智力高於對手，暴擊機率 +10%" },
+        { grade: "金", effect: "近戰首回合我方對騎兵傷害 +100%；我方前軍額外獲得 20 級【輪射】技能", note: "5合後育魂任務" }
+      ]},
+      { id: "qinglongyanyuedao", name: "青龍偃月刀", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +2；關羽裝備時，武力額外 +1" },
+        { grade: "綠", effect: "若武力高於對手，遠戰首回合，有 50% 的機率全軍傷害 +30%" },
+        { grade: "藍", effect: "魅力 +1；關羽裝備時，魅力額外 +1" },
+        { grade: "紫", effect: "武力 +2；若【武聖】達到 18 級，則【武聖】有 50% 的機率可以在近戰首回合再次釋放" },
+        { grade: "金", effect: "武力 +2，統御 +2，前軍攻擊 +500，前軍兵力 +500；若敵方英雄已被斬落，每回合我方英雄行動結束時，發動【偃月刀威】，消滅敵方 25% 的最大兵力", note: "4合紫氣東來" }
+      ]},
+      { id: "tianfazhang", name: "天罰杖", cat: "神兵", set: "天罰套裝", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +2，智力 +1" },
+        { grade: "綠", effect: "對步兵傷害 +15%" },
+        { grade: "藍", effect: "武力 +3，智力 +2" },
+        { grade: "紫", effect: "每道落雷和天罰都有 8% 機率觸發【破防】狀態，降低敵方 50% 傷害減免，持續 1 回合" },
+        { grade: "金", effect: "每回合開始觸發【天罰】效果，消滅敵前軍 3%~5% 的當前兵力" }
+      ]},
+      { id: "wudipeijian", name: "武帝佩劍", cat: "神兵", set: "武帝套裝", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +2；武將英雄武力額外 +1" },
+        { grade: "綠", effect: "近戰回合，造成的所有傷害 +10%" },
+        { grade: "藍", effect: "武力 +3；武將英雄武力額外 +2" },
+        { grade: "紫", effect: "每裝備 1 件武帝套，前軍兵力 +20" },
+        { grade: "金", effect: "每次英雄技攻擊後，有 15% 機率釋放【君臨天下】，消滅敵前軍或後軍 10% 的當前兵力（裝備 2 件武帝套後生效）" }
+      ]},
+      { id: "xingtianfu", name: "刑天戰斧", cat: "神兵", set: "鬥神套裝", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +3" },
+        { grade: "綠", effect: "步兵速度 +10" },
+        { grade: "藍", effect: "武力 +5" },
+        { grade: "紫", effect: "每提升 1 級【亂舞】，前軍攻擊 +20" },
+        { grade: "金", effect: "戰鬥開始觸發【鬥神】效果，消滅敵前軍或後軍 7% 的當前兵力" }
+      ]},
+      { id: "yulinqiang", name: "羽林槍", cat: "神兵", set: "羽林套裝", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +1" },
+        { grade: "綠", effect: "前軍基礎攻擊 +20" },
+        { grade: "藍", effect: "武力 +1，智力 +1" },
+        { grade: "紫", effect: "當前兵力不足一半時發動【羽林戰吼】，消滅敵軍前軍和後軍各 100 兵力（每場對決限一次）" }
+      ]},
+      { id: "zhenlingniujiao", name: "鎮陵蒼牛角", cat: "神兵", source: "限定禮包", openTime: "新服", grades: [
+        { grade: "白", effect: "每個奇數回合結束時，我方發動【蒼冥鎮魂】，對敵方兵力較少部隊造成 2 段 90% 的傷害" },
+        { grade: "綠", effect: "統御 +3；男性英雄統御額外 +4" },
+        { grade: "藍", effect: "對陣女性英雄時，【蒼冥鎮魂】額外追加 1 段攻擊，且每段攻擊可使敵方所有類型的標記數各 -1" },
+        { grade: "紫", effect: "魅力 +3；男性英雄魅力額外 +4" },
+        { grade: "金", effect: "【蒼冥鎮魂】額外追加 1 段攻擊，敵方兵力每減少 25%，再額外追加 1 段攻擊" }
+      ]},
+      { id: "shizizhanji", name: "十字戰戟", cat: "神兵", source: "巾幗活動輪盤", sourceDetail: "呂玲綺活動輪盤", openTime: "新服", grades: [
+        { grade: "白", effect: "格擋率 +10%" },
+        { grade: "綠", effect: "觸發格擋時，可額外保全 100 名士兵" },
+        { grade: "藍", effect: "武力 +2，魅力 +2" },
+        { grade: "紫", effect: "武力 +2，統御 +2" },
+        { grade: "金", effect: "格擋率 +20%；呂玲綺裝備時，格擋率額外 +20%" }
+      ]},
+      { id: "canglonggui", name: "蒼龍鬼月刀", cat: "神兵", source: "巾幗活動輪盤", sourceDetail: "關銀屏活動輪盤", openTime: "新服", grades: [
+        { grade: "白", effect: "統御 +1；攜帶騎兵的英雄統御額外 +2" },
+        { grade: "綠", effect: "魅力 +1；攜帶弓兵的英雄魅力額外 +2" },
+        { grade: "藍", effect: "武力 +3；武將英雄對文官傷害額外 +20%" },
+        { grade: "紫", effect: "後軍兵力 +240；己方免疫反噬類傷害" },
+        { grade: "金", effect: "前軍兵力 +320；【武聖】必定暴擊，且額外提升 30% 傷害" }
+      ]},
+      { id: "taocaojw", name: "討曹檄文", cat: "寶典", openTime: "新服", upgradable: true, upgradeWay: "限定禮包", grades: [
+        { grade: "白", effect: "智力 +2" },
+        { grade: "綠", effect: "若【才學】達到 5 級，【暴烈】可額外無視 10% 防禦" },
+        { grade: "藍", effect: "武力 +2，後軍兵力 +100", note: "3合後活動禮包" },
+        { grade: "紫", effect: "智力 +3，前軍兵力 +200", note: "3合後活動禮包" },
+        { grade: "金", effect: "武力 +1，統御 +2；對戰全才時，【龍怒】可無視目標 50% 的防禦", note: "3合後活動禮包" }
+      ]},
+      { id: "mengdexinshu", name: "孟德新書", cat: "寶典", openTime: "新服", upgradable: true, upgradeWay: "紫氣東來", grades: [
+        { grade: "白", effect: "統御 +1" },
+        { grade: "綠", effect: "統御 +1；英雄等級達到 40 級以上，統御額外 +1" },
+        { grade: "藍", effect: "若統御高於對手，部隊傷害 +15%" },
+        { grade: "紫", effect: "英雄品質達到金色以上，統御 +2" },
+        { grade: "金", effect: "智力 +3，統御 +2；我方統御每比對手高 1，我方所有傷害 +1.5%（最大 +30%）", note: "3合紫氣東來" }
+      ]},
+      { id: "taipingyaoshu", name: "太平要術", cat: "寶典", openTime: "新服", grades: [
+        { grade: "白", effect: "智力 +2" },
+        { grade: "綠", effect: "智力 +1；兵力小於對手時，部隊受到傷害 -10%" },
+        { grade: "藍", effect: "統御 +2" },
+        { grade: "紫", effect: "若【落雷】達到 12 級，【落雷】的最大傷害 +10%" },
+        { grade: "金", effect: "英雄品質達到金色以上，前後軍兵力 +70" }
+      ]},
+      { id: "qibushi", name: "七步詩", cat: "寶典", openTime: "新服", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "若智力高於對手，【離間】有 50% 的機率可以在近戰首回合再次釋放" }
+      ]},
+      { id: "dianlun", name: "典論", cat: "寶典", openTime: "新服", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "智力 +1" },
+        { grade: "藍", effect: "智力 +1" },
+        { grade: "紫", effect: "智力 +1；英雄等級達到 60 級以上，智力額外 +1" },
+        { grade: "金", effect: "英雄品質達到金色以上，智力 +2" }
+      ]},
+      { id: "luoshenfu", name: "洛神賦", cat: "寶典", openTime: "新服", grades: [
+        { grade: "白", effect: "魅力 +1" },
+        { grade: "綠", effect: "魅力 +1" },
+        { grade: "藍", effect: "魅力 +1" },
+        { grade: "紫", effect: "魅力 +1；英雄等級達到 50 級以上，魅力額外 +1" },
+        { grade: "金", effect: "英雄品質達到金色以上，魅力 +2" }
+      ]},
+      { id: "tiantiinglvfa", name: "天庭律法", cat: "寶典", openTime: "新服", set: "天罰套裝", grades: [
+        { grade: "白", effect: "智力 +3" },
+        { grade: "綠", effect: "對弓兵傷害 +15%" },
+        { grade: "藍", effect: "智力 +5" },
+        { grade: "紫", effect: "每道落雷和天罰都有 12% 機率觸發【破防】狀態，降低敵方 50% 傷害減免，持續 1 回合（裝備 3 件紫色天罰套後生效，必須含有天罰杖）" },
+        { grade: "金", effect: "每回合開始觸發【天罰】效果，消滅敵前軍 9%~15% 的當前兵力（裝備 3 件金色天罰套後生效，必須含有天罰杖）" }
+      ]},
+      { id: "wudimobu", name: "武帝墨寶", cat: "寶典", openTime: "新服", set: "武帝套裝", grades: [
+        { grade: "白", effect: "智力 +2；文官英雄智力額外 +1" },
+        { grade: "綠", effect: "遠戰回合，受到的所有傷害 -10%" },
+        { grade: "藍", effect: "智力 +3；文官英雄智力額外 +2" },
+        { grade: "紫", effect: "每裝備 1 件武帝套，前軍兵力 +20" },
+        { grade: "金", effect: "【君臨天下】消滅敵軍兵力的比例提升 10%（裝備 4 件武帝套後生效）" }
+      ]},
+      { id: "yuanshitianshu", name: "元始天書", cat: "寶典", openTime: "新服", set: "蓬萊套裝", source: "仙靈台", grades: [
+        { grade: "白", effect: "後軍基礎防禦 +20" },
+        { grade: "綠", effect: "後軍基礎攻擊 +30" },
+        { grade: "藍", effect: "後軍速度 +10" },
+        { grade: "紫", effect: "後軍兵力 +100；同時裝備靈寶葫蘆，己方後軍兵種技能傷害 +10%" },
+        { grade: "金", effect: "後軍兵力 +200；同時裝備太上敕令，己方後軍受到敵方兵種技能傷害 -20%" }
+      ]},
+      { id: "wuzumidian", name: "巫族秘典", cat: "寶典", openTime: "新服", set: "鬥神套裝", grades: [
+        { grade: "白", effect: "武力 +2，智力 +2" },
+        { grade: "綠", effect: "弓兵速度 +10" },
+        { grade: "藍", effect: "武力 +3，智力 +3" },
+        { grade: "紫", effect: "每提升 1 級【萬箭】，後軍攻擊 +30" },
+        { grade: "金", effect: "戰鬥開始觸發【鬥神】效果，消滅敵前軍或後軍 21% 的當前兵力（裝備 3 件金色鬥神套後生效，必須含有刑天戰斧）" }
+      ]},
+      { id: "yullinlv", name: "羽林律", cat: "寶典", openTime: "新服", set: "羽林套裝", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "後軍基礎攻擊 +20" },
+        { grade: "藍", effect: "智力 +1，統御 +1" },
+        { grade: "紫", effect: "【羽林戰吼】可額外消滅敵軍前軍和後軍各 150 兵力" }
+      ]},
+      { id: "hujia18pai", name: "胡笳十八拍", cat: "寶典", openTime: "新服", source: "巾幗活動輪盤", grades: [
+        { grade: "白", effect: "魅力 +1；若英雄初始武力低於 75，後軍兵力 +500" },
+        { grade: "綠", effect: "魅力 +3" },
+        { grade: "藍", effect: "每提升 1 級【悲歌】，前軍防禦 +18" },
+        { grade: "紫", effect: "智力 +3；部隊在世界中行軍速度 +5%" },
+        { grade: "金", effect: "魅力 +1；若【忘憂】達到 18 級，敵我任意一方總兵力不足 25% 時，可發動【塞外胡風】，從敵方前軍開始連續打擊 3 次，每次消滅該部隊 4% 的最大兵力。單場對決最多發動 1 次" }
+      ]},
+      { id: "chenglongshxtu", name: "乘龍升仙圖", cat: "寶典", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "武將裝備時武力 +3，文官裝備時智力 +3，全才裝備時四維各 +1" },
+        { grade: "綠", effect: "武力 +1，統御 +2；近戰首回合我方受到騎兵傷害 -20%" },
+        { grade: "藍", effect: "遠戰首回合開始時發動【龍騰寰宇】，消滅敵方前軍 10% 的當前兵力，並使敵方所有獸靈標記數 -3" },
+        { grade: "紫", effect: "智力 +1，統御 +3；近戰首回合我方受到步兵傷害 -30%" },
+        { grade: "金", effect: "【龍騰寰宇】可額外消滅目標 10% 當前兵力，並導致其獲得【頹勢】的特殊效果 3 回合，期間防禦 -15%，且無法獲得護盾" }
+      ]},
+      { id: "jiuzhangsuanshu", name: "九章算術", cat: "寶典", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "遠戰第二回合發動【九章勾股】，對我方隨機部隊生效，使其獲得【勾朱】狀態 3 回合，期間防禦 +33%" },
+        { grade: "綠", effect: "智力 +2；全才英雄裝備時，智力額外 +3" },
+        { grade: "藍", effect: "【九章勾股】可額外使目標部隊獲得【股青】狀態 4 回合，期間每段攻擊額外附加自身當前防禦力 ×4% 的固定損傷" },
+        { grade: "紫", effect: "男性英雄裝備時，魅力 +5；女性英雄裝備時，統御 +5" },
+        { grade: "金", effect: "智力 +2；【九章勾股】可對我方全軍生效，且獲得的【勾朱】【股青】狀態都持續 5 回合" }
+      ]},
+      { id: "ganshixingjing", name: "甘石星經", cat: "寶典", openTime: "新服", source: "巾幗活動輪盤", grades: [
+        { grade: "白", effect: "遠戰回合起，每回合起始時我方有 33% 幾率發動【星經預示】，在本回合結束時【天降宙火】對敵我雙方前軍各造成固定損傷（以我方前軍面板防禦的 13% 計算，無視免疫損傷和落空）" },
+        { grade: "綠", effect: "我方發動【星經預示】時，額外為我方前軍增援固定兵力（以我方前軍面板防禦的 8% 計算）" },
+        { grade: "藍", effect: "智力 +4；敵方承受【天降宙火】的固定損傷 +30%" },
+        { grade: "紫", effect: "若智力高於對手，每回合發動【星經預示】的幾率 +17%，且我方承受【天降宙火】時僅受 1 點損傷" },
+        { grade: "金", effect: "智力 +2，魅力 +2，統御 +2" }
+      ]},
+      { id: "wuqinxi", name: "五禽戲", cat: "寶典", openTime: "新服", source: "擂臺商店", grades: [
+        { grade: "白", effect: "武力 +1" },
+        { grade: "綠", effect: "前軍防禦 +50，後軍防禦 +40" },
+        { grade: "藍", effect: "前軍攻擊 +50，後軍攻擊 +70" },
+        { grade: "紫", effect: "武力 +2" },
+        { grade: "金", effect: "武力 +1，英雄技能傷害 +15%" }
+      ]},
+      { id: "guanshifu", name: "貫石斧", cat: "神兵", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +1" },
+        { grade: "綠", effect: "武力 +1" },
+        { grade: "藍", effect: "武力 +1" },
+        { grade: "紫", effect: "武力 +1；英雄等級達到 50 級以上，武力額外 +1" },
+        { grade: "金", effect: "英雄品質達到金色以上，武力 +2" }
+      ]},,
+{ id: "wuhouche", name: "武侯車", cat: "坐騎", openTime: "新服", upgradable: true, upgradeWay: "限定禮包", grades: [
+        { grade: "白", effect: "統御 +1，前軍基礎攻擊 +10" },
+        { grade: "綠", effect: "智力 +1；【罡氣】效果額外提升 10%" },
+        { grade: "藍", effect: "統御 +2" },
+        { grade: "紫", effect: "智力 +1，後軍基礎防禦 +20" },
+        { grade: "金", effect: "智力 +2，統御 +2；方士兵力 +1000；若【罡氣】達到 20 級，步兵受到英雄技能攻擊時，也能觸發【罡氣】", note: "3合後活動禮包" }
+      ]},
+      { id: "jueying", name: "絕影", cat: "坐騎", openTime: "新服", upgradable: true, upgradeWay: "育魂任務", grades: [
+        { grade: "白", effect: "部隊在世界中行軍速度 +10%" },
+        { grade: "綠", effect: "前軍速度 +6" },
+        { grade: "藍", effect: "武力 +2；兵力不足一半時，騎兵免傷 +15%" },
+        { grade: "紫", effect: "智力 +2，後軍速度 +6，後軍傷害 +15%" },
+        { grade: "金", effect: "武力 +3，智力 +3；我方發動【龍怒】或【霸君】時，都有 60% 機率對敵方後軍造成同等傷害", note: "5合後育魂任務" }
+      ]},
+      { id: "nanmanjuxiang", name: "南蠻巨象", cat: "坐騎", openTime: "新服", upgradable: true, upgradeWay: "育魂任務", grades: [
+        { grade: "白", effect: "前軍基礎攻擊 +10" },
+        { grade: "綠", effect: "對步兵傷害 +10%" },
+        { grade: "藍", effect: "武力 +1，統御 +1" },
+        { grade: "紫", effect: "統御 +2；遠戰第二回合傷害 +10%" },
+        { grade: "金", effect: "武力 +1，統御 +3；【巨象】可額外消滅敵方步兵 20% 的當前兵力", note: "5合後育魂任務" }
+      ]},
+      { id: "baihu", name: "白鵠", cat: "坐騎", openTime: "新服", grades: [
+        { grade: "白", effect: "前軍基礎攻擊 +10；武將英雄後軍基礎攻擊 +10" },
+        { grade: "綠", effect: "武將英雄前軍速度 +3" },
+        { grade: "藍", effect: "若統御高於對手，部隊受到前軍傷害 -10%" }
+      ]},
+      { id: "zhuahuangfeidian", name: "爪黃飛電", cat: "坐騎", openTime: "新服", upgradable: true, upgradeWay: "紫氣東來", grades: [
+        { grade: "白", effect: "魅力 +2，統御 +2" },
+        { grade: "綠", effect: "部隊在世界中行軍速度 +10%" },
+        { grade: "藍", effect: "若統御高於對手，部隊攻擊敵方後軍傷害 +10%" },
+        { grade: "紫", effect: "統御 +2；騎兵基礎攻擊 +30" },
+        { grade: "金", effect: "魅力 +2，統御 +2；遠戰回合騎兵傷害 +20%；若【切割】達到 20 級，遠戰第二回合，我方騎兵可發動【飛電】，消滅敵方前軍或後軍 10%~25% 的最大兵力", note: "4合紫氣東來" }
+      ]},
+      { id: "wudilongju", name: "武帝龍駒", cat: "坐騎", openTime: "新服", set: "武帝套裝", grades: [
+        { grade: "白", effect: "統御 +2；全才英雄統御額外 +1" },
+        { grade: "綠", effect: "近戰回合，受到的所有傷害 -10%" },
+        { grade: "藍", effect: "統御 +3；全才英雄統御額外 +2" },
+        { grade: "紫", effect: "每裝備 1 件武帝套，後軍兵力 +20" },
+        { grade: "金", effect: "【君臨天下】釋放機率提升 10%（裝備 3 件武帝套後生效）" }
+      ]},
+      { id: "tianleiqu", name: "天雷駒", cat: "坐騎", openTime: "新服", set: "天罰套裝", grades: [
+        { grade: "白", effect: "智力 +1，統御 +2" },
+        { grade: "綠", effect: "對騎兵傷害 +15%" },
+        { grade: "藍", effect: "智力 +2，統御 +3" },
+        { grade: "紫", effect: "每道落雷和天罰都有 10% 機率觸發【破防】狀態，降低敵方 50% 傷害減免，持續 1 回合（裝備 2 件紫色天罰套後生效，必須含有天罰杖）" },
+        { grade: "金", effect: "每回合開始觸發【天罰】效果，消滅敵前軍 6%~10% 的當前兵力（裝備 2 件金色天罰套後生效，必須含有天罰杖）" }
+      ]},
+      { id: "chitu", name: "赤兔", cat: "坐騎", openTime: "新服", grades: [
+        { grade: "白", effect: "武力 +1，魅力 +1" },
+        { grade: "綠", effect: "騎兵攻擊 +50，兵力 +30" },
+        { grade: "藍", effect: "騎兵防禦 +40，兵力 +30" },
+        { grade: "紫", effect: "武力 +1；若武力高於對手，【無雙】無視敵軍 10% 的防禦" },
+        { grade: "金", effect: "魅力 +1；若魅力高於對手，【武聖】額外無視敵軍 15% 的防禦" }
+      ]},
+      { id: "shitieshou", name: "食鐵獸", cat: "坐騎", openTime: "新服", set: "鬥神套裝", grades: [
+        { grade: "白", effect: "武力 +2，統御 +1" },
+        { grade: "綠", effect: "騎兵速度 +10" },
+        { grade: "藍", effect: "武力 +2，統御 +3" },
+        { grade: "紫", effect: "每提升 1 級【無雙】，前軍防禦 +20" },
+        { grade: "金", effect: "戰鬥開始觸發【鬥神】效果，消滅敵前軍或後軍 14% 的當前兵力（裝備 2 件金色鬥神套後生效，必須含有刑天戰斧）" }
+      ]},
+      { id: "nianshou", name: "年獸", cat: "坐騎", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "智力 +1" },
+        { grade: "綠", effect: "統御 +1" },
+        { grade: "藍", effect: "部隊在世界中行軍速度 +10%" },
+        { grade: "紫", effect: "智力 +2" },
+        { grade: "金", effect: "統御 +2，英雄技能傷害 +10%" }
+      ]},
+      { id: "yulindjun", name: "羽林駿", cat: "坐騎", openTime: "新服", set: "羽林套裝", grades: [
+        { grade: "白", effect: "統御 +1" },
+        { grade: "綠", effect: "後軍基礎防禦 +20" },
+        { grade: "藍", effect: "統御 +1，魅力 +1" },
+        { grade: "紫", effect: "發動【羽林戰吼】時，可清除敵軍所有增益狀態" }
+      ]},
+      { id: "yuegongxiantu", name: "月宮仙兔", cat: "坐騎", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "魅力 +2；對戰女性英雄時，免傷 +10%" },
+        { grade: "綠", effect: "智力 +2，受到英雄技能傷害 -10%" },
+        { grade: "藍", effect: "武力 +2，受到兵種技能傷害 -10%" },
+        { grade: "紫", effect: "武力 +1，智力 +1；對戰女性英雄時，受到英雄技能傷害 -30%" },
+        { grade: "金", effect: "魅力 +2；一旦我方技能被敵方阻止，即可發動【月影婆娑】，消滅敵方全軍 10% 的最大兵力，並導致【寒顫】1 回合。【寒顫】期間，攻擊 -10%，兵種技發動率 -50%" }
+      ]},
+      { id: "lingxiaozhfm", name: "靈霄追風馬", cat: "坐騎", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "攜帶騎兵的英雄，武力 +2，遠戰回合英雄主動技能傷害 +20%" },
+        { grade: "綠", effect: "每解鎖 2 條騎兵技高級效果，魅力 +1，騎兵速度 +1" },
+        { grade: "藍", effect: "攜帶騎兵的英雄，武力 +2，任意騎兵主動技能額外連發 1 次的幾率 +18%" },
+        { grade: "紫", effect: "每解鎖 2 條騎兵技高級效果，統御 +1，騎兵速度 +1" },
+        { grade: "金", effect: "智力 +2；戰鬥開始時，我方騎兵發動【追風】，對敵方後軍造成（100%＋騎兵速度×3%）的傷害，且若敵方未攜帶騎兵，【追風】可額外連發 1 次" }
+      ]},
+      { id: "yanzhi", name: "胭脂", cat: "坐騎", openTime: "新服", source: "限定禮包", grades: [
+        { grade: "白", effect: "武力 -3，智力 +1，魅力 +1，統御 +1；巾幗英雄魅力額外 +2" },
+        { grade: "綠", effect: "魅力 +1，受到男性英雄傷害 -15%" },
+        { grade: "藍", effect: "若【傾國】達到 20 級，近戰首回合發動【閉月羞花】，消滅敵方前軍 600 兵力，並有 75% 的機率使我方前軍完全免疫 1 次傷害" },
+        { grade: "紫", effect: "魅力 +1，對男性英雄傷害 +15%" },
+        { grade: "金", effect: "若魅力高於對手，遠戰每個回合，都有 45% 的機率額外發動【閉月羞花】" }
+      ]},
+      { id: "zhaoyeyushi", name: "照夜玉獅子", cat: "坐騎", openTime: "新服", source: "擂臺商店", grades: [
+        { grade: "白", effect: "統御 +1" },
+        { grade: "綠", effect: "步兵防禦 +80" },
+        { grade: "藍", effect: "智力 +1；弓兵攻擊 +100" },
+        { grade: "紫", effect: "魅力 +2；步兵受到兵種技能傷害 -15%" },
+        { grade: "金", effect: "武力 +1；弓兵對騎兵傷害 +35%" }
+      ]},
+      { id: "dawanma", name: "大宛馬", cat: "坐騎", openTime: "新服", grades: [
+        { grade: "白", effect: "遠戰首回合，英雄主動技能傷害 +10%" },
+        { grade: "綠", effect: "前軍速度 +3，前軍基礎攻擊 +20" },
+        { grade: "藍", effect: "前軍兵力 +50；遠戰第二回合，英雄主動技能傷害 +20%" },
+        { grade: "紫", effect: "武力 +1，魅力 +1" }
+      ]},
+    ];
+
+    let currentBaowuCat = 'all';
+
+    const gradeColor = { "白": "#c8c8c8", "綠": "#6daa6d", "藍": "#5a9bd4", "紫": "#a060d0", "金": "#d4a84b" };
+
+    function renderBaowu(list) {
+      const grid = document.getElementById('baowuGrid');
+      grid.innerHTML = '';
+      if (!list.length) {
+        grid.innerHTML = '<div class="no-result">— 沒有符合條件的寶物 —</div>';
+        return;
+      }
+      list.forEach((b, idx) => {
+        const lastGrade = b.grades[b.grades.length - 1].grade;
+        const topColor = gradeColor[lastGrade] || '#d4a84b';
+        const card = document.createElement('div');
+        card.className = 'hero-card ripple-wrap';
+        card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
+        card.style.setProperty('--rarity-color', topColor);
+        card.style.borderColor = topColor + '55';
+        card.style.background = `linear-gradient(160deg, ${topColor}18, ${topColor}06)`;
+        card.innerHTML = `
+          <div class="hero-name">${b.name}</div>
+          <div class="hero-meta">${b.cat}${b.set ? `・<span style="color:#b06ee8">${b.set}</span>` : ''}</div>
+          <div class="hero-stats-mini">
+            ${b.grades.map(g => `<div class="stat-chip" style="border-left:2px solid ${gradeColor[g.grade]||'#555'}">${g.grade}</div>`).join('')}
+          </div>
+        `;
+        card.addEventListener('click', e => { addRipple(e, card); showBaowuModal(b); });
+        grid.appendChild(card);
+      });
+    }
+
+    function filterBaowuCat(btn) {
+      document.querySelectorAll('.filter-btn[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentBaowuCat = btn.dataset.cat;
+      filterBaowuList();
+    }
+
+    function filterBaowuList() {
+      const kw = document.getElementById('baowuSearch').value.toLowerCase();
+      const setFilter    = document.getElementById('baowuSetFilter')    ? document.getElementById('baowuSetFilter').value    : '';
+      const sourceFilter = document.getElementById('baowuSourceFilter') ? document.getElementById('baowuSourceFilter').value : '';
+      const openFilter   = document.getElementById('baowuOpenFilter')   ? document.getElementById('baowuOpenFilter').value   : '';
+      let list = baowuList;
+      if (currentBaowuCat !== 'all') list = list.filter(b => b.cat === currentBaowuCat);
+      if (setFilter)    list = list.filter(b => b.set === setFilter);
+      if (sourceFilter) list = list.filter(b => b.source === sourceFilter || (sourceFilter === '零合開始遇到活動時的禮包' && b.source === '零合開始遇到活動時的禮包'));
+      if (openFilter)   list = list.filter(b => b.openTime === openFilter);
+      list = list.filter(b => b.name.toLowerCase().includes(kw));
+      renderBaowu(list);
+    }
+
+    function showBaowuModal(b) {
+      document.getElementById('modalName').textContent = b.name;
+      document.getElementById('modalRarityBar').style.background = '#d4a84b';
+
+      const upgradeTag = b.upgradable
+        ? `<span class="modal-type-tag" style="background:rgba(100,180,255,0.15);color:#7ab8e8">可升級</span>`
+        : '';
+      const setTag = b.set
+        ? `<span class="modal-type-tag" style="background:rgba(180,120,255,0.15);color:#b06ee8">${b.set}</span>`
+        : '';
+      const openTag = b.openTime
+        ? `<span class="modal-type-tag" style="background:rgba(255,255,255,0.06);color:#888">開放：${b.openTime}</span>`
+        : '';
+      const sourceTag = b.source
+        ? `<span class="modal-type-tag" style="background:rgba(100,220,150,0.12);color:#6daa8a">開放時機：${b.sourceDetail || b.source}</span>`
+        : '';
+
+      document.getElementById('modalTags').innerHTML = `
+        <span class="modal-type-tag" style="background:rgba(212,168,75,0.15);color:#d4a84b">${b.cat}</span>
+        ${setTag}${upgradeTag}${openTag}${sourceTag}
+      `;
+
+      document.getElementById('modalStats').innerHTML = `
+        <div class="skill-section">
+          <div class="skill-label">品　質　效　果</div>
+          <ul class="skill-list">
+            ${b.grades.map(g => {
+              const color = gradeColor[g.grade] || '#555';
+              const noteTag = g.note ? `<span style="background:rgba(100,180,255,0.15);color:#7ab8e8;font-size:11px;padding:1px 6px;border-radius:4px;margin-left:6px">${g.note}</span>` : '';
+              return `<li class="skill-item" style="border-left-color:${color}">
+                <span style="color:${color};font-weight:700;margin-right:8px">${g.grade}</span>${g.effect}${noteTag}
+              </li>`;
+            }).join('')}
+          </ul>
+        </div>
+        ${b.upgradeWay ? `<div class="talent-section"><div class="talent-label">升級方式</div><div class="talent-text">${b.upgradeWay}</div></div>` : ''}
+      `;
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    document.getElementById('baowuBadge').textContent = baowuList.length;
+
+
+    
+    const allTabs = ['hero','baowu','skill','formation','beast','soul','battleplan','reincarnCond','god','puppet','holyawaken'];
+    const tabNavMap = {
+      hero:'navHero', baowu:'navBaowu', skill:'navSkill', formation:'navFormation',
+      beast:'navBeast', soul:'navSoul', battleplan:'navBattlePlan', reincarnCond:'navReincarn',
+      god:'navGod', puppet:'navPuppet', holyawaken:'navHolyAwaken'
+    };
+
+    // ===== 漣漪效果 =====
+    function addRipple(e, el) {
+      const circle = document.createElement('span');
+      circle.className = 'ripple-circle';
+      const rect = el.getBoundingClientRect();
+      circle.style.left = (e.clientX - rect.left) + 'px';
+      circle.style.top  = (e.clientY - rect.top)  + 'px';
+      el.appendChild(circle);
+      circle.addEventListener('animationend', () => circle.remove());
+    }
+
     function switchTab(tab) {
-      document.getElementById('heroPage').style.display  = tab === 'hero'  ? 'block' : 'none';
-      document.getElementById('baowuPage').style.display = tab === 'baowu' ? 'block' : 'none';
-      document.getElementById('navHero').classList.toggle('active',  tab === 'hero');
-      document.getElementById('navBaowu').classList.toggle('active', tab === 'baowu');
+      allTabs.forEach(t => {
+        const page = document.getElementById(t + 'Page');
+        if (page) {
+          page.style.display = t === tab ? 'block' : 'none';
+          if (t === tab) {
+            page.classList.remove('page-enter');
+            void page.offsetWidth;
+            page.classList.add('page-enter');
+          }
+        }
+        const nav = document.getElementById(tabNavMap[t]);
+        if (nav) nav.classList.toggle('active', t === tab);
+      });
+      if (tab === 'baowu') filterBaowuList();
     }
 
     function renderHeroes(list) {
@@ -1009,9 +1622,11 @@
         grid.innerHTML = `<div class="no-result">— 沒有符合條件的英雄 —</div>`;
         return;
       }
-      list.forEach(h => {
+      list.forEach((h, idx) => {
         const card = document.createElement('div');
-        card.className = 'hero-card';
+        card.className = 'hero-card ripple-wrap';
+        card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
+        card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
         card.setAttribute('data-rarity', h.rarity);
         card.innerHTML = `
           <div class="hero-name">${h.name}</div>
@@ -1025,7 +1640,7 @@
             <div class="stat-chip">統<span>${h.command}</span></div>
           </div>
         `;
-        card.onclick = () => showModal(h);
+        card.addEventListener('click', e => { addRipple(e, card); showModal(h); });
         grid.appendChild(card);
       });
     }
