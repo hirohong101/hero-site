@@ -942,19 +942,26 @@
       </div>
     </div>
 
-    <!-- 技能頁 -->
-    <div id="skillPage" style="display:none;">
-      <div class="topbar">
-        <div class="topbar-title">技能</div>
+        <!-- 技能頁 -->
+<div id="skillPage" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-title">兵種技能總表</div>
+    <div class="filters">
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="filterSkillType('all')">全部</button>
+        <button class="filter-btn" onclick="filterSkillType('被動')">被動</button>
+        <button class="filter-btn" onclick="filterSkillType('主動')">主動</button>
       </div>
-      <div class="content">
-        <div class="empty-state">
-          <div class="empty-icon">✨</div>
-          <div class="empty-title">技能資料即將上架</div>
-          <div class="empty-sub">敬請期待</div>
-        </div>
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input type="text" id="skillSearch" placeholder="搜尋技能名稱..." onkeyup="filterSkills()" style="width:260px;">
       </div>
     </div>
+  </div>
+  <div class="content">
+    <div id="skillGrid" style="display:grid; grid-template-columns:repeat(8, 1fr); gap:12px;"></div>
+  </div>
+</div>
     <!-- 陣法頁 -->
     <div id="formationPage" style="display:none;">
       <div class="topbar">
@@ -994,19 +1001,21 @@
         </div>
       </div>
     </div>
-    <!-- 戰計頁 -->
-    <div id="battleplanPage" style="display:none;">
-      <div class="topbar">
-        <div class="topbar-title">戰計</div>
-      </div>
-      <div class="content">
-        <div class="empty-state">
-          <div class="empty-icon">📜</div>
-          <div class="empty-title">戰計資料即將上架</div>
-          <div class="empty-sub">敬請期待</div>
-        </div>
+   <!-- 戰計頁 -->
+<div id="battleplanPage" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-title">戰計圖鑑</div>
+    <div class="filters">
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input type="text" id="battleplanSearch" placeholder="搜尋戰計名稱..." onkeyup="filterBattleplans()" style="width:260px;">
       </div>
     </div>
+  </div>
+  <div class="content">
+    <div id="battleplanGrid" class="hero-grid"></div>
+  </div>
+</div>
     <!-- 輪迴條件頁 -->
     <div id="reincarnCondPage" style="display:none;">
       <div class="topbar">
@@ -1199,9 +1208,145 @@
     let currentJob    = "all";
 
     document.getElementById('heroBadge').textContent = heroes.length;
+// ==================== 兵種技能資料 ====================
+const troopSkills = [
+  { name: "盾牆", type: "被動", 
+    lv1: "所有回合，步兵遭敵後軍攻擊時，減免 12% 的傷害。", 
+    lv30: "所有回合，步兵遭敵後軍攻擊時，減免 38.5% 的傷害。" },
+  
+  { name: "激戰", type: "主動", 
+    lv1: "近一發動，深入敵軍激戰，對敵前軍或後軍共打擊4次，每次造成 62% 的傷害。", 
+    lv30: "近一發動，深入敵軍激戰，對敵前軍或後軍共打擊4次，每次造成 103% 的傷害。" },
+  
+  { name: "堅守", type: "被動", 
+    lv1: "所有回合，步兵遭敵前軍攻擊時，減免 13% 的傷害。", 
+    lv30: "所有回合，步兵遭敵前軍攻擊時，減免 39.5% 的傷害。" },
+  
+  { name: "衝鋒", type: "主動", 
+    lv1: "遠二發動，步兵發起大規模衝鋒，造成 80% 的傷害。若武力高於對手，則衝鋒有額外40%的機率暴擊。", 
+    lv30: "遠二發動，步兵發起大規模衝鋒，造成 152.5% 的傷害。若武力高於對手，則衝鋒有額外40%的機率暴擊。" },
+  
+  { name: "裂甲", type: "被動", 
+    lv1: "所有回合，步兵攻擊可無視敵軍 12% 的防禦。若智力高於對手，則步兵攻擊還可造成額外15%的傷害。", 
+    lv30: "所有回合，步兵攻擊可無視敵軍 38.5% 的防禦。若智力高於對手，則步兵攻擊還可造成額外15%的傷害。" },
+  
+  { name: "陷陣", type: "主動", 
+    lv1: "遠一發動，派遣步兵敢死隊突入敵陣，對敵方全軍造成 115% 的傷害。陷陣將損失我方步兵當前兵力的5%。", 
+    lv30: "遠一發動，派遣步兵敢死隊突入敵陣，對敵方全軍造成 318% 的傷害。陷陣將損失我方步兵當前兵力的5%。" },
+  
+  { name: "蓄勢", type: "被動", 
+    lv1: "積聚戰意，勢如破竹。近一我方步兵攻擊首個目標時，可追加 360% 的傷害。若武力或智力高於對手，近一步兵行動前，有 13% 的機率驅散自身1個不良狀態。", 
+    lv30: "積聚戰意，勢如破竹。近一我方步兵攻擊首個目標時，可追加 795% 的傷害。若武力或智力高於對手，近一步兵行動前，有 13% 的機率驅散自身1個不良狀態。" },
+  
+  { name: "逆刃", type: "被動", 
+    lv1: "步兵受到8次傷害後，立即發動一次無畏衝鋒，對敵全軍造成 240% 的傷害，並有 10% 的機率導致敵方【混亂】，持續2回合。", 
+    lv30: "步兵受到8次傷害後，立即發動一次無畏衝鋒，對敵全軍造成 385% 的傷害，並有 10% 的機率導致敵方【混亂】，持續2回合。" },
+  
+  { name: "警覺", type: "被動", 
+    lv1: "步兵受到英雄技傷害 -10%，受到兵種技傷害 -5%。", 
+    lv30: "步兵受到英雄技傷害 -27.4%，受到兵種技傷害 -13.7%。" },
 
+  { name: "鐵蹄", type: "被動", 
+    lv1: "近戰回合發動，騎兵攻擊額外提升 25% 的傷害。", 
+    lv30: "近戰回合發動，騎兵攻擊額外提升 107% 的傷害。" },
+  
+  { name: "奔襲", type: "主動", 
+    lv1: "遠一發動，派遣少量騎兵精銳騷擾對手，隨機造成 28%~56% 的傷害。", 
+    lv30: "遠一發動，派遣少量騎兵精銳騷擾對手，隨機造成 98%~126% 的傷害。" },
+  
+  { name: "不屈", type: "被動", 
+    lv1: "所有回合，騎兵遭敵後軍攻擊時，可減免 13% 的傷害。", 
+    lv30: "所有回合，騎兵遭敵後軍攻擊時，可減免 39.5% 的傷害。" },
+  
+  { name: "突擊", type: "主動", 
+    lv1: "遠二發動，所有騎兵進行高速突擊，造成 78% 的傷害。若武力高於對手，則突擊傷害額外提升20%。", 
+    lv30: "遠二發動，所有騎兵進行高速突擊，造成 179.5% 的傷害。若武力高於對手，則突擊傷害額外提升20%。" },
+  
+  { name: "剛毅", type: "被動", 
+    lv1: "所有回合，騎兵受到英雄主動技能攻擊時，減免 20% 的傷害。", 
+    lv30: "所有回合，騎兵受到英雄主動技能攻擊時，減免 61% 的傷害。" },
+  
+  { name: "合圍", type: "主動", 
+    lv1: "近一發動，指揮騎兵前後夾攻，對敵全體造成 150% 的傷害。若敵軍只剩前軍或後軍，則對該部隊造成 330% 的傷害。", 
+    lv30: "近一發動，指揮騎兵前後夾攻，對敵全體造成 324% 的傷害。若敵軍只剩前軍或後軍，則對該部隊造成 852% 的傷害。" },
+  
+  { name: "切割", type: "被動", 
+    lv1: "分割敵陣，各個擊破。每場對決中，我方騎兵攻擊首個目標時，可追加 220% 的傷害。若武力或統御高於對手，有 13% 的機率驅散該目標1個增益狀態。", 
+    lv30: "分割敵陣，各個擊破。每場對決中，我方騎兵攻擊首個目標時，可追加 481% 的傷害。若武力或統御高於對手，有 13% 的機率驅散該目標1個增益狀態。" },
+  
+  { name: "戮塵", type: "被動", 
+    lv1: "騎兵受到8次傷害後，揚塵策馬入陣屠戮，對敵前軍或後軍造成 440% 的傷害，並有 25% 的機率導致敵方【內訌】，持續2回合。", 
+    lv30: "騎兵受到8次傷害後，揚塵策馬入陣屠戮，對敵前軍或後軍造成 672% 的傷害，並有 25% 的機率導致敵方【內訌】，持續2回合。" },
+  
+  { name: "騎胄", type: "被動", 
+    lv1: "騎兵受到兵種技傷害 -10%，受到英雄技傷害 -5%。", 
+    lv30: "騎兵受到兵種技傷害 -27.4%，受到英雄技傷害 -13.7%。" }
+];
 
-    // ==================== 寶物資料 ====================
+function renderSkills(filteredSkills) {
+  const grid = document.getElementById('skillGrid');
+  grid.innerHTML = '';
+  
+  filteredSkills.forEach(skill => {
+    const card = document.createElement('div');
+    card.className = 'skill-slot ripple-wrap';
+    card.style.cssText = `
+      background: #111810;
+      border: 1px solid #1e2e1a;
+      border-radius: 10px;
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      min-height: 108px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    `;
+    card.innerHTML = `
+      <div style="font-size:17px; font-weight:700; color:#e8d9b0; margin-bottom:10px;">${skill.name}</div>
+      <div style="font-size:13px; padding:5px 12px; background:rgba(255,255,255,0.06); border-radius:20px; color:#a0c080; margin:0 auto; width:fit-content;">${skill.type}</div>
+    `;
+    card.addEventListener('click', e => { 
+      addRipple(e, card); 
+      showSkillModal(skill); 
+    });
+    card.addEventListener('mouseenter', () => card.style.borderColor = '#c8a84b');
+    card.addEventListener('mouseleave', () => card.style.borderColor = '#1e2e1a');
+    grid.appendChild(card);
+  });
+}
+function showSkillModal(skill) {
+  document.getElementById('modalName').textContent = skill.name;
+  document.getElementById('modalRarityBar').style.background = '#6a9b5a';
+  document.getElementById('modalTags').innerHTML = `<span class="modal-type-tag" style="background:rgba(106,155,90,0.2);color:#a0d090;">${skill.type}技能</span>`;
+  
+  document.getElementById('modalStats').innerHTML = `
+    <div class="skill-section">
+      <div class="skill-label">等級1</div>
+      <div class="skill-item" style="font-size:15px;">${skill.lv1}</div>
+    </div>
+    <div class="skill-section">
+      <div class="skill-label">等級30</div>
+      <div class="skill-item" style="font-size:15px;color:#ffcc66;">${skill.lv30}</div>
+    </div>
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function filterSkillType(type) {
+  document.querySelectorAll('#skillPage .filter-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  let list = troopSkills;
+  if (type !== 'all') list = list.filter(s => s.type === type);
+  renderSkills(list);
+}
+
+function filterSkills() {
+  const kw = document.getElementById('skillSearch').value.toLowerCase();
+  let list = troopSkills.filter(s => s.name.toLowerCase().includes(kw) || s.lv1.toLowerCase().includes(kw));
+  renderSkills(list);
+}    // ==================== 寶物資料 ====================
     const baowuList = [
       { id: "fangtianhualji", name: "方天畫戟", cat: "神兵", openTime: "新服", grades: [
         { grade: "白", effect: "武力比 95 每高 1，前軍暴擊率提升 1%" },
@@ -2032,6 +2177,90 @@
     });
 
     renderHeroes(heroes);
+// ==================== 戰計資料 ====================
+const battleplans = [
+  { name: "上屋抽梯", img: "上屋抽梯_0.png", desc: "", type: "" },
+  { name: "反客為主", img: "反客為主_0.png", desc: "", type: "" },
+  { name: "反間計", img: "反間計_0.png", desc: "", type: "" },
+  { name: "以逸待勞", img: "以逸待勞_0.png", desc: "", type: "" },
+  { name: "打草驚蛇", img: "打草驚蛇_0.png", desc: "", type: "" },
+  { name: "李代桃僵", img: "李代桃僵_0.png", desc: "", type: "" },
+  { name: "走為上", img: "走為上_0.png", desc: "", type: "" },
+  { name: "拋磚引玉", img: "拋磚引玉_0.png", desc: "", type: "" },
+  { name: "釜底抽薪", img: "釜底抽薪_0.png", desc: "", type: "" },
+  { name: "空城計", img: "空城計_0.png", desc: "", type: "" },
+  { name: "金蟬脫殼", img: "金蟬脫殼_0.png", desc: "", type: "" },
+  { name: "指桑罵槐", img: "指桑罵槐_0.png", desc: "", type: "" },
+  { name: "美人計", img: "美人計_0.png", desc: "", type: "" },
+  { name: "苦肉計", img: "苦肉計_0.png", desc: "", type: "" },
+  { name: "借刀殺人", img: "借刀殺人_0.png", desc: "", type: "" },
+  { name: "借屍還魂", img: "借屍還魂_0.png", desc: "", type: "" },
+  { name: "笑裡藏刀", img: "笑裡藏刀_0.png", desc: "", type: "" },
+  { name: "假痴不癲", img: "假痴不癲_0.png", desc: "", type: "" },
+  { name: "假途滅虢", img: "假途滅虢_0.png", desc: "", type: "" },
+  { name: "偷樑換柱", img: "偷樑換柱_0.png", desc: "", type: "" },
+  { name: "欲擒故縱", img: "欲擒故縱_0.png", desc: "", type: "" },
+  { name: "混水摸魚", img: "混水摸魚_0.png", desc: "", type: "" },
+  { name: "連環計", img: "連環計_0.png", desc: "", type: "" },
+];
+
+function renderBattleplans(filteredList) {
+  const grid = document.getElementById('battleplanGrid');
+  grid.innerHTML = '';
+  
+  if (!filteredList.length) {
+    grid.innerHTML = `<div class="no-result">— 沒有找到相關戰計 —</div>`;
+    return;
+  }
+
+  filteredList.forEach(bp => {
+    const card = document.createElement('div');
+    card.className = 'hero-card ripple-wrap';
+    card.innerHTML = `
+      <img src="${bp.img}" alt="${bp.name}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:12px;">
+      <div class="hero-name">${bp.name}</div>
+      <div class="hero-meta" style="color:#a0d4ff;">${bp.type}</div>
+      <div style="font-size:13px; color:var(--text-dim); margin-top:8px; line-height:1.4;">${bp.desc}</div>
+    `;
+    card.addEventListener('click', (e) => {
+      addRipple(e, card);
+      showBattleplanModal(bp);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function filterBattleplans() {
+  const keyword = document.getElementById('battleplanSearch').value.toLowerCase();
+  const filtered = battleplans.filter(bp => 
+    bp.name.toLowerCase().includes(keyword) || 
+    bp.desc.toLowerCase().includes(keyword)
+  );
+  renderBattleplans(filtered);
+}
+
+function showBattleplanModal(bp) {
+  document.getElementById('modalName').textContent = bp.name;
+  document.getElementById('modalRarityBar').style.background = '#ff8c00';
+  
+  document.getElementById('modalTags').innerHTML = `
+    <span class="modal-type-tag" style="background:rgba(255,140,0,0.2);color:#ffcc66;">${bp.type}戰計</span>
+  `;
+
+  document.getElementById('modalStats').innerHTML = `
+    <div style="text-align:center; margin:20px 0;">
+      <img src="${bp.img}" alt="${bp.name}" style="max-width:100%; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.6);">
+    </div>
+    <div class="note-section">
+      <div class="note-label">戰計說明</div>
+      <div class="note-text">${bp.desc}</div>
+    </div>
+  `;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+// 初始化
+renderBattleplans(battleplans);
   </script>
 </body>
 </html>
