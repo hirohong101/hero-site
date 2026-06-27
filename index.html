@@ -2177,31 +2177,336 @@ function filterSkills() {
     });
 
     renderHeroes(heroes);
-// ==================== 戰計資料 ====================
 const battleplans = [
-  { name: "上屋抽梯", img: "上屋抽梯_0.png", desc: "", type: "" },
-  { name: "反客為主", img: "反客為主_0.png", desc: "", type: "" },
-  { name: "反間計", img: "反間計_0.png", desc: "", type: "" },
-  { name: "以逸待勞", img: "以逸待勞_0.png", desc: "", type: "" },
-  { name: "打草驚蛇", img: "打草驚蛇_0.png", desc: "", type: "" },
-  { name: "李代桃僵", img: "李代桃僵_0.png", desc: "", type: "" },
-  { name: "走為上", img: "走為上_0.png", desc: "", type: "" },
-  { name: "拋磚引玉", img: "拋磚引玉_0.png", desc: "", type: "" },
-  { name: "斧底抽薪", img: "斧底抽薪_0.png", desc: "", type: "" },
-  { name: "空城計", img: "空城計_0.png", desc: "", type: "" },
-  { name: "金蟬脫殼", img: "金蟬脫殼_0.png", desc: "", type: "" },
-  { name: "指桑罵槐", img: "指桑罵槐_0.png", desc: "", type: "" },
-  { name: "美人計", img: "美人計_0.png", desc: "", type: "" },
-  { name: "苦肉計", img: "苦肉計_0.png", desc: "", type: "" },
-  { name: "借刀殺人", img: "借刀殺人_0.png", desc: "", type: "" },
-  { name: "借屍還魂", img: "借屍還魂_0.png", desc: "", type: "" },
-  { name: "笑裡藏刀", img: "笑裡藏刀_0.png", desc: "", type: "" },
-  { name: "假癡不癲", img: "假癡不顛戰計圖.png", desc: "", type: "" },
-  { name: "假途伐虢", img: "假途伐虢1.png", desc: "", type: "" },
-  { name: "偷樑換柱", img: "偷樑換柱_0.png", desc: "", type: "" },
-  { name: "欲擒故縱", img: "欲擒故縱_0.png", desc: "", type: "" },
-  { name: "混水摸魚", img: "混水摸魚_0.png", desc: "", type: "" },
-  { name: "連環計", img: "連環計_0.png", desc: "", type: "" },
+  // ===== 天戰計 =====
+  { name: "苦肉計", img: "苦肉計_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前軍攻擊 +180" },
+      { star: "5★", effect: "與其他主將同時上陣，戰鬥開始時發動合擊技【苦肉計】，我方全軍損失 10% 的當前兵力，對敵方前軍造成 260% 的戰計傷害，並有 40% 的幾率使之【內訌】1 回合" },
+      { star: "6★", effect: "前軍攻擊 +270" },
+      { star: "7★", effect: "【苦肉計】戰計傷害提升至 360%，並額外有 50% 的幾率導致目標【火災】1 回合" },
+      { star: "8★", effect: "英雄技能傷害 +2%" }
+    ]
+  },
+  { name: "連環計", img: "連環計_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "後軍攻擊 +180" },
+      { star: "5★", effect: "遠戰首回合發動【連環計】，對敵方前軍或後軍造成 2~6 段 30% 的戰計傷害" },
+      { star: "6★", effect: "後軍攻擊 +270" },
+      { star: "7★", effect: "【連環計】每段傷害，可額外消滅目標 3% 的當前兵力" },
+      { star: "8★", effect: "英雄技能傷害 +2%" }
+    ]
+  },
+  { name: "拋磚引玉", img: "拋磚引玉_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "女性英雄前後軍攻擊 +150" },
+      { star: "5★", effect: "戰鬥開始時發動【拋磚引玉】，使敵方前軍或後軍獲得【引玉】狀態，若未被驅散，遠戰第二回合我方英雄行動時發動【玉碎】，造成 360% 的戰計傷害" },
+      { star: "6★", effect: "女性英雄前後軍攻擊 +180" },
+      { star: "7★", effect: "【引玉】計算為 2 個不良狀態，需驅散 2 次才會消失，且【玉碎】的戰計傷害提升至 480%" },
+      { star: "8★", effect: "英雄技能傷害 +4%" }
+    ]
+  },
+  { name: "混水摸魚", img: "混水摸魚_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "男性英雄前後軍攻擊 +150" },
+      { star: "5★", effect: "我方英雄行動時，若敵方有任意部隊處於【混亂】狀態，發動【渾水摸魚】，對敵方後軍造成 320% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "男性英雄前後軍攻擊 +180" },
+      { star: "7★", effect: "【渾水摸魚】發動後，我方全軍對處於【混亂】中的目標，造成的傷害 +25%" },
+      { star: "8★", effect: "英雄技能傷害 +4%" }
+    ]
+  },
+  { name: "趁火打劫", img: "趁火打劫_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前後軍攻擊 +120" },
+      { star: "5★", effect: "我方英雄行動時，若敵方有任意部隊處於【火災】狀態，發動【趁火打劫】，對敵方全軍造成 240% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "前後軍攻擊 +180" },
+      { star: "7★", effect: "【趁火打劫】戰計傷害提升至 300%，有 50% 的幾率導致目標【潰逃】2 回合" },
+      { star: "8★", effect: "英雄技能傷害 +4%" }
+    ]
+  },
+  { name: "擒賊擒王", img: "擒賊擒王_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "武力 +1，前軍攻擊 +200" },
+      { star: "5★", effect: "發動 2 個任意武將類英雄主動技能後，發動【擒賊擒王】，對敵方前軍造成 400% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "武力 +2" },
+      { star: "7★", effect: "【擒賊擒王】發動時，有 30% 的幾率斬落敵方英雄" },
+      { star: "8★", effect: "英雄技能傷害 +6%" }
+    ]
+  },
+  { name: "樹上開花", img: "樹上開花.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "智力 +1，後軍攻擊 +200" },
+      { star: "5★", effect: "發動 2 個任意文官類英雄主動技能後，發動【樹上開花】，對敵方全軍造成 240% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "智力 +2" },
+      { star: "7★", effect: "【樹上開花】戰計傷害提升至 350%" },
+      { star: "8★", effect: "英雄技能傷害 +6%" }
+    ]
+  },
+  { name: "聲東擊西", img: "聲東擊西_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "魅力 +1，統御 +1" },
+      { star: "5★", effect: "發動 3 個能造成傷害的英雄主動技能後，發動【聲東擊西】，對敵方後軍造成 360% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "武力 +1，智力 +1" },
+      { star: "7★", effect: "【聲東擊西】戰計傷害提升至 420%，並有 80% 的幾率導致目標【混亂】1 回合" },
+      { star: "8★", effect: "英雄技能傷害 +6%" }
+    ]
+  },
+  { name: "反客為主", img: "反客為主_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "步兵攻擊 +300，步兵速度 +4" },
+      { star: "5★", effect: "我方英雄行動時，若我方共計存在至少 3 個不良狀態，發動【反客為主】，對敵方後軍造成 750% 的戰計傷害，並導致敵方全軍【遲緩】3 回合。單場對決限一次" },
+      { star: "6★", effect: "步兵攻擊 +500，步兵速度 +6" },
+      { star: "7★", effect: "【反客為主】戰計傷害提升至 1100%" },
+      { star: "8★", effect: "英雄技能傷害 +8%" }
+    ]
+  },
+  { name: "釜底抽薪", img: "釜底抽薪_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "騎兵攻擊 +300，騎兵速度 +4" },
+      { star: "5★", effect: "遠戰第二回合發動【釜底抽薪】，對敵方全軍造成 260% 的戰計傷害，並使敵方此後的治療、增援兵力類效果 -50%" },
+      { star: "6★", effect: "騎兵攻擊 +500，騎兵速度 +6" },
+      { star: "7★", effect: "【釜底抽薪】戰計傷害提升至 300%，並額外驅散敵方前後軍各 1 個增益狀態" },
+      { star: "8★", effect: "英雄技能傷害 +8%" }
+    ]
+  },
+  { name: "無中生有", img: "無中生有_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "弓兵攻擊 +300，弓兵速度 +4" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力不足一半，可發動【無中生有】，對敵方前軍造成 240% 的戰計傷害，並使我方後軍獲得強度為 400% 的護盾，護盾承擔全部傷害直至破碎。單場對決限一次" },
+      { star: "6★", effect: "弓兵攻擊 +500，弓兵速度 +6" },
+      { star: "7★", effect: "【無中生有】可使我方全軍都獲得護盾" },
+      { star: "8★", effect: "英雄技能傷害 +8%" }
+    ]
+  },
+  { name: "借屍還魂", img: "借屍還魂_0.png", type: "天", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "方士攻擊 +300，方士速度 +4" },
+      { star: "5★", effect: "近戰首回合發動【借屍還魂】，對敵方全軍造成 220% 的戰計傷害，並獲得還魂效果，治療我方後軍 50% 的傷兵" },
+      { star: "6★", effect: "方士攻擊 +500，方士速度 +6" },
+      { star: "7★", effect: "【借屍還魂】戰計傷害提升至 300%，並可治療我方後軍 80% 的傷兵" },
+      { star: "8★", effect: "英雄技能傷害 +8%" }
+    ]
+  },
+
+  // ===== 地戰計 =====
+  { name: "走為上", img: "走為上_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前軍防禦 +120" },
+      { star: "5★", effect: "若戰力低於對手，戰敗後可發動【走為上】，消滅敵方前軍 10% 的當前兵力" },
+      { star: "6★", effect: "前軍防禦 +180" },
+      { star: "7★", effect: "【走為上】消滅敵方前軍的當前兵力提升至 22%" },
+      { star: "8★", effect: "受到英雄技能傷害 -2%" }
+    ]
+  },
+  { name: "空城計", img: "空城計_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "後軍防禦 +120" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力低於 25%，發動【空城計】，本回合我方前後軍各獲得【空城】狀態，可在本回合免疫 1 次傷害。單場對決限一次" },
+      { star: "6★", effect: "後軍防禦 +180" },
+      { star: "7★", effect: "【空城】狀態下，可在本回合免疫 2 次傷害" },
+      { star: "8★", effect: "受到英雄技能傷害 -2%" }
+    ]
+  },
+  { name: "以逸待勞", img: "以逸待勞_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "女性英雄前後軍防禦 +100" },
+      { star: "5★", effect: "我方前軍第 6 次損失兵力時，立即發動【以逸待勞】，治療我方前軍 30% 的傷兵" },
+      { star: "6★", effect: "女性英雄前後軍防禦 +120" },
+      { star: "7★", effect: "我方後軍第 6 次損失兵力時，立即發動【以逸待勞】，治療我方後軍 30% 的傷兵" },
+      { star: "8★", effect: "受到英雄技能傷害 -4%" }
+    ]
+  },
+  { name: "偷樑換柱", img: "偷樑換柱_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "男性英雄前後軍防禦 +100" },
+      { star: "5★", effect: "我方英雄行動時，若敵方前軍存在至少 2 個增益狀態，我方發動【偷樑換柱】，驅散敵方前軍 1 個增益狀態，並使其【虛弱】2 回合。單場對決限一次" },
+      { star: "6★", effect: "男性英雄前後軍防禦 +120" },
+      { star: "7★", effect: "【偷樑換柱】可驅散敵方前軍 2 個增益狀態，並額外有 70% 的幾率使之【潰逃】2 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -4%" }
+    ]
+  },
+  { name: "隔岸觀火", img: "隔岸觀火_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前後軍防禦 +80" },
+      { star: "5★", effect: "戰鬥開始時發動【隔岸觀火】，導致敵方前軍或後軍【火災】狀態 2 回合，且敵方有部隊處於【火災】狀態時，我方全軍免傷 +20%" },
+      { star: "6★", effect: "前後軍防禦 +120" },
+      { star: "7★", effect: "本次對決中敵方有部隊處於【火災】狀態時，敵方全軍傷害 -20%" },
+      { star: "8★", effect: "受到英雄技能傷害 -4%" }
+    ]
+  },
+  { name: "打草驚蛇", img: "打草驚蛇_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "統御 +1，前軍防禦 +160" },
+      { star: "5★", effect: "發動任意武將類英雄主動技能後，發動【打草驚蛇】，使敵方發動的英雄技能傷害 -60%，持續 1 回合。單場對決限一次" },
+      { star: "6★", effect: "統御 +2" },
+      { star: "7★", effect: "發動【打草驚蛇】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -6%" }
+    ]
+  },
+  { name: "調虎離山", img: "調虎離山_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "魅力 +1，後軍防禦 +160" },
+      { star: "5★", effect: "發動任意文官類英雄主動技能後，發動【調虎離山】，使敵方英雄技能的發動率 -45%，持續 1 回合。單場對決限一次" },
+      { star: "6★", effect: "魅力 +2" },
+      { star: "7★", effect: "發動【調虎離山】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -6%" }
+    ]
+  },
+  { name: "關門捉賊", img: "關門捉賊_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "武力 +1，前後軍防禦 +100" },
+      { star: "5★", effect: "發動任意合擊技後，發動【關門捉賊】，使敵方全軍受到的傷害 +20%，持續 2 回合。單場對決限一次" },
+      { star: "6★", effect: "魅力 +1，統御 +1" },
+      { star: "7★", effect: "發動【關門捉賊】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -6%" }
+    ]
+  },
+  { name: "暗度陳倉", img: "暗渡陳倉_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "步兵防禦 +200，步兵格擋率 +5%" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力低於 75%，聯合步兵發動【暗度陳倉】，使我方步兵獲得【神臨】狀態，免疫 2 次傷害，且【神臨】期間攻擊 +25%。單場對決限一次" },
+      { star: "6★", effect: "步兵防禦 +400，步兵格擋率 +5%" },
+      { star: "7★", effect: "【暗度陳倉】發動後，有 65% 幾率觸發【明修棧道】，導致敵方後軍【混亂】2 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -8%" }
+    ]
+  },
+  { name: "假途伐虢", img: "假途伐虢1.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "騎兵防禦 +200，騎兵格擋率 +5%" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力低於 75%，聯合騎兵發動【假途伐虢】，使我方騎兵獲得【神臨】狀態，免疫 2 次傷害，且【神臨】期間攻擊 +25%。單場對決限一次" },
+      { star: "6★", effect: "騎兵防禦 +400，騎兵格擋率 +5%" },
+      { star: "7★", effect: "【假途伐虢】發動後，有 55% 幾率觸發【一石雙鳥】，導致敵方前軍【內訌】2 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -8%" }
+    ]
+  },
+  { name: "圍魏救趙", img: "圍魏救趙_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "弓兵防禦 +200，弓兵格擋率 +5%" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力低於 75%，聯合弓兵發動【圍魏救趙】，使我方弓兵獲得【神臨】狀態，免疫 2 次傷害，且【神臨】期間攻擊 +25%。單場對決限一次" },
+      { star: "6★", effect: "弓兵防禦 +400，弓兵格擋率 +5%" },
+      { star: "7★", effect: "【圍魏救趙】發動後，有 40% 幾率觸發【避實就虛】，導致敵方全軍【虛弱】3 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -8%" }
+    ]
+  },
+  { name: "瞞天過海", img: "瞞天過海_0.png", type: "地", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "方士防禦 +200，方士格擋率 +5%" },
+      { star: "5★", effect: "我方英雄行動時，若我方兵力低於 75%，聯合方士發動【瞞天過海】，使我方方士獲得【神臨】狀態，免疫 2 次傷害，且【神臨】期間攻擊 +25%。單場對決限一次" },
+      { star: "6★", effect: "方士防禦 +400，方士格擋率 +5%" },
+      { star: "7★", effect: "【瞞天過海】發動後，有 40% 幾率觸發【瞞天昧地】，導致敵方全軍【迷幻】3 回合" },
+      { star: "8★", effect: "受到英雄技能傷害 -8%" }
+    ]
+  },
+
+  // ===== 人戰計 =====
+  { name: "反間計", img: "反間計_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前軍兵力 +300" },
+      { star: "5★", effect: "若我方有部隊獲得了【內訌】狀態，我方立即發動【反間計】，驅散我方所有【內訌】狀態，並對敵方全軍造成 50% 的戰計傷害。單場對決限一次" },
+      { star: "6★", effect: "前軍兵力 +450" },
+      { star: "7★", effect: "【反間計】戰計傷害提升至 100%，並有 70% 的幾率導致敵方全軍【內訌】1 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -2%" }
+    ]
+  },
+  { name: "美人計", img: "美人計_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "後軍兵力 +300" },
+      { star: "5★", effect: "若英雄性別與對手不同，戰鬥開始時發動【美人計】，對敵方前軍造成 150% 的戰計傷害，並使之防禦下降 10%，持續 2 回合" },
+      { star: "6★", effect: "後軍兵力 +450" },
+      { star: "7★", effect: "【美人計】戰計傷害提升至 200%，使敵方前軍防禦下降效果提升至 20%" },
+      { star: "8★", effect: "受到兵種技能傷害 -2%" }
+    ]
+  },
+  { name: "李代桃僵", img: "李代桃僵_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "女性英雄前後軍兵力 +250" },
+      { star: "5★", effect: "若敵方後軍為弓兵，遠戰首回合我方發動【李代桃僵】，使敵方弓兵主動技能只會攻擊我方前軍，並使我方前軍受到弓兵傷害 -20%，持續於本場對決" },
+      { star: "6★", effect: "女性英雄前後軍兵力 +300" },
+      { star: "7★", effect: "【李代桃僵】發動後，我方前軍受到弓兵傷害額外 -15%" },
+      { star: "8★", effect: "受到兵種技能傷害 -4%" }
+    ]
+  },
+  { name: "指桑罵槐", img: "指桑罵槐_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "男性英雄前後軍兵力 +250" },
+      { star: "5★", effect: "若敵方後軍為方士，遠戰首回合我方發動【指桑罵槐】，使敵方方士攻擊 -20%，英雄技能傷害 -20%，持續於本場對決" },
+      { star: "6★", effect: "男性英雄前後軍兵力 +300" },
+      { star: "7★", effect: "【指桑罵槐】發動後，敵方方士攻擊額外 -15%，英雄技能傷害額外 -15%" },
+      { star: "8★", effect: "受到兵種技能傷害 -4%" }
+    ]
+  },
+  { name: "順手牽羊", img: "順手牽羊_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "前後軍兵力 +200" },
+      { star: "5★", effect: "我方英雄行動時，若敵方後軍存在至少 2 個增益狀態，我方發動【順手牽羊】，驅散敵方後軍 1 個增益狀態，並使我方後軍攻擊 +25%，持續 1 回合。單場對決限一次" },
+      { star: "6★", effect: "前後軍兵力 +300" },
+      { star: "7★", effect: "【順手牽羊】可驅散敵方後軍 2 個增益狀態，並使我方後軍攻擊額外 +25%，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -4%" }
+    ]
+  },
+  { name: "笑裡藏刀", img: "笑裡藏刀_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "魅力 +1，前軍兵力 +400" },
+      { star: "5★", effect: "敵方發動任意能造成傷害的武將類英雄主動技能後，我方立即發動【笑裡藏刀】，使我方英雄技能傷害 +40%，持續 2 回合。單場對決限一次" },
+      { star: "6★", effect: "魅力 +2" },
+      { star: "7★", effect: "發動【笑裡藏刀】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -6%" }
+    ]
+  },
+  { name: "遠交近攻", img: "遠交近攻_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "統御 +1，後軍兵力 +400" },
+      { star: "5★", effect: "敵方發動任意能造成傷害的文官類英雄主動技能後，我方立即發動【遠交近攻】，使我方兵種技能傷害 +30%，持續 2 回合。單場對決限一次" },
+      { star: "6★", effect: "統御 +2" },
+      { star: "7★", effect: "發動【遠交近攻】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -6%" }
+    ]
+  },
+  { name: "金蟬脫殼", img: "金蟬脫殼_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "智力 +1，前後軍兵力 +250" },
+      { star: "5★", effect: "敵方發動任意能造成傷害的合擊技，或敵方僅剩單軍後，我方立即發動【金蟬脫殼】，使我方全軍受到的傷害 -25%，持續 2 回合。單場對決限一次" },
+      { star: "6★", effect: "武力 +1，智力 +1" },
+      { star: "7★", effect: "發動【金蟬脫殼】後，效果額外持續 1 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -6%" }
+    ]
+  },
+  { name: "借刀殺人", img: "借刀殺人_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "步兵兵力 +500，步兵暴擊率 +3%" },
+      { star: "5★", effect: "若我方前軍單次承受的傷害超出其最大兵力的 10%，我方立即發動【借刀殺人】，對敵方後軍造成 300% 的戰計傷害，並有 50% 的幾率使之【內訌】2 回合。單場對決限一次" },
+      { star: "6★", effect: "步兵兵力 +1000，步兵暴擊率 +3%" },
+      { star: "7★", effect: "【借刀殺人】發動時，有 40% 的幾率趁機斬落敵方英雄" },
+      { star: "8★", effect: "受到兵種技能傷害 -8%" }
+    ]
+  },
+  { name: "欲擒故縱", img: "欲擒故縱_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "騎兵兵力 +500，騎兵暴擊率 +3%" },
+      { star: "5★", effect: "遠戰第二回合我方英雄行動時，若敵方兵力高於 75%，我方發動【欲擒故縱】，對敵方前軍造成 400% 的戰計傷害，並有 80% 的幾率使之【混亂】2 回合" },
+      { star: "6★", effect: "騎兵兵力 +1000，騎兵暴擊率 +3%" },
+      { star: "7★", effect: "【欲擒故縱】戰計傷害提升至 550%，額外有 70% 的幾率導致目標【虛弱】2 回合" },
+      { star: "8★", effect: "受到兵種技能傷害 -8%" }
+    ]
+  },
+  { name: "上屋抽梯", img: "上屋抽梯_0.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "弓兵兵力 +500，弓兵暴擊率 +3%" },
+      { star: "5★", effect: "若英雄職業與對手相同，遠戰首回合發動【上屋抽梯】，犧牲近戰回合防禦以換取遠戰回合攻擊，遠戰回合全軍攻擊 +40%，近戰回合防禦 -15%" },
+      { star: "6★", effect: "弓兵兵力 +1000，弓兵暴擊率 +3%" },
+      { star: "7★", effect: "【上屋抽梯】發動後，遠戰回合全軍攻擊額外 +20%" },
+      { star: "8★", effect: "受到兵種技能傷害 -8%" }
+    ]
+  },
+  { name: "假癡不癲", img: "假癡不顛戰計圖.png", type: "人", openTime: "4合",
+    stars: [
+      { star: "4★", effect: "方士兵力 +500，方士暴擊率 +3%" },
+      { star: "5★", effect: "若對手為傳奇英雄，我方全軍免傷 +25%，且近戰首回合發動【假癡不癲】，使我方原本在近戰首回合的兵種主動技，都延緩 1 回合發動且傷害 +200%" },
+      { star: "6★", effect: "方士兵力 +1000，方士暴擊率 +3%" },
+      { star: "7★", effect: "【假癡不癲】發動時，對我方全軍增援兵力，增援強度為 300%" },
+      { star: "8★", effect: "受到兵種技能傷害 -8%" }
+    ]
+  },
 ];
 
 function renderBattleplans(filteredList) {
@@ -2216,11 +2521,10 @@ function renderBattleplans(filteredList) {
   filteredList.forEach(bp => {
     const card = document.createElement('div');
     card.className = 'hero-card ripple-wrap';
-    card.innerHTML = `
+     card.innerHTML = `
       <img src="${bp.img}" alt="${bp.name}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:12px;">
       <div class="hero-name">${bp.name}</div>
-      <div class="hero-meta" style="color:#a0d4ff;">${bp.type}</div>
-      <div style="font-size:13px; color:var(--text-dim); margin-top:8px; line-height:1.4;">${bp.desc}</div>
+      <div class="hero-meta" style="color:#a0d4ff;">${bp.type}${bp.openTime ? `・<span style="color:#e8c96a">${bp.openTime}</span>` : ''}</div>
     `;
     card.addEventListener('click', (e) => {
       addRipple(e, card);
@@ -2233,32 +2537,33 @@ function renderBattleplans(filteredList) {
 function filterBattleplans() {
   const keyword = document.getElementById('battleplanSearch').value.toLowerCase();
   const filtered = battleplans.filter(bp => 
-    bp.name.toLowerCase().includes(keyword) || 
-    bp.desc.toLowerCase().includes(keyword)
+    bp.name.toLowerCase().includes(keyword)
   );
   renderBattleplans(filtered);
 }
-
 function showBattleplanModal(bp) {
   document.getElementById('modalName').textContent = bp.name;
   document.getElementById('modalRarityBar').style.background = '#ff8c00';
   
   document.getElementById('modalTags').innerHTML = `
     <span class="modal-type-tag" style="background:rgba(255,140,0,0.2);color:#ffcc66;">${bp.type}戰計</span>
+    ${bp.openTime ? `<span class="modal-type-tag" style="background:rgba(255,255,255,0.06);color:#888">開放：${bp.openTime}</span>` : ''}
   `;
 
   document.getElementById('modalStats').innerHTML = `
     <div style="text-align:center; margin:20px 0;">
       <img src="${bp.img}" alt="${bp.name}" style="max-width:100%; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.6);">
     </div>
-    <div class="note-section">
-      <div class="note-label">戰計說明</div>
-      <div class="note-text">${bp.desc}</div>
-    </div>
+    ${bp.stars && bp.stars.length ? `
+    <div class="skill-section">
+      <div class="skill-label">星　級　效　果</div>
+      <ul class="skill-list">
+        ${bp.stars.map(s => `<li class="skill-item"><span style="color:#e8c96a;font-weight:700;margin-right:8px">${s.star}</span>${s.effect}</li>`).join('')}
+      </ul>
+    </div>` : ''}
   `;
   document.getElementById('modal').style.display = 'flex';
 }
-
 // 初始化
 renderBattleplans(battleplans);
   </script>
