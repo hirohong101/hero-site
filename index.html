@@ -931,7 +931,7 @@
 
     /* 頁面切換淡入 */
     .page-enter {
-      animation: pageFade 0.25s ease both;
+      opacity: 1;
     }
 
     /* 漣漪效果 */
@@ -3588,8 +3588,6 @@ let currentBaowuCat = 'all';
     if (page) {
       page.style.display = t === tab ? 'block' : 'none';
       if (t === tab) {
-        page.classList.remove('page-enter');
-        void page.offsetWidth;
         page.classList.add('page-enter');
       }
     }
@@ -4079,6 +4077,7 @@ function renderBattleplans(filteredList) {
   filteredList.forEach(bp => {
     const card = document.createElement('div');
     card.className = 'hero-card ripple-wrap';
+    card.style.animation = 'none';
      card.innerHTML = `
       <img src="${bp.img}" alt="${bp.name}" style="width:100%; height:180px; object-fit:cover; border-radius:8px; margin-bottom:12px;">
       <div class="hero-name">${bp.name}</div>
