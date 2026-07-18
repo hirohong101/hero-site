@@ -1468,6 +1468,15 @@
         <span class="icon">💫</span><span>聖覺醒</span>
       </div>
 <div class="nav-item" id="navLoadout" onclick="switchTab('loadout')">
+function initLoadout() {
+  renderLoadoutMemberTabs();
+  renderLoadoutSlots();
+  renderLoadoutSummary();
+  // 填充英雄選擇下拉
+  const heroSelect = document.getElementById("loadoutHeroSelect");
+  heroSelect.innerHTML = '<option value="">-- 選擇英雄 --</option>' +
+    heroes.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
+}
   <span class="icon">🛡</span><span>配裝模擬</span>
 </div>
     </nav>
@@ -1586,6 +1595,7 @@
     <div id="skillGrid" style="display:grid; grid-template-columns:repeat(8, 1fr); gap:12px;"></div>
   </div>
 </div>
+</div>
     <!-- 陣法頁 -->
     <div id="formationPage" style="display:none;">
       <div class="topbar">
@@ -1703,7 +1713,6 @@
   </div>
   <div class="loadout-shell">
     <div class="loadout-actions">
-      <button class="loadout-btn" type="button" onclick="copyLoadoutShare()">&#128279; &#20998;&#20139;&#37197;&#32622;</button>
       <button class="loadout-btn primary" type="button">&#9729; &#37197;&#35037;&#23637;&#31034;</button>
     </div>
     <div class="loadout-grid">
@@ -1902,7 +1911,6 @@
 { id:"lukang", name:"神·陸抗", type:"全才", rarity:"傳奇", force:90, intel:93, charm:93, command:90, talent:"西陵之戰，陸抗憑藉出色的決斷力及領軍才能，大破晉軍，維護了吳國穩定，陸遜之後吳國再無名將。", skillName:"肱骨之臣", skills:["遠戰首回合起，弓兵每回合起始時發動【決霸西陵】，對敵方前軍造成 400% 傷害，對戰男性英雄時，【決霸西陵】可額外造成 600% × 回合數的傷害","每個奇數回合我方部隊受到敵方任意攻擊時，都有 40% 幾率觸發【鎮守】，完全免疫此次損傷","若我方的四維最低項，高於對手的四維最低項，則弓兵每次攻擊都可觸發【破空】"], awakens:["弓兵觸發 4 次【鎮守】後，可為全軍召喚相當於各自最大兵力 35% 的【安營】屏障（算作特殊效果，不算作護盾）","每有 5 級【築城】，四維各 +2，前後軍兵力各 +500"], destiny:[{name:"領軍才能",hero:"陸遜",effect:"戰鬥開始時，若兵力比例不低於對手，我方奇數回合觸發【鎮守】的幾率額外 +20%"},{name:"護吳名將",hero:"周瑜",effect:"對戰男性時奇數回合觸發【鎮守】的幾率 +10%"},{name:"精英將領",hero:"呂蒙",effect:"對戰男性時奇數回合觸發【鎮守】的幾率 +10%"},{name:"君臣之禮",hero:"吳國太",effect:"對男性英雄傷害 +25%"}] },
 
     ];
-
     const rarityColor = { "國士": "#d4a84b", "名將": "#7b9bd4", "良才": "#6daa6d", "巾幗": "#d4789a", "傳奇": "#ff6b35" };
     const rarityBg    = { "國士": "rgba(212,168,75,0.15)",  "名將": "rgba(123,155,212,0.15)", "良才": "rgba(109,170,109,0.15)", "巾幗": "rgba(212,120,154,0.15)", "傳奇": "rgba(255,107,53,0.15)" };
     const jobColor    = { "文官": "#e8a0a0", "全才": "#a0d4b8", "武將": "#a0b8e8" };
@@ -5554,55 +5562,29 @@ function renderLoadoutSummary() {
   target.innerHTML = statsHtml + talentBlock + awakenBlock + reincarnBlock + derivedBlock + summaryLine +
     (effects.length ? `<div class="loadout-effects">${effects.join("")}</div>` : "");
 }
-
-// ---- 分享整隊配置 ----
-function copyLoadoutShare() {
-  const payload = encodeURIComponent(JSON.stringify(
-    loadoutTeam.map(member => ({
-      hero: member.hero,
-      awakened: !!member.awakened,
-      reincarnated: !!member.reincarnated,
-      heroLevel: member.heroLevel || 1,
-      heroGrade: member.heroGrade || "藍",
-      deputy: member.deputy || {},
-      gear: Object.fromEntries(Object.entries(member.gear).map(([key, value]) => [
-        key, { itemId: value.item.id, gradeIndex: value.gradeIndex, cat: value.cat }
-      ]))
-    }))
-  ));
-
-  const url = `${location.origin}${location.pathname}#loadout=${payload}`;
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(() => {
-      alert("分享連結已複製到剪貼簿！");
-    }).catch(() => {
-      prompt("複製失敗，請手動複製以下連結：", url);
-    });
-  } else {
-    prompt("請手動複製以下連結：", url);
-  }
-}
-function applyLoadoutShareData(data) {
-  if (!Array.isArray(data)) return;
-  data.forEach((saved, idx) => {
-    if (idx >= LOADOUT_TEAM_SIZE) return;
-    const member = loadoutTeam[idx];
-    member.hero = saved.hero || "";
-    member.chosen = !!saved.hero;
-    member.awakened = !!saved.awakened;
-    member.reincarnated = !!saved.reincarnated;
-    member.heroLevel = saved.heroLevel || 1;
-    member.heroGrade = saved.heroGrade || "藍";
-    member.deputy = saved.deputy || {};
-    member.slotGrade = {};
-    member.gear = {};
-    Object.entries(saved.gear || {}).forEach(([slotKey, g]) => {
-      const item = findLoadoutItemByIdAndCat(g.itemId, g.cat);
-      if (item) member.gear[slotKey] = { item, gradeIndex: g.gradeIndex || 0, cat: g.cat };
-    });
+// 1. 定時全自動修正圖片路徑與後綴問題
+setInterval(() => {
+  document.querySelectorAll('img').forEach(img => {
+    let src = img.getAttribute('src');
+    if (src) {
+      if (src.includes('_0.png')) {
+        img.setAttribute('src', src.replace('_0.png', '.png'));
+      } else if (!src.includes('.')) {
+        img.setAttribute('src', src + '.png');
+      }
+    }
   });
-}
+
+  const items = document.querySelectorAll('.main-content *, #content *, [class*="card"], [class*="item"]');
+  items.forEach(el => {
+    if (el.innerText && el.innerText.trim() !== "") {
+      const currentColor = window.getComputedStyle(el).color;
+      if (currentColor === 'rgb(0, 0, 0)' || currentColor === '#000000') {
+        el.style.setProperty('color', '#e6c673', 'important');
+      }
+    }
+  });
+}, 300);
 </script>
 </body>
 </html>
