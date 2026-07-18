@@ -3916,7 +3916,7 @@ const battleplans = [
       { star: "8★", effect: "受到英雄技能傷害 -6%" }
     ]
   },
-  { name: "關門捉賊", img: "關門捉賊_0.png", type: "地", openTime: "4合",
+  { name: "關門捉賊", img: "關門捉賊.png", type: "地", openTime: "4合",
     stars: [
       { star: "4★", effect: "武力 +1，前後軍防禦 +100" },
       { star: "5★", effect: "發動任意合擊技後，發動【關門捉賊】，使敵方全軍受到的傷害 +20%，持續 2 回合。單場對決限一次" },
@@ -5562,29 +5562,6 @@ function renderLoadoutSummary() {
   target.innerHTML = statsHtml + talentBlock + awakenBlock + reincarnBlock + derivedBlock + summaryLine +
     (effects.length ? `<div class="loadout-effects">${effects.join("")}</div>` : "");
 }
-// 1. 定時全自動修正圖片路徑與後綴問題
-setInterval(() => {
-  document.querySelectorAll('img').forEach(img => {
-    let src = img.getAttribute('src');
-    if (src) {
-      if (src.includes('_0.png')) {
-        img.setAttribute('src', src.replace('_0.png', '.png'));
-      } else if (!src.includes('.')) {
-        img.setAttribute('src', src + '.png');
-      }
-    }
-  });
-
-  const items = document.querySelectorAll('.main-content *, #content *, [class*="card"], [class*="item"]');
-  items.forEach(el => {
-    if (el.innerText && el.innerText.trim() !== "") {
-      const currentColor = window.getComputedStyle(el).color;
-      if (currentColor === 'rgb(0, 0, 0)' || currentColor === '#000000') {
-        el.style.setProperty('color', '#e6c673', 'important');
-      }
-    }
-  });
-}, 300);
 </script>
 </body>
 </html>
