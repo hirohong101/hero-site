@@ -260,7 +260,7 @@
     /* ===== 左側選單 ===== */
     .sidebar {
       width: var(--sidebar-w);
-      min-height: 100vh;
+      height: 100vh;
       background: var(--bg-panel);
       border-right: 1px solid var(--border);
       display: flex;
@@ -268,15 +268,42 @@
       position: fixed;
       top: 0; left: 0;
       z-index: 100;
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+    }
+    body.sidebar-collapsed .sidebar {
+      transform: translateX(-100%);
+    }
+    .sidebar-toggle-btn {
+      position: fixed;
+      top: 16px;
+      left: calc(var(--sidebar-w) + 12px);
+      z-index: 200;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      color: var(--gold-bright);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: left 0.25s ease;
+      user-select: none;
+    }
+    body.sidebar-collapsed .sidebar-toggle-btn {
+      left: 16px;
     }
 
     .sidebar-logo {
-      padding: 28px 20px 20px;
+      padding: 18px 20px 14px;
       border-bottom: 1px solid var(--border);
       text-align: center;
     }
     .sidebar-logo .title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 900;
       color: var(--gold-bright);
       letter-spacing: 4px;
@@ -284,34 +311,34 @@
       line-height: 1.4;
     }
     .sidebar-logo .subtitle {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-dim);
       letter-spacing: 2px;
       margin-top: 4px;
     }
 
     .sidebar-nav {
-      padding: 16px 12px;
+      padding: 10px 10px;
       flex: 1;
     }
     .nav-section-label {
-      font-size: 10px;
-      letter-spacing: 3px;
+      font-size: 9px;
+      letter-spacing: 2px;
       color: var(--text-dim);
-      padding: 8px 8px 6px;
+      padding: 4px 8px 3px;
       text-transform: uppercase;
     }
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 8px;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 7px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 13px;
       color: var(--text-dim);
       transition: all 0.2s;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       border: 1px solid transparent;
     }
     .nav-item:hover {
@@ -325,23 +352,23 @@
       font-weight: 700;
     }
     .nav-item .icon {
-      font-size: 18px;
-      width: 22px;
+      font-size: 14px;
+      width: 18px;
       text-align: center;
     }
     .nav-item .badge {
       margin-left: auto;
       background: var(--gold-dim);
       color: #fff;
-      font-size: 10px;
-      padding: 2px 6px;
+      font-size: 9px;
+      padding: 1px 5px;
       border-radius: 10px;
     }
 
     .sidebar-footer {
-      padding: 16px;
+      padding: 10px;
       border-top: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-dim);
       text-align: center;
       letter-spacing: 1px;
@@ -354,6 +381,10 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      transition: margin-left 0.25s ease;
+    }
+    body.sidebar-collapsed .main {
+      margin-left: 0;
     }
 
     .topbar {
@@ -1365,13 +1396,61 @@
       .loadout-grid { grid-template-columns: 1fr; height: auto; }
       .loadout-shell { height: auto; overflow: visible; }
       .loadout-summary, .loadout-board { height: auto; }
-      .loadout-picker { position: static; margin: 18px auto 0; width: min(100%, 360px); }
     }
     @media (max-width: 760px) {
-      .loadout-controls { grid-template-columns: 1fr; }
-      .loadout-checks { display: grid; }
-      .loadout-slot-row { grid-template-columns: repeat(2, 1fr); }
+      .content { padding: 14px 12px; }
+      .hero-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .hero-card { padding: 12px 8px; }
+      .hero-card img { height: 70px !important; }
+      .hero-name { font-size: 15px; margin-bottom: 4px; }
+      .hero-meta { font-size: 11px; }
+      .hero-stats-mini { gap: 4px; margin-top: 6px; flex-wrap: wrap; justify-content: center; }
+      .stat-chip { font-size: 11px; padding: 2px 5px; }
+
+      .loadout-shell { padding: 12px 12px 18px; }
       .loadout-actions { flex-wrap: wrap; }
+      .loadout-actions .loadout-btn { flex: 1 1 auto; }
+
+      .loadout-controls { grid-template-columns: 1fr; padding: 12px 14px; gap: 10px 12px; }
+      .loadout-controls select { height: 40px; }
+      .loadout-checks { display: grid; gap: 10px; }
+      .loadout-checkgroup { justify-content: space-between; }
+
+      .loadout-group-tabs { gap: 6px; }
+      .loadout-group-tab { padding: 9px 12px; font-size: 12.5px; }
+
+      .loadout-board { padding: 12px 10px 80px; }
+      .loadout-slot-row { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 22px; }
+      .loadout-grade-switch { gap: 3px; }
+      .loadout-grade-btn { height: 26px; font-size: 11px; }
+
+      .loadout-member-tab { padding: 8px 12px; font-size: 12.5px; }
+
+      /* 選裝備彈窗：手機上改成從底部滑出的固定面板，不再依文件排版亂跑位 */
+      .loadout-picker {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        transform: none;
+        width: 100%;
+        height: 82vh;
+        max-height: 82vh;
+        border-radius: 16px 16px 0 0;
+        margin: 0;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+        box-sizing: border-box;
+        z-index: 200;
+      }
+      .loadout-picker-overlay { z-index: 190; }
+      .loadout-gear-item { min-height: 58px; }
+      .loadout-picker-title { font-size: 14px; }
+    }
+    @media (max-width: 420px) {
+      .loadout-slot-row { gap: 8px; }
+      .loadout-slot-name { font-size: 12px; }
+      .loadout-member-tab, .loadout-group-tab { padding: 7px 10px; font-size: 12px; }
     }
 
 .loadout-summary-tabs {
@@ -1432,9 +1511,18 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">資料庫</div>
+      <div class="nav-item" id="navLoadout" onclick="switchTab('loadout')">
+        <span class="icon">🛡</span><span>配裝模擬</span>
+      </div>
       <div class="nav-item active" id="navHero" onclick="switchTab('hero')">
         <span class="icon">⚔</span><span>英雄</span>
         <span class="badge" id="heroBadge"></span>
+      </div>
+      <div class="nav-item" id="navFormation" onclick="switchTab('formation')">
+        <span class="icon">🏯</span><span>陣法</span>
+      </div>
+      <div class="nav-item" id="navBeast" onclick="switchTab('beast')">
+        <span class="icon">🐉</span><span>獸靈</span>
       </div>
       <div class="nav-item" id="navBaowu" onclick="switchTab('baowu')">
         <span class="icon">💎</span><span>寶物</span>
@@ -1442,12 +1530,6 @@
       </div>
       <div class="nav-item" id="navSkill" onclick="switchTab('skill')">
         <span class="icon">✨</span><span>技能</span>
-      </div>
-      <div class="nav-item" id="navFormation" onclick="switchTab('formation')">
-        <span class="icon">🏯</span><span>陣法</span>
-      </div>
-      <div class="nav-item" id="navBeast" onclick="switchTab('beast')">
-        <span class="icon">🐉</span><span>獸靈</span>
       </div>
       <div class="nav-item" id="navSoul" onclick="switchTab('soul')">
         <span class="icon">🔮</span><span>魂玉</span>
@@ -1467,21 +1549,10 @@
       <div class="nav-item" id="navHolyAwaken" onclick="switchTab('holyawaken')">
         <span class="icon">💫</span><span>聖覺醒</span>
       </div>
-<div class="nav-item" id="navLoadout" onclick="switchTab('loadout')">
-function initLoadout() {
-  renderLoadoutMemberTabs();
-  renderLoadoutSlots();
-  renderLoadoutSummary();
-  // 填充英雄選擇下拉
-  const heroSelect = document.getElementById("loadoutHeroSelect");
-  heroSelect.innerHTML = '<option value="">-- 選擇英雄 --</option>' +
-    heroes.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
-}
-  <span class="icon">🛡</span><span>配裝模擬</span>
-</div>
     </nav>
     <div class="sidebar-footer">v1.0 · 皇者私塾</div>
   </aside>
+  <div class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">✕</div>
 <!-- 主內容 -->
   <div class="main">
 
@@ -2020,320 +2091,320 @@ const heroTroopType = {
 };
 // ==================== 技能資料 ====================
 const troopSkills = [
-{ name: "萬箭", require: "武85", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我後軍發動，英雄引導兩次亂射，每次對敵前軍或後軍造成16~40%的傷害。", lv30: "遠一聯合我後軍發動，英雄引導兩次亂射，每次對敵前軍或後軍造成30.5%~98%的傷害。", advanced: "13級啟動：額外增加一次亂射" },
-{ name: "武聖", require: "魅90", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠二聯合我前軍發動，造成115%的傷害。", lv30: "遠二聯合我前軍發動，造成289%的傷害。", advanced: "10級啟動：武力高於對手，武聖可無視50%防禦" },
-{ name: "無雙", require: "武90", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "近一聯合我前軍發動，英雄連續攻擊兩次，每次造成55~80%的傷害。", lv30: "近一聯合我前軍發動，英雄連續攻擊兩次，每次造成113%~196%的傷害。", advanced: "13級啟動：額外增加1次英雄攻擊" },
-{ name: "亂舞", require: "武95", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵前軍造成70%的傷害。", lv30: "遠一聯合我前軍發動，對敵前軍造成171.5%的傷害。", advanced: "15級啟動：亂舞有30%導致敵方【混亂】，持續一回合。【混亂】期間部隊無法行動，英雄無法施放需該部隊的英雄技。" },
-{ name: "衝陣", require: "無", learn: "武將or全才", type: "2合", openTime: "二合", lv1: "戰鬥開始發動，對敵前軍或後軍造成68%的傷害。", lv30: "戰鬥開始發動，對敵前軍或後軍造成184%的傷害。", advanced: "17級啟動：衝陣具備繳械的特殊效果：敵軍部隊被衝陣命中1次，其之後打出的兵種傷害將累積降低-10%，保持於本次對決。" },
-{ name: "槍王", require: "武98", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵後軍造成81%的傷害。", lv30: "遠一聯合我前軍發動，對敵後軍造成182.5%的傷害。", advanced: "13級啟動：近戰每個回合，都有60%的機率再次發動【槍王】。" },
+{ name: "萬箭", img: "萬箭.png", require: "武85", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我後軍發動，英雄引導兩次亂射，每次對敵前軍或後軍造成16~40%的傷害。", lv30: "遠一聯合我後軍發動，英雄引導兩次亂射，每次對敵前軍或後軍造成30.5%~98%的傷害。", advanced: "13級啟動：額外增加一次亂射" },
+{ name: "武聖", img: "武聖.png", require: "魅90", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠二聯合我前軍發動，造成115%的傷害。", lv30: "遠二聯合我前軍發動，造成289%的傷害。", advanced: "10級啟動：武力高於對手，武聖可無視50%防禦" },
+{ name: "無雙", img: "無雙.png", require: "武90", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "近一聯合我前軍發動，英雄連續攻擊兩次，每次造成55~80%的傷害。", lv30: "近一聯合我前軍發動，英雄連續攻擊兩次，每次造成113%~196%的傷害。", advanced: "13級啟動：額外增加1次英雄攻擊" },
+{ name: "亂舞", img: "亂舞.png", require: "武95", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵前軍造成70%的傷害。", lv30: "遠一聯合我前軍發動，對敵前軍造成171.5%的傷害。", advanced: "15級啟動：亂舞有30%導致敵方【混亂】，持續一回合。【混亂】期間部隊無法行動，英雄無法施放需該部隊的英雄技。" },
+{ name: "衝陣", img: "衝陣.png", require: "無", learn: "武將or全才", type: "2合", openTime: "二合", lv1: "戰鬥開始發動，對敵前軍或後軍造成68%的傷害。", lv30: "戰鬥開始發動，對敵前軍或後軍造成184%的傷害。", advanced: "17級啟動：衝陣具備繳械的特殊效果：敵軍部隊被衝陣命中1次，其之後打出的兵種傷害將累積降低-10%，保持於本次對決。" },
+{ name: "槍王", img: "槍王.png", require: "武98", learn: "武將or全才", type: "武力", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵後軍造成81%的傷害。", lv30: "遠一聯合我前軍發動，對敵後軍造成182.5%的傷害。", advanced: "13級啟動：近戰每個回合，都有60%的機率再次發動【槍王】。" },
 
-{ name: "離間", require: "統90", learn: "文官or全才", type: "智統", openTime: "新服", lv1: "遠二發動，對敵前軍或後軍造成100%的傷害。", lv30: "遠二發動，對敵前軍或後軍造成259.5%的傷害。", advanced: "10級啟動：若智力高於對手，離間有30%導致敵方【內訌】，持續1回合。【內訌】期間敵方前後軍會自相殘殺，英雄無法施放需該部隊的英雄技。" },
-{ name: "落雷", require: "智90", learn: "文官or全才", type: "智力", openTime: "新服", lv1: "近一聯合我前軍發動，釋放3道落雷，每道造成10~120%的傷害。", lv30: "近一聯合我前軍發動，釋放3道落雷，每道造成10%~265%的傷害。", advanced: "10級啟動：額外釋放一道落雷" },
-{ name: "奇策", require: "智85", learn: "文官or全才", type: "智魅", openTime: "新服", lv1: "遠一聯合我後軍發動，對敵前軍或後軍造成79%的傷害。", lv30: "遠一聯合我後軍發動，對敵前軍或後軍造成195%的傷害。", advanced: "13級啟動：若魅力高於對手，奇策有50%的機率導致敵方【遲緩】，持續3回合。【遲緩】期間，敵軍速度-30。" },
-{ name: "幻術", require: "智98", learn: "文官or全才", type: "智力", openTime: "新服", lv1: "遠二發動，對敵方全軍造成65%的傷害。", lv30: "遠二發動，對敵方全軍造成166.5%的傷害。", advanced: "13級啟動：幻術可額外消滅敵方全體5%當前兵力" },
-{ name: "福佑", require: "魅90", learn: "文官or全才", type: "魅力", openTime: "一合", lv1: "戰鬥開始有40%的機率發動，招喚強度為45%的護盾覆蓋全軍。", lv30: "戰鬥開始有53%的機率發動，招喚強度為177.5%的護盾覆蓋全軍。", advanced: "17級啟動：護盾存在期間，我方即將按比例損失兵力時，減免50%效果" },
-{ name: "攻心", require: "無", learn: "文官or全才", type: "2合", openTime: "一合", lv1: "戰鬥開始發動，造成1~1次50%的傷害。", lv30: "戰鬥開始發動，造成1~5次50%的傷害。", advanced: "17級啟動：若四維總數高於對手，攻心將導致敵方【潰逃】，持續3回合。【潰逃】期間，每回合損失5%的最大兵力。" },
-{ name: "傾國", require: "限女性", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "魅力高於對手且對手為男性時，遠二發動，對敵全體造成90%的傷害。", lv30: "魅力高於對手且對手為男性時，遠二發動，對敵全體造成249.5%的傷害。", advanced: "13級啟動：傾國有30%的機率導致敵方【虛弱】，持續二回合。【虛弱】期間，敵軍攻擊和防禦-20%。" },
-{ name: "鼓舞", require: "無", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "遠一聯合我後軍發動，部隊攻擊和防禦均提升6%，持續2回合。", lv30: "遠一聯合我後軍發動，部隊攻擊和防禦均提升32.5%，持續2回合。", advanced: "13級啟動：鼓舞效果持續期間，部隊速度提高5。" },
-{ name: "乾坤", require: "智90", learn: "文官or全才or武將", type: "智統", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵前軍或後軍造成75%的傷害，並在接下來的一回合我軍全體減免20%的傷害。", lv30: "遠一聯合我前軍發動，對敵前軍或後軍造成75%的傷害，並在接下來的一回合我軍全體減免70.5%的傷害。", advanced: "13級啟動：若統御高於對手，有40%機率導致敵方【虛弱】，持續2回合。【虛弱】期間，敵軍攻擊和防禦-20%。" },
-{ name: "金剛", require: "武90", learn: "文官or全才or武將", type: "武力", openTime: "新服", lv1: "戰鬥開始聯合我前軍發動，遠戰回合若我軍遭受敵後軍攻擊，減免30%的傷害。", lv30: "戰鬥開始聯合我前軍發動，遠戰回合若我軍遭受敵後軍攻擊，減免83%的傷害。", advanced: "13級啟動：金剛持續期間，我軍遭受敵方英雄攻擊時，可減免50%傷害" },
-{ name: "悲歌", require: "魅95", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "遠一聯合我後軍發動，使敵全軍獲得【悲慟】狀態，一回合內攻擊-18%，並對全軍造成35%的傷害。", lv30: "遠一聯合我後軍發動，使敵全軍獲得【悲慟】狀態，一回合內攻擊-39.2%，並對全軍造成35%的傷害。", advanced: "13級啟動：若戰力高於對手，悲歌將其隨機驅散敵軍1個增益狀態。" },
-{ name: "業火", require: "統95", learn: "文官or全才or武將", type: "統御", openTime: "新服", lv1: "遠二聯合我後軍發動，對敵後軍造成85%的傷害。", lv30: "遠二聯合我後軍發動，對敵後軍造成244.5%的傷害。", advanced: "13級啟動：若統御高於對手，業火有35%的機率導致敵方【火災】，持續2回合。【火災】期間，敵軍受到持續燃燒，每回合損失10%當前兵力。" },
-{ name: "天命", require: "智95", learn: "文官or全才or武將", type: "智力", openTime: "新服", lv1: "遠一聯合我後軍發動，對敵前軍或後軍造成72%的傷害。", lv30: "遠一聯合我後軍發動，對敵前軍或後軍造成173.5%的傷害。", advanced: "17級啟動：天命有30%的機率導致敵方【混亂】，持續1回合。【混亂】期間，部隊無法行動，英雄無法施放需該部隊的英雄技。" },
-{ name: "巨象", require: "無", learn: "文官or全才or武將", type: "武統", openTime: "新服", lv1: "遠二聯合我前軍發動，消滅敵方1%的最大兵力，並造成90%的傷害。", lv30: "遠二聯合我前軍發動，消滅敵方6.3%的最大兵力，並造成235%的傷害。", advanced: "17級啟動：若武力高於對手，巨象有40%的機率導致敵方【混亂】，持續1回合。【混亂】期間部隊無法行動，英雄無法施放需該部隊的英雄技。" },
-{ name: "死鬥", require: "魅85、統85", learn: "文官or全才or武將", type: "魅統", openTime: "二合", lv1: "近二發動，我方全體進入【死鬥】狀態，傷害和免傷+15%，暴擊率+16%。", lv30: "近二發動，我方全體進入【死鬥】狀態，傷害和免傷+41.5%，暴擊率+37.2%。", advanced: "17級啟動：近戰首回合，我方全軍所受傷害減免20%。" },
-{ name: "龍怒", require: "武90、智90", learn: "文官or全才or武將", type: "武智", openTime: "一合", lv1: "兵力不足一半時發動，對敵方造成190%的傷害。", lv30: "兵力不足一半時發動，對敵方造成422%的傷害。", advanced: "17級啟動：若武力高於對手，龍怒額外加30%前軍攻擊力的傷害。若智力高於對手，龍怒額外加25%後軍攻擊力的傷害。" },
-{ name: "冰河", require: "智95、統95", learn: "文官or全才or武將", type: "智統", openTime: "五合", lv1: "遠二發動，對全體造成50%的傷害，並有8.8%的機率造成【寒顫】。", lv30: "遠二發動，對全體造成137%的傷害，並有32%的機率造成【寒顫】。", advanced: "17級啟動：若智力高於對手，近戰首回合可再次發動【冰河】。" },
-{ name: "勾魂", require: "魅98", learn: "文官or全才or武將", type: "魅統", openTime: "五合", lv1: "近一發動，對敵前軍或後軍造成350%的傷害。", lv30: "近一發動，對敵前軍或後軍造成872%的傷害。", advanced: "17級啟動：若敵我雙方主將性別不同，【勾魂】傷害提升60%。" },
-{ name: "聖甲", require: "統100", learn: "文官or全才or武將", type: "武統", openTime: "五合", lv1: "遠二開始時發動，為前軍或後軍召喚相當於自身最大兵力12%的守護聖甲。", lv30: "遠二開始時發動，為前軍或後軍召喚相當於自身最大兵力24%的守護聖甲。", advanced: "17級啟動：聖甲存在期間，每受到1次來自敵方的傷害，自身傷害和免傷各提升3%（最多疊加10次，前後軍獨立計算），該效果持續整場。" },
-{ name: "障毒", require: "魅100", learn: "文官or全才or武將", type: "智魅", openTime: "五合", lv1: "遠一發動，使敵方全場陷入毒霧，每回合結束時對敵陣營2%~4%的最大兵力。", lv30: "遠一發動，使敵方全場陷入毒霧，每回合結束時對敵陣營4%~10%的最大兵力。", advanced: "17級啟動：發動【障毒】後，敵方此後獲得的恢復兵力的效果-30%。" },
-{ name: "霸君", require: "限男性、四維400", learn: "文官or全才or武將", type: "四維", openTime: "五合", lv1: "遠二發動，按我方軍隊當前兵力的15%消滅敵前軍兵力。", lv30: "遠二發動，按我方軍隊當前兵力的30%消滅敵前軍兵力。", advanced: "15級啟動：發動【霸君】後若敵前軍兵力低於一半，則敵方全體進入【戰慄】狀態，持續2回合。【戰慄】期間，部隊暴擊率-100%。" },
-{ name: "仙音", require: "限女性、四維400", learn: "文官or全才or武將", type: "四維", openTime: "五合", lv1: "遠一發動，為我方前軍或後軍附加【仙音】狀態，持續3回合。", lv30: "遠一發動，為我方前軍或後軍附加【仙音】狀態，持續3回合。", advanced: "15級啟動：發動【仙音】後，敵方此後獲得的護盾類效果-30%。" },
-{ name: "兩儀", require: "武100、智100", learn: "文官or全才or武將", type: "武智", openTime: "六合", lv1: "遠二發動，對敵前軍造成222%的傷害。", lv30: "遠二發動，對敵前軍造成555%的傷害。", advanced: "17級啟動：首次發動【兩儀】後，可將造成傷害的50%轉化為生命能量，用於增援我方戰損較高部隊的兵力。" },
-{ name: "四象", require: "四維400", learn: "文官or全才or武將", type: "四維", openTime: "六合", lv1: "近一發動，直接消滅敵後軍12%的最大兵力（非傷害）。", lv30: "近一發動，直接消滅敵後軍44%的最大兵力（非傷害）。", advanced: "17級啟動：近戰回合，我方即將按比例損失兵力時，減免25%的效果。若戰場中存在任意氣象，發動【四象】可導致目標【混亂】1回合。" },
+{ name: "離間", img: "離間.png", require: "統90", learn: "文官or全才", type: "智統", openTime: "新服", lv1: "遠二發動，對敵前軍或後軍造成100%的傷害。", lv30: "遠二發動，對敵前軍或後軍造成259.5%的傷害。", advanced: "10級啟動：若智力高於對手，離間有30%導致敵方【內訌】，持續1回合。【內訌】期間敵方前後軍會自相殘殺，英雄無法施放需該部隊的英雄技。" },
+{ name: "落雷", img: "落雷.png", require: "智90", learn: "文官or全才", type: "智力", openTime: "新服", lv1: "近一聯合我前軍發動，釋放3道落雷，每道造成10~120%的傷害。", lv30: "近一聯合我前軍發動，釋放3道落雷，每道造成10%~265%的傷害。", advanced: "10級啟動：額外釋放一道落雷" },
+{ name: "奇策", img: "奇策.png", require: "智85", learn: "文官or全才", type: "智魅", openTime: "新服", lv1: "遠一聯合我後軍發動，對敵前軍或後軍造成79%的傷害。", lv30: "遠一聯合我後軍發動，對敵前軍或後軍造成195%的傷害。", advanced: "13級啟動：若魅力高於對手，奇策有50%的機率導致敵方【遲緩】，持續3回合。【遲緩】期間，敵軍速度-30。" },
+{ name: "幻術", img: "幻術.png", require: "智98", learn: "文官or全才", type: "智力", openTime: "新服", lv1: "遠二發動，對敵方全軍造成65%的傷害。", lv30: "遠二發動，對敵方全軍造成166.5%的傷害。", advanced: "13級啟動：幻術可額外消滅敵方全體5%當前兵力" },
+{ name: "福佑", img: "福佑.png", require: "魅90", learn: "文官or全才", type: "魅力", openTime: "一合", lv1: "戰鬥開始有40%的機率發動，招喚強度為45%的護盾覆蓋全軍。", lv30: "戰鬥開始有53%的機率發動，招喚強度為177.5%的護盾覆蓋全軍。", advanced: "17級啟動：護盾存在期間，我方即將按比例損失兵力時，減免50%效果" },
+{ name: "攻心", img: "攻心.png", require: "無", learn: "文官or全才", type: "2合", openTime: "一合", lv1: "戰鬥開始發動，造成1~1次50%的傷害。", lv30: "戰鬥開始發動，造成1~5次50%的傷害。", advanced: "17級啟動：若四維總數高於對手，攻心將導致敵方【潰逃】，持續3回合。【潰逃】期間，每回合損失5%的最大兵力。" },
+{ name: "傾國", img: "傾國.png", require: "限女性", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "魅力高於對手且對手為男性時，遠二發動，對敵全體造成90%的傷害。", lv30: "魅力高於對手且對手為男性時，遠二發動，對敵全體造成249.5%的傷害。", advanced: "13級啟動：傾國有30%的機率導致敵方【虛弱】，持續二回合。【虛弱】期間，敵軍攻擊和防禦-20%。" },
+{ name: "鼓舞", img: "鼓舞.png", require: "無", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "遠一聯合我後軍發動，部隊攻擊和防禦均提升6%，持續2回合。", lv30: "遠一聯合我後軍發動，部隊攻擊和防禦均提升32.5%，持續2回合。", advanced: "13級啟動：鼓舞效果持續期間，部隊速度提高5。" },
+{ name: "乾坤", img: "乾坤.png", require: "智90", learn: "文官or全才or武將", type: "智統", openTime: "新服", lv1: "遠一聯合我前軍發動，對敵前軍或後軍造成75%的傷害，並在接下來的一回合我軍全體減免20%的傷害。", lv30: "遠一聯合我前軍發動，對敵前軍或後軍造成75%的傷害，並在接下來的一回合我軍全體減免70.5%的傷害。", advanced: "13級啟動：若統御高於對手，有40%機率導致敵方【虛弱】，持續2回合。【虛弱】期間，敵軍攻擊和防禦-20%。" },
+{ name: "金剛", img: "金剛.png", require: "武90", learn: "文官or全才or武將", type: "武力", openTime: "新服", lv1: "戰鬥開始聯合我前軍發動，遠戰回合若我軍遭受敵後軍攻擊，減免30%的傷害。", lv30: "戰鬥開始聯合我前軍發動，遠戰回合若我軍遭受敵後軍攻擊，減免83%的傷害。", advanced: "13級啟動：金剛持續期間，我軍遭受敵方英雄攻擊時，可減免50%傷害" },
+{ name: "悲歌", img: "悲歌.png", require: "魅95", learn: "文官or全才or武將", type: "魅力", openTime: "新服", lv1: "遠一聯合我後軍發動，使敵全軍獲得【悲慟】狀態，一回合內攻擊-18%，並對全軍造成35%的傷害。", lv30: "遠一聯合我後軍發動，使敵全軍獲得【悲慟】狀態，一回合內攻擊-39.2%，並對全軍造成35%的傷害。", advanced: "13級啟動：若戰力高於對手，悲歌將其隨機驅散敵軍1個增益狀態。" },
+{ name: "業火", img: "業火.png", require: "統95", learn: "文官or全才or武將", type: "統御", openTime: "新服", lv1: "遠二聯合我後軍發動，對敵後軍造成85%的傷害。", lv30: "遠二聯合我後軍發動，對敵後軍造成244.5%的傷害。", advanced: "13級啟動：若統御高於對手，業火有35%的機率導致敵方【火災】，持續2回合。【火災】期間，敵軍受到持續燃燒，每回合損失10%當前兵力。" },
+{ name: "天命", img: "天命.png", require: "智95", learn: "文官or全才or武將", type: "智力", openTime: "新服", lv1: "遠一聯合我後軍發動，對敵前軍或後軍造成72%的傷害。", lv30: "遠一聯合我後軍發動，對敵前軍或後軍造成173.5%的傷害。", advanced: "17級啟動：天命有30%的機率導致敵方【混亂】，持續1回合。【混亂】期間，部隊無法行動，英雄無法施放需該部隊的英雄技。" },
+{ name: "巨象", img: "巨象.png", require: "無", learn: "文官or全才or武將", type: "武統", openTime: "新服", lv1: "遠二聯合我前軍發動，消滅敵方1%的最大兵力，並造成90%的傷害。", lv30: "遠二聯合我前軍發動，消滅敵方6.3%的最大兵力，並造成235%的傷害。", advanced: "17級啟動：若武力高於對手，巨象有40%的機率導致敵方【混亂】，持續1回合。【混亂】期間部隊無法行動，英雄無法施放需該部隊的英雄技。" },
+{ name: "死鬥", img: "死鬥.png", require: "魅85、統85", learn: "文官or全才or武將", type: "魅統", openTime: "二合", lv1: "近二發動，我方全體進入【死鬥】狀態，傷害和免傷+15%，暴擊率+16%。", lv30: "近二發動，我方全體進入【死鬥】狀態，傷害和免傷+41.5%，暴擊率+37.2%。", advanced: "17級啟動：近戰首回合，我方全軍所受傷害減免20%。" },
+{ name: "龍怒", img: "龍怒.png", require: "武90、智90", learn: "文官or全才or武將", type: "武智", openTime: "一合", lv1: "兵力不足一半時發動，對敵方造成190%的傷害。", lv30: "兵力不足一半時發動，對敵方造成422%的傷害。", advanced: "17級啟動：若武力高於對手，龍怒額外加30%前軍攻擊力的傷害。若智力高於對手，龍怒額外加25%後軍攻擊力的傷害。" },
+{ name: "冰河", img: "冰河.png", require: "智95、統95", learn: "文官or全才or武將", type: "智統", openTime: "五合", lv1: "遠二發動，對全體造成50%的傷害，並有8.8%的機率造成【寒顫】。", lv30: "遠二發動，對全體造成137%的傷害，並有32%的機率造成【寒顫】。", advanced: "17級啟動：若智力高於對手，近戰首回合可再次發動【冰河】。" },
+{ name: "勾魂", img: "勾魂.png", require: "魅98", learn: "文官or全才or武將", type: "魅統", openTime: "五合", lv1: "近一發動，對敵前軍或後軍造成350%的傷害。", lv30: "近一發動，對敵前軍或後軍造成872%的傷害。", advanced: "17級啟動：若敵我雙方主將性別不同，【勾魂】傷害提升60%。" },
+{ name: "聖甲", img: "聖甲.png", require: "統100", learn: "文官or全才or武將", type: "武統", openTime: "五合", lv1: "遠二開始時發動，為前軍或後軍召喚相當於自身最大兵力12%的守護聖甲。", lv30: "遠二開始時發動，為前軍或後軍召喚相當於自身最大兵力24%的守護聖甲。", advanced: "17級啟動：聖甲存在期間，每受到1次來自敵方的傷害，自身傷害和免傷各提升3%（最多疊加10次，前後軍獨立計算），該效果持續整場。" },
+{ name: "障毒", img: "障毒.png", require: "魅100", learn: "文官or全才or武將", type: "智魅", openTime: "五合", lv1: "遠一發動，使敵方全場陷入毒霧，每回合結束時對敵陣營2%~4%的最大兵力。", lv30: "遠一發動，使敵方全場陷入毒霧，每回合結束時對敵陣營4%~10%的最大兵力。", advanced: "17級啟動：發動【障毒】後，敵方此後獲得的恢復兵力的效果-30%。" },
+{ name: "霸君", img: "霸君.png", require: "限男性、四維400", learn: "文官or全才or武將", type: "四維", openTime: "五合", lv1: "遠二發動，按我方軍隊當前兵力的15%消滅敵前軍兵力。", lv30: "遠二發動，按我方軍隊當前兵力的30%消滅敵前軍兵力。", advanced: "15級啟動：發動【霸君】後若敵前軍兵力低於一半，則敵方全體進入【戰慄】狀態，持續2回合。【戰慄】期間，部隊暴擊率-100%。" },
+{ name: "仙音", img: "仙音.png", require: "限女性、四維400", learn: "文官or全才or武將", type: "四維", openTime: "五合", lv1: "遠一發動，為我方前軍或後軍附加【仙音】狀態，持續3回合。", lv30: "遠一發動，為我方前軍或後軍附加【仙音】狀態，持續3回合。", advanced: "15級啟動：發動【仙音】後，敵方此後獲得的護盾類效果-30%。" },
+{ name: "兩儀", img: "兩儀.png", require: "武100、智100", learn: "文官or全才or武將", type: "武智", openTime: "六合", lv1: "遠二發動，對敵前軍造成222%的傷害。", lv30: "遠二發動，對敵前軍造成555%的傷害。", advanced: "17級啟動：首次發動【兩儀】後，可將造成傷害的50%轉化為生命能量，用於增援我方戰損較高部隊的兵力。" },
+{ name: "四象", img: "四象.png", require: "四維400", learn: "文官or全才or武將", type: "四維", openTime: "六合", lv1: "近一發動，直接消滅敵後軍12%的最大兵力（非傷害）。", lv30: "近一發動，直接消滅敵後軍44%的最大兵力（非傷害）。", advanced: "17級啟動：近戰回合，我方即將按比例損失兵力時，減免25%的效果。若戰場中存在任意氣象，發動【四象】可導致目標【混亂】1回合。" },
 // ---- 騎兵兵種技 ----
-  { name: "鐵蹄", require: null, learn: "騎兵", type: null, openTime: "新服",
+  { name: "鐵蹄", img: "鐵蹄.png", require: null, learn: "騎兵", type: null, openTime: "新服",
     lv1: "近戰回合發動，騎兵攻擊額外提升25%的傷害。",
     lv30: "近戰回合發動，騎兵攻擊額外提升107%的傷害。",
     advanced: "10級啟動：騎兵基礎攻擊+50。" },
-  { name: "奔襲", require: null, learn: "騎兵", type: null, openTime: "新服",
+  { name: "奔襲", img: "奔襲.png", require: null, learn: "騎兵", type: null, openTime: "新服",
     lv1: "遠一發動，派遣少量騎兵襲擾對手，隨機造成28%~56%的傷害。",
     lv30: "遠一發動，派遣少量騎兵襲擾對手，隨機造成98%~126%的傷害。",
     advanced: "13級啟動：騎兵速度+10，兵力+50。" },
-  { name: "不屈", require: null, learn: "騎兵", type: null, openTime: "新服",
+  { name: "不屈", img: "不屈.png", require: null, learn: "騎兵", type: null, openTime: "新服",
     lv1: "所有回合，騎兵遭敵後軍攻擊時，可減免13%的傷害。",
     lv30: "所有回合，騎兵遭敵後軍攻擊時，可減免39.5%的傷害。",
     advanced: "10級啟動：騎兵基礎防禦+20。" },
-  { name: "突擊", require: null, learn: "騎兵", type: "武魅", openTime: "新服",
+  { name: "突擊", img: "突擊.png", require: null, learn: "騎兵", type: "武魅", openTime: "新服",
     lv1: "遠二發動，所有騎兵進行高速突擊，造成78%的傷害。若武力高於對手，則突擊傷害額外提升20%。",
     lv30: "遠二發動，所有騎兵進行高速突擊，造成179.5%的傷害。若武力高於對手，則突擊傷害額外提升20%。",
     advanced: "13級啟動：若魅力高於對手，則突擊可無視敵軍30%的防禦。" },
-  { name: "捨身", require: null, learn: "騎兵", type: "智力", openTime: "新服",
+  { name: "捨身", img: "捨身.png", require: null, learn: "騎兵", type: "智力", openTime: "新服",
     lv1: "所有回合騎兵攻擊後，有15%的機率觸發捨身追擊，造成95%的傷害。捨身追擊將損失我方騎兵當前兵力的5%（對戰NPC時不損失兵力）。",
     lv30: "所有回合騎兵攻擊後，有41.5%的機率觸發捨身追擊，造成223%的傷害。捨身追擊將損失我方騎兵當前兵力的5%（對戰NPC時不損失兵力）。",
     advanced: "13級啟動：若智力高於對手，捨身追擊不損失兵力。" },
-  { name: "剛毅", require: null, learn: "騎兵", type: "智統", openTime: "新服",
+  { name: "剛毅", img: "剛毅.png", require: null, learn: "騎兵", type: "智統", openTime: "新服",
     lv1: "所有回合，騎兵受到英雄主動技能攻擊時，減免20%的傷害。若統御高於對手，騎兵遭受前軍攻擊時也可觸發【剛毅】，減免30%的傷害。",
     lv30: "所有回合，騎兵受到英雄主動技能攻擊時，減免61%的傷害。若統御高於對手，騎兵遭受前軍攻擊時也可觸發【剛毅】，減免30%的傷害。",
     advanced: "13級啟動：若武力高於對手，騎兵受到任意攻擊時觸發【壁疊】，額外減免15%的傷害。" },
-  { name: "合圍", require: null, learn: "騎兵", type: "武力", openTime: "一合",
+  { name: "合圍", img: "合圍.png", require: null, learn: "騎兵", type: "武力", openTime: "一合",
     lv1: "近一發動，指揮騎兵前後夾攻，對敵方全體造成150%的傷害。若敵軍只剩前軍或後軍則對該部隊造成330%的傷害。",
     lv30: "近一發動，指揮騎兵前後夾攻，對敵方全體造成324%的傷害。若敵軍只剩前軍或後軍則對該部隊造成852%的傷害。",
     advanced: "13級啟動：若武力高於對手，合圍必定暴擊。" },
-  { name: "切割", require: null, learn: "騎兵", type: "魅統", openTime: "二合",
+  { name: "切割", img: "切割.png", require: null, learn: "騎兵", type: "魅統", openTime: "二合",
     lv1: "分割敵陣，各個擊破。每場對決中，我方騎兵攻擊首個目標時，可追加220%的傷害。若魅力或統御高於對手，有13%的機率驅散該目標1個增益狀態。",
     lv30: "分割敵陣，各個擊破。每場對決中，我方騎兵攻擊首個目標時，可追加481%的傷害。若魅力或統御高於對手，有100%的機率驅散該目標1個增益狀態。",
     advanced: "15級啟動：遠戰回合，我方騎兵每次攻擊時，都可附加10%的後軍攻擊力。" },
-  { name: "戳塵", require: null, learn: "騎兵", type: null, openTime: "五合",
+  { name: "戳塵", img: "戳塵.png", require: null, learn: "騎兵", type: null, openTime: "五合",
     lv1: "騎兵受到8次傷害後，揚塵策馬入陣屠殺，對敵前軍或後軍造成440%傷害，並有25%機率導致敵方【內訌】，持續2回合。",
     lv30: "騎兵受到8次傷害後，揚塵策馬入陣屠殺，對敵前軍或後軍造成672%傷害，並有40%機率導致敵方【內訌】，持續2回合。",
     advanced: "17級啟動：我方騎兵的不良狀態抗性+20%。" },
-  { name: "騎胄", require: null, learn: "騎兵", type: null, openTime: "五合",
+  { name: "騎胄", img: "騎胄.png", require: null, learn: "騎兵", type: null, openTime: "五合",
     lv1: "騎兵受到兵種傷害-10%，受到英雄技傷害-5%。",
     lv30: "騎兵受到兵種傷害-27.4%，受到英雄技傷害-13.7%。",
     advanced: "17級啟動：任意騎兵技傷害強度+10%。" },
 
   // ---- 步兵兵種技 ----
-  { name: "盾牆", require: null, learn: "步兵", type: null, openTime: "新服",
+  { name: "盾牆", img: "盾牆.png", require: null, learn: "步兵", type: null, openTime: "新服",
     lv1: "所有回合，步兵遭敵後軍攻擊時，減免12%的傷害。",
     lv30: "所有回合，步兵遭敵後軍攻擊時，減免38.5%的傷害。",
     advanced: "10級啟動：步兵基礎防禦+20。" },
-  { name: "激戰", require: null, learn: "步兵", type: null, openTime: "新服",
+  { name: "激戰", img: "激戰.png", require: null, learn: "步兵", type: null, openTime: "新服",
     lv1: "近一發動，深入敵軍激戰，對敵前軍或後軍共打擊4次，每次造成62%的傷害。",
     lv30: "近一發動，深入敵軍激戰，對敵前軍或後軍共打擊4次，每次造成103%的傷害。",
     advanced: "10級啟動：步兵基礎攻擊+50。" },
-  { name: "堅守", require: null, learn: "步兵", type: null, openTime: "新服",
+  { name: "堅守", img: "堅守.png", require: null, learn: "步兵", type: null, openTime: "新服",
     lv1: "所有回合，步兵遭敵前軍攻擊時，減免13%的傷害。",
     lv30: "所有回合，步兵遭敵前軍攻擊時，減免39.5%的傷害。",
     advanced: "13級啟動：步兵速度+10，兵力+50。" },
-  { name: "衝鋒", require: null, learn: "步兵", type: "武魅", openTime: "新服",
+  { name: "衝鋒", img: "衝鋒.png", require: null, learn: "步兵", type: "武魅", openTime: "新服",
     lv1: "遠二發動，步兵發起大規模衝鋒，造成80%的傷害。若魅力高於對手，則衝鋒有額外40%的機率暴擊。",
     lv30: "遠二發動，步兵發起大規模衝鋒，造成152.5%的傷害。若魅力高於對手，則衝鋒有額外40%的機率暴擊。",
     advanced: "13級啟動：若武力高於對手，則衝鋒額外造成20%的傷害。" },
-  { name: "反擊", require: null, learn: "步兵", type: "統御", openTime: "新服",
+  { name: "反擊", img: "反擊.png", require: null, learn: "步兵", type: "統御", openTime: "新服",
     lv1: "近戰回合，步兵敵前軍攻擊後，觸發還擊，造成110%的傷害。（不觸發後續還擊、追擊類行動）",
     lv30: "近戰回合，步兵敵前軍攻擊後，觸發還擊，造成180%的傷害。（不觸發後續還擊、追擊類行動）",
     advanced: "13級啟動：若統御高於對手，則反擊額外造成20%傷害。" },
-  { name: "裂甲", require: null, learn: "步兵", type: "智統", openTime: "新服",
+  { name: "裂甲", img: "裂甲.png", require: null, learn: "步兵", type: "智統", openTime: "新服",
     lv1: "所有回合，步兵攻擊可無視敵軍12%的防禦。若智力高於對手，則步兵攻擊還可額外造成15%的傷害。",
     lv30: "所有回合，步兵攻擊可無視敵軍38.5%的防禦。若智力高於對手，則步兵攻擊還可額外造成15%的傷害。",
     advanced: "13級啟動：若統御高於對手，步兵攻擊可額外無視敵軍15%的防禦。" },
-  { name: "陷陣", require: null, learn: "步兵", type: "魅力", openTime: "一合",
+  { name: "陷陣", img: "陷陣.png", require: null, learn: "步兵", type: "魅力", openTime: "一合",
     lv1: "遠一發動，派遣步兵敢死隊突入敵陣，對敵方全軍造成115%的傷害。陷陣將損失我方步兵當前兵力的5%（對戰NPC時不損失兵力）。",
     lv30: "遠一發動，派遣步兵敢死隊突入敵陣，對敵方全軍造成318%的傷害。陷陣將損失我方步兵當前兵力的5%（對戰NPC時不損失兵力）。",
     advanced: "13級啟動：若魅力高於對手，陷陣時必定暴擊。" },
-  { name: "蓄勢", require: null, learn: "步兵", type: "武智", openTime: "二合",
+  { name: "蓄勢", img: "蓄勢.png", require: null, learn: "步兵", type: "武智", openTime: "二合",
     lv1: "積蓄戰意，勢如破竹，近一我方步兵攻擊首個目標時，可追加360%的傷害。若武力或智力高於對手，近一步兵行動前，有13%的機率驅散自身1個不良狀態。",
     lv30: "積蓄戰意，勢如破竹，近一我方步兵攻擊首個目標時，可追加795%的傷害。若武力或智力高於對手，近一步兵行動前，有100%的機率驅散自身1個不良狀態。",
     advanced: "15級啟動：近戰回合之前，敵方不可無視步兵防禦。" },
-  { name: "逆刃", require: null, learn: "步兵", type: null, openTime: "五合",
+  { name: "逆刃", img: "逆刃.png", require: null, learn: "步兵", type: null, openTime: "五合",
     lv1: "步兵受到8次傷害後，立即發動一次無畏衝鋒，對敵全軍造成240%的傷害，並有10%機率導致敵方【混亂】，持續2回合。",
     lv30: "步兵受到8次傷害後，立即發動一次無畏衝鋒，對敵全軍造成385%的傷害，並有25%機率導致敵方【混亂】，持續2回合。",
     advanced: "17級啟動：我方步兵的不良狀態抗性+20%。" },
-  { name: "警覺", require: null, learn: "步兵", type: null, openTime: "五合",
+  { name: "警覺", img: "警覺.png", require: null, learn: "步兵", type: null, openTime: "五合",
     lv1: "步兵受到英雄技傷害-10%，受到兵種技傷害-5%。",
     lv30: "步兵受到英雄技傷害-27.4%，受到兵種技傷害-13.7%。",
     advanced: "17級啟動：任意步兵技傷害強度+10%。" },
 
   // ---- 弓兵兵種技 ----
-  { name: "強弩", require: null, learn: "弓兵", type: null, openTime: "新服",
+  { name: "強弩", img: "強弩.png", require: null, learn: "弓兵", type: null, openTime: "新服",
     lv1: "近戰回合，弓兵攻擊可無視全體15%的防禦。",
     lv30: "近戰回合，弓兵攻擊可無視全體41.5%的防禦。",
     advanced: "10級啟動：弓兵基礎攻擊+50。" },
-  { name: "閃避", require: null, learn: "弓兵", type: null, openTime: "新服",
+  { name: "閃避", img: "閃避.png", require: null, learn: "弓兵", type: null, openTime: "新服",
     lv1: "所有回合，弓兵有40%的機率可閃避13%的傷害。",
     lv30: "所有回合，弓兵有40%的機率可閃避39.5%的傷害。",
     advanced: "13級啟動：弓兵速度+10，兵力+50。" },
-  { name: "回射", require: null, learn: "弓兵", type: null, openTime: "新服",
+  { name: "回射", img: "回射.png", require: null, learn: "弓兵", type: null, openTime: "新服",
     lv1: "遠戰回合，弓兵遭敵後軍攻擊，觸發還擊，對敵後軍造成70%的傷害。（不觸發後續還擊、追擊類行動）",
     lv30: "遠戰回合，弓兵遭敵後軍攻擊，觸發還擊，對敵後軍造成137.5%的傷害。（不觸發後續還擊、追擊類行動）",
     advanced: "10級啟動：弓兵基礎防禦+20。" },
-  { name: "火箭", require: null, learn: "弓兵", type: "智統", openTime: "新服",
+  { name: "火箭", img: "火箭.png", require: null, learn: "弓兵", type: "智統", openTime: "新服",
     lv1: "遠一發動，弓兵以火箭射敵，對敵方全軍造成90%的傷害。若統御高於對手，則火箭傷害提升12%。",
     lv30: "遠一發動，弓兵以火箭射敵，對敵方全軍造成119%的傷害。若統御高於對手，則火箭傷害提升12%。",
     advanced: "13級啟動：若智力高於對手，火箭有40%機率導致【火災】，持續一回合。【火災】期間敵軍每回合損失10%當前兵力。" },
-  { name: "金汁", require: null, learn: "弓兵", type: "武力", openTime: "新服",
+  { name: "金汁", img: "金汁.png", require: null, learn: "弓兵", type: "武力", openTime: "新服",
     lv1: "所有回合，弓兵每次射擊都有25%的機率附加毒液，使目標下回合攻擊-8%。",
     lv30: "所有回合，弓兵每次射擊都有38%的機率附加毒液，使目標下回合攻擊-18.6%。",
     advanced: "13級啟動：若武力高於對手，附加毒液的機率額外提升20%。" },
-  { name: "齊射", require: null, learn: "弓兵", type: "武魅", openTime: "新服",
+  { name: "齊射", img: "齊射.png", require: null, learn: "弓兵", type: "武魅", openTime: "新服",
     lv1: "遠二發動，弓兵發起強力射擊，對敵方前軍或後軍造成2波130%的傷害。若魅力高於對手，則齊射可無視20%的防禦。",
     lv30: "遠二發動，弓兵發起強力射擊，對敵方前軍或後軍造成2波185.5%的傷害。若魅力高於對手，則齊射可無視20%的防禦。",
     advanced: "13級啟動：若武力高於對手，則額外造成1波傷害。" },
-  { name: "輪射", require: null, learn: "弓兵", type: "統御", openTime: "一合",
+  { name: "輪射", img: "輪射.png", require: null, learn: "弓兵", type: "統御", openTime: "一合",
     lv1: "近一發動，組織弓兵連射3次射擊，每次射擊對敵全體造成52%的傷害。",
     lv30: "近一發動，組織弓兵連射3次射擊，每次射擊對敵全體造成124.5%的傷害。",
     advanced: "13級啟動：若統御高於對手，每次射擊有10%的機率導致敵方【混亂】，持續1回合。【混亂】期間，部隊無法行動，英雄無法釋放需該部隊的英雄技。" },
-  { name: "破空", require: null, learn: "弓兵", type: "智魅", openTime: "二合",
+  { name: "破空", img: "破空.png", require: null, learn: "弓兵", type: "智魅", openTime: "二合",
     lv1: "巧佔先機，一發入魂。遠一我方弓兵在首次主動攻擊時，對所有目標追加105%的傷害。若智力或魅力高於對手，該次攻擊有13%的機率忽略敵方被動技能。",
     lv30: "巧佔先機，一發入魂。遠一我方弓兵在首次主動攻擊時，對所有目標追加250%的傷害。若智力或魅力高於對手，該次攻擊有100%的機率忽略敵方被動技能。",
     advanced: "15級啟動：所有回合，我方弓兵對後軍傷害+15%。" },
-  { name: "焱雨", require: null, learn: "弓兵", type: null, openTime: "五合",
+  { name: "焱雨", img: "焱雨.png", require: null, learn: "弓兵", type: null, openTime: "五合",
     lv1: "弓兵對敵造成6次傷害後，立即發動一次奮力亂射，對敵全體造成240%的傷害，並有25%的機率導致敵方【火災】，持續2回合。",
     lv30: "弓兵對敵造成6次傷害後，立即發動一次奮力亂射，對敵全體造成385%的傷害，並有40%的機率導致敵方【火災】，持續2回合。",
     advanced: "17級啟動：我方弓兵的不良狀態抗性+20%。" },
-  { name: "掩蔽", require: null, learn: "弓兵", type: null, openTime: "五合",
+  { name: "掩蔽", img: "掩蔽.png", require: null, learn: "弓兵", type: null, openTime: "五合",
     lv1: "弓兵受到英雄技傷害-10%，受到副將技傷害-5%。",
     lv30: "弓兵受到英雄技傷害-27.4%，受到副將技傷害-13.7%。",
     advanced: "17級啟動：任意弓兵技傷害強度+10%。" },
 
   // ---- 方士兵種技 ----
-  { name: "罡氣", require: null, learn: "方士", type: null, openTime: "新服",
+  { name: "罡氣", img: "罡氣.png", require: null, learn: "方士", type: null, openTime: "新服",
     lv1: "所有回合，方士受到英雄主動技能攻擊時，減免14%的傷害。",
     lv30: "所有回合，方士受到英雄主動技能攻擊時，減免40.5%的傷害。",
     advanced: "10級啟動：方士基礎防禦+20。" },
-  { name: "蝕甲", require: null, learn: "方士", type: null, openTime: "新服",
+  { name: "蝕甲", img: "蝕甲.png", require: null, learn: "方士", type: null, openTime: "新服",
     lv1: "遠戰回合，方士攻擊可無視敵軍12%的防禦。",
     lv30: "遠戰回合，方士攻擊可無視敵軍38.5%的防禦。",
     advanced: "10級啟動：方士基礎攻擊+50。" },
-  { name: "疾風", require: null, learn: "方士", type: null, openTime: "新服",
+  { name: "疾風", img: "疾風.png", require: null, learn: "方士", type: null, openTime: "新服",
     lv1: "所有回合方士攻擊後，有40%機率觸發【疾風】追擊，對敵後軍造成42%的傷害。",
     lv30: "所有回合方士攻擊後，有40%機率觸發【疾風】追擊，對敵後軍造成112%的傷害。",
     advanced: "13級啟動：方士速度+10，兵力+50。" },
-  { name: "地刺", require: null, learn: "方士", type: "智統", openTime: "新服",
+  { name: "地刺", img: "地刺.png", require: null, learn: "方士", type: "智統", openTime: "新服",
     lv1: "遠二發動，方士發起地刺打擊敵方全軍，造成120%的傷害。若智力高於對手，則地刺提升15%的傷害。",
     lv30: "遠二發動，方士發起地刺打擊敵方全軍，造成163.5%的傷害。若智力高於對手，則地刺提升15%的傷害。",
     advanced: "13級啟動：若統御高於對手，地刺傷害提升15%，且有15%機率導致敵方【混亂】，持續1回合。【混亂】期間無法行動，英雄無法施放需該部隊的英雄技。" },
-  { name: "咒印", require: null, learn: "方士", type: "魅力", openTime: "新服",
+  { name: "咒印", img: "咒印.png", require: null, learn: "方士", type: "魅力", openTime: "新服",
     lv1: "遠戰回合，方士受到敵後軍傷害降低10%；近戰回合，若魅力高於對手，方士攻擊額外造成16%的傷害。",
     lv30: "遠戰回合，方士受到敵後軍傷害降低36.5%；近戰回合，若魅力高於對手，方士攻擊額外造成74%的傷害。",
     advanced: "13級啟動：近戰回合，若魅力高於對手，敵軍每存在1個不良狀態，【咒印】傷害再提升15%。" },
-  { name: "鬼影", require: null, learn: "方士", type: "武魅", openTime: "新服",
+  { name: "鬼影", img: "鬼影.png", require: null, learn: "方士", type: "武魅", openTime: "新服",
     lv1: "遠一發動，招喚怨鬼攻擊敵後軍，造成175%的傷害。若武力高於對手，則鬼影傷害提升25%。",
     lv30: "遠一發動，招喚怨鬼攻擊敵後軍，造成315%的傷害。若武力高於對手，則鬼影傷害提升25%。",
     advanced: "13級啟動：若魅力高於對手，則鬼影額外獲得30%暴擊率。" },
-  { name: "神光", require: null, learn: "方士", type: "智力", openTime: "一合",
+  { name: "神光", img: "神光.png", require: null, learn: "方士", type: "智力", openTime: "一合",
     lv1: "近一發動，對敵前軍造成200%的傷害，並令其【恍惚】，攻防各-2%，持續2回合。",
     lv30: "近一發動，對敵前軍造成519%的傷害，並令其【恍惚】，攻防各-7.8%，持續2回合。",
     advanced: "13級啟動：若智力高於對手，神光有30%的機率可同時攻擊敵全軍。" },
-  { name: "血瞳", require: null, learn: "方士", type: "武統", openTime: "二合",
+  { name: "血瞳", img: "血瞳.png", require: null, learn: "方士", type: "武統", openTime: "二合",
     lv1: "摒棄雜念，掌控生死。遠戰每回合我方方士攻擊首個目標時，額外追加120%的傷害。若武力或統御高於對手，還可額外消滅該目標1.2%的當前兵力。",
     lv30: "摒棄雜念，掌控生死。遠戰每回合我方方士攻擊首個目標時，額外追加352%的傷害。若武力或統御高於對手，還可額外消滅該目標7%的當前兵力。",
     advanced: "15級啟動：近戰回合，我方方士對前軍傷害+50%。" },
-  { name: "星隕", require: null, learn: "方士", type: null, openTime: "五合",
+  { name: "星隕", img: "星隕.png", require: null, learn: "方士", type: null, openTime: "五合",
     lv1: "方士對敵方造成3次傷害後，立即召喚流星砸向目標，對敵前軍或後軍造成440%的傷害，並有50%機率導致敵方【潰逃】，持續2回合。",
     lv30: "方士對敵方造成3次傷害後，立即召喚流星砸向目標，對敵前軍或後軍造成672%的傷害，並有70%機率導致敵方【潰逃】，持續2回合。",
     advanced: "17級啟動：我方方士的不良狀態抗性+20%。" },
-  { name: "石膚", require: null, learn: "方士", type: null, openTime: "五合",
+  { name: "石膚", img: "石膚.png", require: null, learn: "方士", type: null, openTime: "五合",
     lv1: "方士受到兵種技傷害-10%，受到副將技傷害-5%。",
     lv30: "方士受到兵種技傷害-27.4%，受到副將技傷害-13.7%。",
     advanced: "17級啟動：任意方士技傷害強度+10%。" },
 // ==================== 被動輔助技 ====================
-{ name: "策謀", require: "智90", learn: "文官or全才", type: "智魅", openTime: "新服",
+{ name: "策謀", img: "策謀.png", require: "智90", learn: "文官or全才", type: "智魅", openTime: "新服",
   lv1: "智力高於對手時，部隊攻擊時可提升6%的傷害，遭受攻擊時，減免6%的傷害。",
   lv30: "智力高於對手時，部隊攻擊時可提升32.5%的傷害，遭受攻擊時，減免32.5%的傷害。",
   advanced: "15級啟動：魅力高於對手時，全軍被動提升15%的格擋率。" },
 
-{ name: "暴烈", require: "武90", learn: "武將or全才", type: "武統", openTime: "新服",
+{ name: "暴烈", img: "暴烈.png", require: "武90", learn: "武將or全才", type: "武統", openTime: "新服",
   lv1: "前軍每次攻擊都會造成額外15%的傷害。若武力高於對手，則前軍攻擊會無視對手15%的防禦。",
   lv30: "前軍每次攻擊都會造成額外68%的傷害。若武力高於對手，則前軍攻擊會無視對手15%的防禦。",
   advanced: "15級啟動：統御高於對手時，前軍被動提升30%的暴擊率。" },
 
-{ name: "軍略", require: "統85", learn: null, type: "統御", openTime: "新服",
+{ name: "軍略", img: "軍略.png", require: "統85", learn: null, type: "統御", openTime: "新服",
   lv1: "戰鬥開始時判定，當剩餘兵力高於對手時，部隊攻擊傷害提升6%；當剩餘兵力低於對手時，部隊受擊傷害減少6%。",
   lv30: "戰鬥開始時判定，當剩餘兵力高於對手時，部隊攻擊傷害提升32.5%；當剩餘兵力低於對手時，部隊受擊傷害減少32.5%。",
   advanced: "15級啟動：遠戰回合，全體防禦提升20%。" },
 
-{ name: "誘敵", require: "魅90、統90", learn: null, type: "魅統", openTime: "新服",
+{ name: "誘敵", img: "誘敵.png", require: "魅90、統90", learn: null, type: "魅統", openTime: "新服",
   lv1: "虛實結合，騙取敵軍冒莽進攻。遠一我軍有10%的機率抵銷99%傷害。若戰力低於對手，誘敵觸發機率額外提升15%。",
   lv30: "虛實結合，騙取敵軍冒莽進攻。遠一我軍有51%的機率抵銷99%傷害。若戰力低於對手，誘敵觸發機率額外提升15%。",
   advanced: "17級啟動：若魅力高於對手，遠二被動提升40%的暴擊率。若統御高於對手，近戰回合被動提升20%的暴擊率。" },
 
-{ name: "株連", require: "限全才", learn: null, type: null, openTime: "新服",
+{ name: "株連", img: "株連.png", require: "限全才", learn: null, type: null, openTime: "新服",
   lv1: "睚眥必報，暗藏玄機。我後軍受到英雄技攻擊後，有50%的機率觸發【株連】還擊，對敵前軍或後軍造成58%的傷害（此傷害不觸發雙方附加效果，不觸發後續還擊、追擊類行動）。",
   lv30: "睚眥必報，暗藏玄機。我後軍受到英雄技攻擊後，有76.5%的機率觸發【株連】還擊，對敵前軍或後軍造成140%的傷害（此傷害不觸發雙方附加效果，不觸發後續還擊、追擊類行動）。",
   advanced: "10級啟動：若敵我雙方主將性別相同，則【株連】傷害提升50%，並可攻擊敵方全體。" },
 
-{ name: "集智", require: "智90、統90", learn: null, type: "智統", openTime: "新服",
+{ name: "集智", img: "集智.png", require: "智90、統90", learn: null, type: "智統", openTime: "新服",
   lv1: "召集門客，架海擎天。當我方發動任何能造成直接傷害的英雄技或是合擊技時，觸發【集智】，使其傷害強度+12.5%。",
   lv30: "召集門客，架海擎天。當我方發動任何能造成直接傷害的英雄技或是合擊技時，觸發【集智】，使其傷害強度+56%。",
   advanced: "13級啟動：若智力或統御高於對手，【集智】發動時額外無視15%的敵方防禦。" },
 
-{ name: "急救", require: "魅98", learn: null, type: "魅力", openTime: "新服",
+{ name: "急救", img: "急救.png", require: "魅98", learn: null, type: "魅力", openTime: "新服",
   lv1: "戰損的一半為傷兵。遠戰每個回合，前後軍分別搶救，各治療15名傷兵。戰鬥勝利後全面施救，治療10%的傷兵。",
   lv30: "戰損的一半為傷兵。遠戰每個回合，前後軍分別搶救，各治療117名傷兵。戰鬥勝利後全面施救，治療36.5%的傷兵。",
   advanced: "13級啟動：每次發動【急救】，都有20%機率清除一個不良狀態。" },
 
-{ name: "無懈", require: "統98", learn: null, type: "統御", openTime: "新服",
+{ name: "無懈", img: "無懈.png", require: "統98", learn: null, type: "統御", openTime: "新服",
   lv1: "當敵方發動任意英雄技時，有11%的機率使之失效。若敵方英雄等級低於我方【無懈】等級，則有額外20%的機率使之失效。每場對決最多發動一次【無懈】。",
   lv30: "當敵方發動任意英雄技時，有49.5%的機率使之失效。若敵方英雄等級低於我方【無懈】等級，則有額外20%的機率使之失效。每場對決最多發動一次【無懈】。",
   advanced: "13級啟動：每場對決有50%的機率，可額外發動一次【無懈】。" },
 
-{ name: "遁甲", require: "智98", learn: null, type: "智力", openTime: "新服",
+{ name: "遁甲", img: "遁甲.png", require: "智98", learn: null, type: "智力", openTime: "新服",
   lv1: "三奇六儀，置分九宮。每次英雄技攻擊後，有35%概率發動【遁甲】，對敵前軍或後軍造成無視防禦的隨機傷害，傷害率10%~100%。每回合最多發動一次。",
   lv30: "三奇六儀，置分九宮。每次英雄技攻擊後，有61%概率發動【遁甲】，對敵前軍或後軍造成無視防禦的隨機傷害，傷害率39%~245%。每回合最多發動一次。",
   advanced: "17級啟動：遁甲有20%的機率導致敵方【內訌】，持續一回合。【內訌】期間，敵方前後軍會自相殘害，英雄無法釋放需要該部隊的英雄技。" },
 
-{ name: "洞鑒", require: "武95、智95", learn: null, type: "武智四維", openTime: "三合",
+{ name: "洞鑒", img: "洞鑒.png", require: "武95、智95", learn: null, type: "武智四維", openTime: "三合",
   lv1: "靜觀其變，穩操勝券。我方每累計受到9次傷害，立即發動一次【洞鑒】，使我全軍獲得強度為30%的護盾（受我方最大兵力加成），且護盾存在期間我軍傷害+30%。",
   lv30: "靜觀其變，穩操勝券。我方每累計受到9次傷害，立即發動一次【洞鑒】，使我全軍獲得強度為102.5%的護盾（受我方最大兵力加成），且護盾存在期間我軍傷害+58%。",
   advanced: "17級啟動：若四維總數高於對手，【洞鑒】護盾存在期間，我軍免傷+10%，格擋率+40%。" },
 
-{ name: "折衝", require: "無", learn: null, type: null, openTime: "六合",
+{ name: "折衝", img: "折衝.png", require: "無", learn: null, type: null, openTime: "六合",
   lv1: "我方任意兵種主動技首次發動時，都有20%的機率觸發【折衝】，使此技能於2回合後再次發動。",
   lv30: "我方任意兵種主動技首次發動時，都有60%的機率觸發【折衝】，使此技能於2回合後再次發動。",
   advanced: "17級啟動：近戰回合，我方前後軍攻擊和傷害+5%。" },
 
-{ name: "重生", require: "無", learn: null, type: null, openTime: "六合",
+{ name: "重生", img: "重生.png", require: "無", learn: null, type: null, openTime: "六合",
   lv1: "我方任意部隊受到傷害導致全滅時，有25%機率復活，增援自身30%的最大兵力，同時驅散所有增益及不良狀態（每場對決限成功發動一次）。",
   lv30: "我方任意部隊受到傷害導致全滅時，有75%機率復活，增援自身30%的最大兵力，同時驅散所有增益及不良狀態（每場對決限成功發動一次）。",
   advanced: "17級啟動：隊伍復活後，被動提升自身20%攻擊。" },
 // ==================== 常態輔助技 ====================
-{ name: "增援", require: null, learn: null, type: null, openTime: "新服",
+{ name: "增援", img: "增援.png", require: null, learn: null, type: null, openTime: "新服",
   lv1: "前軍基礎兵力上限提升13。", lv30: "前軍基礎兵力上限提升300。" },
-{ name: "擴編", require: null, learn: null, type: null, openTime: "新服",
+{ name: "擴編", img: "擴編.png", require: null, learn: null, type: null, openTime: "新服",
   lv1: "後軍基礎兵力上限提升13。", lv30: "後軍基礎兵力上限提升300。" },
-{ name: "剛體", require: null, learn: null, type: null, openTime: "新服",
+{ name: "剛體", img: "剛體.png", require: null, learn: null, type: null, openTime: "新服",
   lv1: "前軍基礎防禦上限提升3。", lv30: "前軍基礎防禦上限提升70。" },
-{ name: "靈敏", require: null, learn: null, type: null, openTime: "新服",
+{ name: "靈敏", img: "靈敏.png", require: null, learn: null, type: null, openTime: "新服",
   lv1: "後軍基礎防禦上限提升3。", lv30: "後軍基礎防禦上限提升70。" },
 
-{ name: "勇武", require: null, learn: null, type: "武力", openTime: "新服", lv1: "提高英雄1點武力。", lv30: "提高英雄6點武力。",
+{ name: "勇武", img: "勇武.png", require: null, learn: null, type: "武力", openTime: "新服", lv1: "提高英雄1點武力。", lv30: "提高英雄6點武力。",
   advancedRamp: { start: 7, step: 4, max: 20, target: "front", statType: "攻擊", template: n => `前軍基礎攻擊 +${n}` } },
-{ name: "才學", require: null, learn: null, type: "智力", openTime: "新服", lv1: "提高英雄1點智力。", lv30: "提高英雄6點智力。",
+{ name: "才學", img: "才學.png", require: null, learn: null, type: "智力", openTime: "新服", lv1: "提高英雄1點智力。", lv30: "提高英雄6點智力。",
   advancedRamp: { start: 7, step: 4, max: 20, target: "back", statType: "攻擊", template: n => `後軍基礎攻擊 +${n}` } },
-{ name: "修養", require: null, learn: null, type: "魅力", openTime: "新服", lv1: "提高英雄1點魅力。", lv30: "提高英雄6點魅力。",
+{ name: "修養", img: "修養.png", require: null, learn: null, type: "魅力", openTime: "新服", lv1: "提高英雄1點魅力。", lv30: "提高英雄6點魅力。",
   advancedRamp: { start: 7, step: 2, max: 10, target: "both", statType: "防禦", template: n => `前後軍各基礎防禦 +${n}` } },
-{ name: "兵法", require: null, learn: null, type: "統御", openTime: "新服", lv1: "提高英雄1點統御。", lv30: "提高英雄6點統御。",
+{ name: "兵法", img: "兵法.png", require: null, learn: null, type: "統御", openTime: "新服", lv1: "提高英雄1點統御。", lv30: "提高英雄6點統御。",
   advancedRamp: { start: 7, step: 5, max: 25, target: "both", statType: "兵力", template: n => `前後軍各基礎兵力 +${n}` } },
-{ name: "狂骨", require: null, learn: null, type: "武力", openTime: "五合",
+{ name: "狂骨", img: "狂骨.png", require: null, learn: null, type: "武力", openTime: "五合",
   lv1: "發動與武力相關的英雄技時，傷害強度+17%；受到與武力相關的英雄技傷害時，免傷+11%。",
   lv30: "發動與武力相關的英雄技時，傷害強度+75%；受到與武力相關的英雄技傷害時，免傷+40%。",
   advanced: "17級啟動：武力+2，前軍速度+5。" },
-{ name: "博聞", require: null, learn: null, type: "智力", openTime: "五合",
+{ name: "博聞", img: "博聞.png", require: null, learn: null, type: "智力", openTime: "五合",
   lv1: "發動與智力相關的英雄技時，傷害強度+17%；受到與智力相關的英雄技傷害時，免傷+11%。",
   lv30: "發動與智力相關的英雄技時，傷害強度+75%；受到與智力相關的英雄技傷害時，免傷+40%。",
   advanced: "17級啟動：智力+2，後軍速度+5。" },
-{ name: "仁義", require: null, learn: null, type: "魅力", openTime: "五合",
+{ name: "仁義", img: "仁義.png", require: null, learn: null, type: "魅力", openTime: "五合",
   lv1: "發動與魅力相關的英雄技時，傷害強度+17%；受到與魅力相關的英雄技傷害時，免傷+11%。",
   lv30: "發動與魅力相關的英雄技時，傷害強度+75%；受到與魅力相關的英雄技傷害時，免傷+40%。",
   advanced: "17級啟動：魅力+2，前後軍基礎兵力+40。" },
-{ name: "推演", require: null, learn: null, type: "統御", openTime: "五合",
+{ name: "推演", img: "推演.png", require: null, learn: null, type: "統御", openTime: "五合",
   lv1: "發動與統御相關的英雄技時，傷害強度+17%；受到與統御相關的英雄技傷害時，免傷+11%。",
   lv30: "發動與統御相關的英雄技時，傷害強度+75%；受到與統御相關的英雄技傷害時，免傷+40%。",
   advanced: "17級啟動：統御+2，前後軍基礎防禦+10。" },
 
-{ name: "忘憂", require: "智85、魅90", learn: null, type: "智魅", openTime: "新服",
+{ name: "忘憂", img: "忘憂.png", require: "智85、魅90", learn: null, type: "智魅", openTime: "新服",
   lv1: "以曲定軍，令我方泰然自若，而敵方戰意潰散。敵方的不良狀態抗性-6%，我方的不良狀態抗性+6%。",
   lv30: "以曲定軍，令我方泰然自若，而敵方戰意潰散。敵方的不良狀態抗性-16.6%，我方的不良狀態抗性+16.6%。",
   advanced: "15級啟動：單場對決中，我方後軍可額外豁免1次導致全滅的攻擊傷害。" },
 
-{ name: "殺意", require: "武85、統90", learn: null, type: "武統", openTime: "新服",
+{ name: "殺意", img: "殺意.png", require: "武85、統90", learn: null, type: "武統", openTime: "新服",
   lv1: "前軍基礎防禦提升2，後軍基礎防禦提升2。",
   lv30: "前軍基礎防禦提升55，後軍基礎防禦提升55。",
   advanced: "17級啟動：遠戰回合，全體攻擊提升20%。" },
 
-{ name: "退避", require: "魅95", learn: null, type: "魅力", openTime: "三合",
+{ name: "退避", img: "退避.png", require: "魅95", learn: null, type: "魅力", openTime: "三合",
   lv1: "暫避其鋒，挫敵銳氣。近戰回合前，若我方前軍單次承受的傷害，超出其最大兵力的10%，超出部分將被抵銷19%。",
   lv30: "暫避其鋒，挫敵銳氣。近戰回合前，若我方前軍單次承受的傷害，超出其最大兵力的10%，超出部分將被抵銷60%。",
   advanced: "15級啟動：近戰回合前，若我方後軍單次承受的傷害，超出其最大兵力的10%，超出部分將被抵銷35%。" },
 
-{ name: "凶煞", require: "武98", learn: null, type: "武力", openTime: "五合",
+{ name: "凶煞", img: "凶煞.png", require: "武98", learn: null, type: "武力", openTime: "五合",
   lv1: "若敵方兵力不足75%，我方英雄或兵種攻擊時暴擊率+10%，暴擊傷害+7.5%。",
   lv30: "若敵方兵力不足75%，我方英雄或兵種攻擊時暴擊率+24.5%，暴擊傷害+51%。",
   advanced: "17級啟動：敵方的護盾、增援兵力類效果-30%。" },
 
-{ name: "鷹視", require: "無", learn: null, type: null, openTime: "六合",
+{ name: "鷹視", img: "鷹視.png", require: "無", learn: null, type: null, openTime: "六合",
   lv1: "我方兵種主動技發動機率+6%，敵方兵種主動技發動機率-9%。",
   lv30: "我方兵種主動技發動機率+18%，敵方兵種主動技發動機率-27%。",
   advanced: "17級啟動：遠二回合，敵方兵種主動技發動機率額外-6%，近一回合，敵方兵種主動技發動機率額外-12%。" },
@@ -3468,6 +3539,506 @@ const baowuList = [
     { grade: "紫", effect: "【虎魄】的起始效果提升至攻擊+45%" },
     { grade: "金", effect: "魅力+1，統御+2，後軍速度+5" },
 ]},
+
+{ id: "taotietatianju", name: "饕餮踏天駒", img: "饕餮踏天駒.png", cat: "坐騎", set: "饕餮套裝", openTime: ["5合"], grades: [
+
+    { grade: "白", effect: "魅力+2；傳奇英雄魅力額外+3" },
+    { grade: "綠", effect: "國戰攻城時，傷害+10%" },
+    { grade: "藍", effect: "智力+3，魅力+3" },
+    { grade: "紫", effect: "魅力+2；每裝備1件饕餮套，後軍兵力+480" },
+    { grade: "金", effect: "每回合發動【饕餮降世】的機率+20%（裝備2件金色饕餮套後生效，必須含有饕餮搏天杖）" }
+
+]},
+
+{ id: "taotiebotianzhang", name: "饕餮搏天杖", img: "饕餮搏天杖.png", cat: "神兵", set: "饕餮套裝", openTime: ["5合"], grades: [
+
+    { grade: "白", effect: "武力+2，統御+2；傳奇英雄武力額外+3，統御額外+3" },
+    { grade: "綠", effect: "每裝備1件饕餮套，遠戰回合部隊受到的傷害-5%" },
+    { grade: "藍", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "紫", effect: "前後軍可分別豁免一次會導致全滅的攻擊（裝備5件饕餮套後生效）" },
+    { grade: "金", effect: "戰鬥開始起，每回合有20%機率發動【饕餮降世】，忽略敵方被動技能，對剩餘兵力比例較少的部隊造成300%的傷害" }
+
+]},
+
+{ id: "taotietuntianjuan", name: "饕餮吞天卷", img: "饕餮吞天卷.png", cat: "寶典", set: "饕餮套裝", openTime: ["5合"], grades: [
+
+    { grade: "白", effect: "智力+2；傳奇英雄智力額外+3" },
+    { grade: "綠", effect: "兵種技能傷害+20%" },
+    { grade: "藍", effect: "智力+3，魅力+3" },
+    { grade: "紫", effect: "智力+2；每裝備1件饕餮套，前軍兵力+480" },
+    { grade: "金", effect: "每次發動【饕餮降世】時，有40%的機率使目標【混亂】1回合（裝備3件金色饕餮套後生效，必須含有饕餮搏天杖）" }
+
+]},
+
+{ id: "tianfamishu", name: "天罰秘書", img: "天罰秘書.png", cat: "寶典", set: "天罰套裝", openTime: ["5合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "裝備5件天罰套時，全軍受到來自敵方後軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對女性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質天罰套時，每道落雷和天罰必定觸發【破防】，且每道【天罰】可額外消滅敵方前軍4%的最大兵力" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "menhunluoshashou", name: "門魂羅剎獸", img: "門魂羅剎獸.png", cat: "坐騎", set: "鬥神套裝", openTime: ["5合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "裝備5件鬥神套時，全軍受到來自敵方前軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對男性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質鬥神套時，敵方被【鬥神】命中的部隊受到致殘的特殊效果，攻防各-40%，保持於本次對決" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "taotieshitiankai", name: "饕餮噬天鎧", img: "饕餮噬天鎧.png", cat: "奇珍", set: "饕餮套裝", openTime: ["5合"], grades: [
+
+    { grade: "白", effect: "統御+2；傳奇英雄統御額外+3" },
+    { grade: "綠", effect: "國戰攻城時，傷害+10%" },
+    { grade: "藍", effect: "武力+3，統御+3" },
+    { grade: "紫", effect: "統御+2；每裝備1件饕餮套，後軍攻擊+300" },
+    { grade: "金", effect: "近戰回合，發動【饕餮降世】時，可額外消滅目標20%的最大兵力（裝備4件金色饕餮套後生效，必須含有饕餮搏天杖）" }
+
+]},
+
+{ id: "taotielietianling", name: "饕餮裂天令", img: "饕餮裂天令.png", cat: "令符", set: "饕餮套裝", openTime: ["5合"], grades: [
+
+    { grade: "白", effect: "武力+2；傳奇英雄武力額外+3" },
+    { grade: "綠", effect: "兵種技能傷害+20%" },
+    { grade: "藍", effect: "武力+3，統御+3" },
+    { grade: "紫", effect: "武力+2；每裝備1件饕餮套，前軍攻擊+300" },
+    { grade: "金", effect: "每次發動【饕餮降世】時，有50%的機率使目標【污濁】2回合，期間無法獲得增益狀態（裝備5件金色饕餮套後生效）" }
+
+]},
+
+{ id: "xuanyuanyupei", name: "軒轅玉佩", img: "軒轅玉佩.png", cat: "奇珍", set: "軒轅套裝", openTime: ["5合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "裝備5件軒轅套裝時，全軍受到來自敵方後軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對女性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質軒轅套裝時，【軒轅伏魔】可按己方最大總兵力的5%，額外消滅目標兵力" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "nvwalingzhu", name: "女媧靈珠", img: "女媧靈珠.png", cat: "令符", set: "女媧套裝", openTime: ["5合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "裝備5件女媧套裝時，全軍受到來自敵方後軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對男性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質女媧套裝時，【三生造化】增援兵力的效果翻倍，且前後軍可各豁免1次導致全滅的傷害" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "fuxihuanshitu", name: "伏羲幻世圖", img: "伏羲幻世圖.png", cat: "寶典", set: "伏羲套裝", openTime: ["5合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "裝備5件伏羲套裝時，全軍受到來自敵方前軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對女性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質伏羲套裝時，近戰首回合我方英雄行動結束時，有50%的機率額外發動【天道裁決】" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "shennongwuxianse", name: "神農五弦瑟", img: "神農五弦瑟.png", cat: "奇珍", set: "神農套裝", openTime: ["5合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "裝備5件神農套時，全軍受到來自敵方後軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對同性別英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質神農套時，每次發動【青麟秘術】後，為我方後軍增援兵力，增援強度為500%" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "taotiezhixin", name: "饕餮之心", img: "饕餮之心.png", cat: "令符", set: "饕餮套裝", openTime: ["5合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "裝備5件饕餮套裝時，全軍受到來自敵方前軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對非傳奇英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質饕餮套裝時，【饕餮降世】的發動機率+25%" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "taipingqinglingshu", name: "太平清領書", img: "太平清領書.png", cat: "寶典", openTime: ["5合"], source: "育魂任務", sourceDetail: "育魂任務", grades: [
+
+    { grade: "白", effect: "智力+2" },
+    { grade: "綠", effect: "統御+2；已輪迴英雄裝備時，敵方的不良狀態抗性-10%" },
+    { grade: "藍", effect: "智力+2；敵方受到【火災】【潰逃】【迷幻】【寒顫】狀態時，持續回合+1" },
+    { grade: "紫", effect: "武力+2；已輪迴英雄裝備時，遠戰第二回合發動【善惡有報】，驅散敵方前後軍各1個增益狀態，並使我方前後軍各完全免疫1次傷害" },
+    { grade: "金", effect: "智力+2；若敵方部隊按比例損失兵力時，存在減免效果，使該效果弱化30%" }
+
+]},
+
+{ id: "feifenglinglongguan", name: "飛鳳玲瓏冠", img: "飛鳳玲瓏冠.png", cat: "奇珍", openTime: ["5合"], source: "育魂任務", sourceDetail: "育魂任務", grades: [
+
+    { grade: "白", effect: "魅力+1；女性英雄受到男性英雄傷害-10%" },
+    { grade: "綠", effect: "武力+2；女性英雄裝備時，遠戰第二回合可發動【玲瓏飛刺】，對敵方後軍造成200%傷害，並消滅10%的最大兵力" },
+    { grade: "藍", effect: "魅力+2；若魅力或武力高於對手，發動【玲瓏飛刺】時，可導致目標【戰慄】2回合。【戰慄】期間，部隊暴擊率-100%" },
+    { grade: "紫", effect: "魅力+2；每提升1級【傾國】或【仙音】，對男性英雄傷害+1%（最多+40%）" },
+    { grade: "金", effect: "武力+3；當我方前軍即將按比例損失兵力時，減免50%效果" }
+
+]},
+
+{ id: "wudizhizun", name: "武帝之尊", img: "武帝之尊.png", cat: "神兵", set: "武帝套裝", openTime: ["5合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "裝備5件武帝套時，全軍受到來自敵方前軍的任意攻擊時，減免25%傷害" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "對男性英雄傷害+10%，免傷+5%" },
+    { grade: "紫", effect: "裝備5件金色品質武帝套時，【君臨天下】有80%的機率對敵方全軍發動" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "wanghunbuxiuzhang", name: "亡魂不朽杖", img: "亡魂不朽杖.png", cat: "神兵", set: "亡魂套裝", openTime: ["6合"], grades: [
+
+    { grade: "白", effect: "智力+3，魅力+3；已輪迴英雄裝備時，武力額外+3，統御額外+3" },
+    { grade: "綠", effect: "每裝備1件亡魂套，敵方兵種主動技傷害-4%" },
+    { grade: "藍", effect: "我方兵種技發動率+5%，敵方兵種技發動率-5%" },
+    { grade: "紫", effect: "同時裝備亡魂地獄馬，智力+2，魅力+2，武力+2，統御+2" },
+    { grade: "金", effect: "近戰首回合發動【號令亡魂】，將敵方已損失兵力的30%平均轉化為【骸骨尖刺】和【骸骨戰甲】。【骸骨尖刺】：召喚尖刺刺向敵方後軍，減其兵力。【骸骨戰甲】：召喚戰甲覆蓋我方前軍，承擔全部傷害直至破碎" }
+
+]},
+
+{ id: "wanghundiyuma", name: "亡魂地獄馬", img: "亡魂地獄馬.png", cat: "坐騎", set: "亡魂套裝", openTime: ["6合"], grades: [
+
+    { grade: "白", effect: "統御+2；已輪迴英雄裝備時，統御額外+3" },
+    { grade: "綠", effect: "每裝備1件亡魂套，後軍攻擊+300" },
+    { grade: "藍", effect: "受到弓兵傷害-20%，受到方士傷害-20%" },
+    { grade: "紫", effect: "同時裝備亡魂空冥冊，統御+4，武力+4" },
+    { grade: "金", effect: "【骸骨尖刺】可額外消滅目標3000兵力，【骸骨戰甲】可額外獲得3000護盾量（裝備2件金色亡魂套後生效，必須含有亡魂不朽杖）" }
+
+]},
+
+{ id: "wanghunkongmingce", name: "亡魂空冥冊", img: "亡魂空冥冊.png", cat: "寶典", set: "亡魂套裝", openTime: ["6合"], grades: [
+
+    { grade: "白", effect: "武力+2；已輪迴英雄裝備時，武力額外+3" },
+    { grade: "綠", effect: "每裝備1件亡魂套，前軍攻擊+300" },
+    { grade: "藍", effect: "免傷+4%，我方輪迴次數高於對手時，免傷額外+8%" },
+    { grade: "紫", effect: "同時裝備亡魂枯骨戒，武力+4，統御+4" },
+    { grade: "金", effect: "發動【號令亡魂】時，可額外將我方已損失兵力的20%平均轉化為【骸骨尖刺】和【骸骨戰甲】（裝備3件金色亡魂套後生效，必須含有亡魂不朽杖）" }
+
+]},
+
+{ id: "wanghunkugujie", name: "亡魂枯骨戒", img: "亡魂枯骨戒.png", cat: "奇珍", set: "亡魂套裝", openTime: ["6合"], grades: [
+
+    { grade: "白", effect: "魅力+2；已輪迴英雄裝備時，魅力額外+3" },
+    { grade: "綠", effect: "每裝備1件亡魂套，後軍兵力+400" },
+    { grade: "藍", effect: "對弓兵傷害+15%，對方士傷害+15%" },
+    { grade: "紫", effect: "同時裝備亡魂致命符，魅力+4，智力+4" },
+    { grade: "金", effect: "發動【號令亡魂】時，可額外將敵方已損失兵力的30%平均轉化為【骸骨尖刺】和【骸骨戰甲】（裝備4件金色亡魂套後生效，必須含有亡魂不朽杖）" }
+
+]},
+
+{ id: "wanghunzhimingfu", name: "亡魂致命符", img: "亡魂致命符.png", cat: "令符", set: "亡魂套裝", openTime: ["6合"], grades: [
+
+    { grade: "白", effect: "智力+2；已輪迴英雄裝備時，智力額外+3" },
+    { grade: "綠", effect: "每裝備1件亡魂套，前軍兵力+400" },
+    { grade: "藍", effect: "傷害+4%，我方輪迴次數高於對手時，傷害額外+8%" },
+    { grade: "紫", effect: "同時裝備亡魂不朽杖，智力+4，魅力+4" },
+    { grade: "金", effect: "【骸骨尖刺】有30%的幾率借機斬落敵方英雄，【骸骨戰甲】消失時對我方前軍增援兵力，增援強度為400%（裝備5件金色亡魂套後生效）" }
+
+]},
+
+{ id: "wanghunhuizhang", name: "亡魂徽章", img: "亡魂徽章.png", cat: "奇珍", set: "亡魂套裝", openTime: ["6合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "每裝備1件亡魂套，對戰宿敵時對其傷害額外+3%" },
+    { grade: "綠", effect: "武力+2，智力+2，魅力+2，統御+2" },
+    { grade: "藍", effect: "裝備5件亡魂套時，對戰宿敵時對其傷害額外+20%" },
+    { grade: "紫", effect: "裝備5件金色品質亡魂套時，我方前軍可額外豁免2次會導致全滅的攻擊傷害，我方英雄不會被特殊效果斬落" },
+    { grade: "金", effect: "武力+2，智力+2，魅力+2，統御+2" }
+
+]},
+
+{ id: "quxiangpipa", name: "曲項琵琶", img: "曲項琵琶.png", cat: "神兵", openTime: ["6合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "武力+2" },
+    { grade: "綠", effect: "魅力+2，統御+2" },
+    { grade: "藍", effect: "統御+2；開戰回合，有30%的幾率發動特殊戰計【十面埋伏】，對敵方全軍造成500%戰計傷害。若我方兵力高於75%，【十面埋伏】發動幾率+60%" },
+    { grade: "紫", effect: "武力+2；對戰除玩家外的所有NPC時，禁止敵方英雄發動【餘威】【遺計】【同歸】" },
+    { grade: "金", effect: "對戰除玩家外的所有NPC時，我方造成的所有傷害+50%，並無視目標25%防禦" }
+
+]},
+
+{ id: "dujinboshanlu", name: "鍍金博山爐", img: "鍍金博山爐.png", cat: "奇珍", openTime: ["6合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "智力+2，統御+2" },
+    { grade: "綠", effect: "我方戰計傷害的強度+15%" },
+    { grade: "藍", effect: "智力+2，魅力+3" },
+    { grade: "紫", effect: "我方戰計傷害的強度+30%" },
+    { grade: "金", effect: "智力+1；敵方發動首個戰計時，我方有90%機率觸發【焚香化吉】，阻止其戰計發動" }
+
+]},
+
+{ id: "fenzhengcanjuan", name: "紛爭殘卷", img: "紛爭殘卷.png", cat: "寶典", openTime: ["6合"], source: "紫氣東來", sourceDetail: "紫氣東來", grades: [
+
+    { grade: "白", effect: "魅力+2，前軍速度+3" },
+    { grade: "綠", effect: "智力+2，前軍速度+4" },
+    { grade: "藍", effect: "統御+2，前軍速度+5" },
+    { grade: "紫", effect: "武力+2，前軍速度+6" },
+    { grade: "金", effect: "近戰第一回合，我方前軍行動前發動【破釜沈舟】，驅散自身所有不良狀態，並獲得【破釜】的特殊效果，攻擊+40%，同時防禦-40%，持續1回合" }
+
+]},
+
+{ id: "shenglinglu", name: "聖靈鹿", img: "聖靈鹿.png", cat: "坐騎", openTime: ["6合"], source: "免單", sourceDetail: "免單", grades: [
+
+    { grade: "白", effect: "智力+2，統御+2" },
+    { grade: "綠", effect: "遠戰第二回合，我方全軍傷害+20%" },
+    { grade: "藍", effect: "魅力+3，統御+3" },
+    { grade: "紫", effect: "遠戰第二回合，敵方全軍免傷-30%" },
+    { grade: "金", effect: "若敵方任意一支部隊在遠戰第二回合全滅，則我方發動【天賜聖潔】，為我方全軍增援兵力，增援強度為400%（對戰NPC時無法發動，單場對決僅可發動1次）" }
+
+]},
+
+{ id: "chiweidiaolingjian", name: "赤尾雕翎箭", img: "赤尾雕翎箭.png", cat: "奇珍", openTime: ["6合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "武力+1；遠戰回合弓兵傷害+20%" },
+    { grade: "綠", effect: "發動【回射】時，有75%機率將目標改為敵方全軍" },
+    { grade: "藍", effect: "武力+2，統御+2" },
+    { grade: "紫", effect: "武力+2；發動【回射】時，有20%幾率使目標【混亂】1回合" },
+    { grade: "金", effect: "統御+2；弓兵攻擊處於不良狀態的目標時，傷害+30%" }
+
+]},
+
+{ id: "shaoyujian", name: "少虞劍", img: "少虞劍.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "統御+1" },
+    { grade: "綠", effect: "對敵方後軍傷害+8%" },
+    { grade: "藍", effect: "統御+2" },
+    { grade: "紫", effect: "對敵方後軍傷害+12%" },
+    { grade: "金", effect: "統御+3；遠戰首回合起，每2回合發動【銀光落刃】，對敵方後軍造成100%傷害，並使目標累計降低12%免傷（最多降低36%）" }
+
+]},
+
+{ id: "huoshibawangqiang", name: "火獅霸王槍", img: "火獅霸王槍.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "武力+1，受到全才傷害-10%" },
+    { grade: "綠", effect: "我方造成的【遲緩】狀態持續回合+1" },
+    { grade: "藍", effect: "統御+1，受到全才傷害-15%" },
+    { grade: "紫", effect: "我方攻擊處於【遲緩】狀態的目標時，傷害強度+20%" },
+    { grade: "金", effect: "統御+2，武力+2，受到來自敵方後軍的攻擊時，減免25%傷害" }
+
+]},
+
+{ id: "longlindao", name: "龍鱗刀", img: "龍鱗刀.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "對步兵傷害+15%" },
+    { grade: "綠", effect: "智力+2" },
+    { grade: "藍", effect: "統御+1；敵方步兵的護盾類效果-80%" },
+    { grade: "紫", effect: "智力+1，統御+2" },
+    { grade: "金", effect: "統御+2；敵方步兵的增援兵力類效果-80%" }
+
+]},
+
+{ id: "wuganche", name: "武剛車", img: "武剛車.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "前軍速度-3，免傷+5%" },
+    { grade: "綠", effect: "前軍速度-4，免傷+7%" },
+    { grade: "藍", effect: "前軍速度-5，免傷+9%" },
+    { grade: "紫", effect: "後軍攻擊+300，後軍傷害+10%" },
+    { grade: "金", effect: "魅力+2，統御+2；遠戰第二回合起始時發動【犀甲環營】，我方全軍獲得【犀甲】狀態2回合，格擋率+30%" }
+
+]},
+
+{ id: "wuyuntaxue", name: "烏雲踏雪", img: "烏雲踏雪.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "騎兵的不良狀態抗性+5%" },
+    { grade: "綠", effect: "武力+2；張飛裝備時，武力額外+2" },
+    { grade: "藍", effect: "騎兵的不良狀態抗性+10%" },
+    { grade: "紫", effect: "武力+2；【捨身】的發動機率+20%" },
+    { grade: "金", effect: "發動【捨身】時觸發【踏雪】，攻擊前驅散目標所有護盾，並額外消滅目標6%的最大兵力" }
+
+]},
+
+{ id: "chunhoudi", name: "春後笛", img: "春後笛.png", cat: "神兵", openTime: ["6合"], source: "免單", sourceDetail: "免單", grades: [
+
+    { grade: "白", effect: "智力+2；我方的增援兵力類效果+5%" },
+    { grade: "綠", effect: "女性英雄裝備時，受到男性英雄傷害-15%" },
+    { grade: "藍", effect: "智力+2，魅力+2" },
+    { grade: "紫", effect: "女性英雄裝備時，對男性英雄傷害+20%" },
+    { grade: "金", effect: "魅力+3；若敵方英雄為男性，發動【仙音】時，有70%機率為我方同時附加【仙音】狀態" }
+
+]},
+
+{ id: "hutouzhanjinqiang", name: "虎頭湛金槍", img: "虎頭湛金槍.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "騎兵暴擊率+15%" },
+    { grade: "綠", effect: "武力+2，統御+1" },
+    { grade: "藍", effect: "騎兵暴擊率+25%" },
+    { grade: "紫", effect: "騎兵暴擊傷害+20%" },
+    { grade: "金", effect: "武力+2，統御+2，騎兵暴擊率+15%；且我方騎兵累計造成4次暴擊後，可立即額外發動1次【合圍】" }
+
+]},
+
+{ id: "wutiezhenshanchui", name: "烏鐵震山錘", img: "烏鐵震山錘.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "步兵兵力+200，步兵格擋率+2%" },
+    { grade: "綠", effect: "步兵觸發格擋時，額外保全100名士兵" },
+    { grade: "藍", effect: "武力+3" },
+    { grade: "紫", effect: "步兵觸發格擋時，額外保全250名士兵" },
+    { grade: "金", effect: "步兵格擋率+15%；且戰鬥中我方步兵每次觸發格擋時，都有25%機率額外觸發【蓄力】效果，使自身下次攻擊的傷害提高80%" }
+
+]},
+
+{ id: "chuzhui", name: "楚騅", img: "楚騅.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "統御+1，對敵方前軍傷害+6%，對敵方後軍傷害-4%" },
+    { grade: "綠", effect: "魅力+1，對敵方前軍傷害+6%，對敵方後軍傷害-4%" },
+    { grade: "藍", effect: "智力+1，對敵方前軍傷害+6%，對敵方後軍傷害-4%" },
+    { grade: "紫", effect: "我方英雄造成的所有傷害+5%，項羽裝備時，英雄造成的所有傷害額外+15%" },
+    { grade: "金", effect: "武力+3；遠戰首回合發動【楚王霸業】，對敵方前軍造成300%傷害，並導致其【虛弱】2回合" }
+
+]},
+
+{ id: "sunbinbingfa", name: "孫臏兵法", img: "孫臏兵法.png", cat: "寶典", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "魅力+1；敵方前軍的護盾、增援兵力類效果-20%" },
+    { grade: "綠", effect: "統御+1；敵方後軍的護盾、增援兵力類效果-20%" },
+    { grade: "藍", effect: "智力+2" },
+    { grade: "紫", effect: "統御+3；若戰力低於對手，【誘敵】觸發機率額外提升20%" },
+    { grade: "金", effect: "遠戰第二回合起始時發動【兵家奇書】，對敵方全軍造成180%傷害，並有50%的機率，斬落敵方前軍副將。若同時裝備【孫子兵法】，斬落機率加倍" }
+
+]},
+
+{ id: "lianyaohu", name: "煉妖壺", img: "煉妖壺.png", cat: "奇珍", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "每點武力為前軍額外提供6點攻擊" },
+    { grade: "綠", effect: "每點智力為後軍額外提供6點攻擊" },
+    { grade: "藍", effect: "每點魅力為前軍額外提供6點防禦" },
+    { grade: "紫", effect: "每點統御為後軍額外提供6點防禦" },
+    { grade: "金", effect: "魅力+2，統御+2；四維中每有一維高於對手，兵種主動技能傷害+10%" }
+
+]},
+
+{ id: "zhanlujian", name: "湛盧劍", img: "湛盧劍.png", cat: "神兵", openTime: ["6合"], source: "免單", sourceDetail: "免單", grades: [
+
+    { grade: "白", effect: "智力+1，魅力+1；我方前軍承受反噬、反震類傷害效果-80%" },
+    { grade: "綠", effect: "前軍受到英雄技能傷害-25%" },
+    { grade: "藍", effect: "魅力+2，統御+2" },
+    { grade: "紫", effect: "後軍受到英雄技能傷害-30%" },
+    { grade: "金", effect: "統御+3；我方英雄技傷害+20%，男性英雄裝備時，英雄技傷害額外+30%" }
+
+]},
+
+{ id: "liguanggong", name: "李廣弓", img: "李廣弓.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "武力+1" },
+    { grade: "綠", effect: "【金汁】觸發幾率+5%" },
+    { grade: "藍", effect: "武力+2" },
+    { grade: "紫", effect: "【金汁】觸發幾率+10%" },
+    { grade: "金", effect: "武力+3；敵方部隊受到【金汁】狀態的持續回合+1，且處於【金汁】狀態下時，額外降低20%防禦" }
+
+]},
+
+{ id: "moyuhanshuangshan", name: "墨羽寒霜扇", img: "墨羽寒霜扇.png", cat: "神兵", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "方士攻擊+200，方士傷害+5%" },
+    { grade: "綠", effect: "智力+2，方士速度+2" },
+    { grade: "藍", effect: "方士防禦+200，方士傷害+10%" },
+    { grade: "紫", effect: "統御+3，方士速度+3" },
+    { grade: "金", effect: "智力+3；若同時裝備【白羽扇】，【疾風】進化為【風刃】，目標改為敵方全軍，且有30%幾率導致【寒顫】2回合" }
+
+]},
+
+{ id: "zixing", name: "紫騂", img: "紫騂.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "智力+2" },
+    { grade: "綠", effect: "魅力+2" },
+    { grade: "藍", effect: "智力+2" },
+    { grade: "紫", effect: "魅力+2" },
+    { grade: "金", effect: "若智力或魅力高於對手，我方全軍受到英雄技傷害-40%" }
+
+]},
+
+{ id: "huoniuzhanche", name: "火牛戰車", img: "火牛戰車.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "敵我雙方受到【火災】的幾率+8%" },
+    { grade: "綠", effect: "敵我雙方的護盾類效果-80%" },
+    { grade: "藍", effect: "敵我雙方受到【火災】的幾率+12%" },
+    { grade: "紫", effect: "【捨身】【疾風】【回射】【反擊】都有20%幾率導致目標【火災】2回合" },
+    { grade: "金", effect: "統御+3；若對敵方已有【火災】狀態的部隊再次成功施加【火災】狀態，將觸發【燃爐】立即消滅目標7%的最大兵力" }
+
+]},
+
+{ id: "xianlingfu", name: "仙靈符", img: "仙靈符.png", cat: "令符", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "武力+1，智力+1，魅力+1，統御+1" },
+    { grade: "綠", effect: "遠戰首回合，我方神靈怒氣+6" },
+    { grade: "藍", effect: "遠戰第二回合，我方神靈怒氣+9" },
+    { grade: "紫", effect: "我方造成的所有神罰損傷，威力+10%" },
+    { grade: "金", effect: "智力+2，魅力+2；遠戰第二回合發動【仙靈汲取】，為我方後軍增援兵力，增援強度為200%，並吸取敵方神靈6點怒氣，加給我方神靈。若戰力低於對手，【仙靈汲取】的效果加倍" }
+
+]},
+
+{ id: "benxiao", name: "奔霄", img: "奔霄.png", cat: "坐騎", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "步兵兵力+500" },
+    { grade: "綠", effect: "魅力+3" },
+    { grade: "藍", effect: "步兵兵力+500，步兵格擋率+5%" },
+    { grade: "紫", effect: "遠戰回合步兵免傷+15%" },
+    { grade: "金", effect: "遠戰第二回合，協同我方步兵發動【夜襲萬里】，以步兵當前兵力的15%，消滅敵方後軍兵力，且目標此後獲得增援兵力類的效果-50%" }
+
+]},
+
+{ id: "liutao", name: "六韜", img: "六韜.png", cat: "寶典", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "步兵防禦+300，步兵速度+3" },
+    { grade: "綠", effect: "騎兵防禦+300，騎兵速度+3" },
+    { grade: "藍", effect: "步兵防禦+600，步兵速度+6" },
+    { grade: "紫", effect: "騎兵防禦+600，騎兵速度+6" },
+    { grade: "金", effect: "近戰回合時，我方前軍防禦+12%，傷害+24%，若同時裝備【三略】，該效果可持續整場" }
+
+]},
+
+{ id: "sanlue", name: "三略", img: "三略.png", cat: "寶典", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "弓兵攻擊+300，弓兵速度+3" },
+    { grade: "綠", effect: "方士攻擊+300，方士速度+3" },
+    { grade: "藍", effect: "弓兵攻擊+600，弓兵速度+6" },
+    { grade: "紫", effect: "方士攻擊+600，方士速度+6" },
+    { grade: "金", effect: "遠戰回合時，我方後軍攻擊+12%，免傷+24%，若同時裝備【六韜】，該效果可持續整場" }
+
+]},
+
+{ id: "biyuruyi", name: "碧玉如意", img: "碧玉如意.png", cat: "奇珍", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "魅力+2" },
+    { grade: "綠", effect: "我方前軍無不良狀態時，免傷+12%" },
+    { grade: "藍", effect: "智力+2" },
+    { grade: "紫", effect: "我方前軍無不良狀態時，傷害+12%" },
+    { grade: "金", effect: "智力+3；我方前軍獲得不良狀態後，可觸發【祥運】，驅散自身全部不良狀態。每場對決最多觸發3次【祥運】" }
+
+]},
+
+{ id: "zuocewuyuge", name: "作冊吾玉戈", img: "作冊吾玉戈.png", cat: "令符", openTime: ["6合"], source: "瑤池盛宴", sourceDetail: "瑤池盛宴", grades: [
+
+    { grade: "白", effect: "智力+1，統御+1" },
+    { grade: "綠", effect: "兵力高於對手時，傷害+8%" },
+    { grade: "藍", effect: "兵力高於對手時，免傷+8%" },
+    { grade: "紫", effect: "敵方受到按比例損失兵力的效果+15%" },
+    { grade: "金", effect: "智力+3；遠戰每回合發動【止戈為武】，消滅敵方前軍或後軍3%~15%的當前兵力。若智力高於對手，【止戈為武】改為消滅目標最大兵力" }
+
+]},
+
+{ id: "xuantiebaofu", name: "玄鐵豹符", img: "玄鐵豹符.png", cat: "令符", openTime: ["7合"], source: "投壺", sourceDetail: "投壺", grades: [
+
+    { grade: "白", effect: "武力+3" },
+    { grade: "綠", effect: "敵我雙方的增援兵力類效果-80%" },
+    { grade: "藍", effect: "魅力+1；遠戰首回合我方傷害+10%" },
+    { grade: "紫", effect: "魅力+1；遠戰第二回合我方傷害+15%" },
+    { grade: "金", effect: "武力+2，魅力+3；遠戰第二回合結束時發動【玄豹劫掠】，對敵方剩餘兵力較少部隊造成400%傷害（無視護盾和豁免全滅效果），若成功全滅敵方部隊，可再額外發動一次【玄豹劫掠】" }
+
+]},
+
+{ id: "houmamengshu", name: "侯馬盟書", img: "侯馬盟書.png", cat: "寶典", openTime: ["7合"], source: "折扣商店", sourceDetail: "折扣商店", grades: [
+
+    { grade: "白", effect: "遠戰回合免傷+6%，傷害-4%" },
+    { grade: "綠", effect: "遠戰回合免傷+6%，傷害-4%" },
+    { grade: "藍", effect: "遠戰回合免傷+6%，傷害-4%" },
+    { grade: "紫", effect: "敵方的護盾、治療、增援兵力類效果-10%" },
+    { grade: "金", effect: "近戰首回合發動【歃血為盟】，對敵方後軍造成1次110%傷害，且戰場中每存在一名己方英雄，【歃血為盟】額外增加1次傷害（最多5次）" }
+
+]},
 ];
 
 
@@ -3590,6 +4161,15 @@ let currentBaowuCat = 'all';
       circle.addEventListener('animationend', () => circle.remove());
     }
 
+    // 側邊選單收合／展開：收合時顯示「☰」，展開時顯示「✕」
+    function toggleSidebar() {
+      const collapsed = document.body.classList.toggle('sidebar-collapsed');
+      const btn = document.getElementById('sidebarToggleBtn');
+      if (btn) btn.textContent = collapsed ? '☰' : '✕';
+    }
+    // 手機／窄螢幕預設收合選單，桌機維持展開
+    if (window.innerWidth <= 900) toggleSidebar();
+
     function switchTab(tab) {
   allTabs.forEach(t => {
     const page = document.getElementById(t + 'Page');
@@ -3605,6 +4185,7 @@ let currentBaowuCat = 'all';
   if (tab === 'baowu') filterBaowuList();
   if (tab === 'skill') renderSkills(troopSkills);
   if (tab === 'loadout') requestAnimationFrame(() => initLoadoutPage());
+  if (window.innerWidth <= 900 && !document.body.classList.contains('sidebar-collapsed')) toggleSidebar();
 }
 function renderHeroes(list) {
       const grid = document.getElementById('heroGrid');
@@ -5061,7 +5642,7 @@ function parseTroopStatRules(text) {
   const rules = [];
   if (!text) return rules;
   const re = new RegExp(
-    `每(?:提升|增加)\\s*(\\d+)?\\s*點(${STAT_NAMES.join("|")})[，,、\\s]*(前軍|後軍|步兵|騎兵|弓兵|方士)(?:基礎)?(攻防|攻擊|防禦|兵力)\\s*\\+(\\d+)`,
+    `每(?:提升|增加)\\s*(\\d+)?\\s*點(${STAT_NAMES.join("|")})[，,、\\s]*(前軍|後軍|步兵|騎兵|弓兵|方士)(基礎)?(攻防|攻擊|防禦|兵力)\\s*\\+(\\d+)`,
     "g"
   );
   let m;
@@ -5070,8 +5651,9 @@ function parseTroopStatRules(text) {
       perPoint: Number(m[1] || 1),
       sourceStat: STAT_KEY_BY_NAME[m[2]],
       troop: m[3],
-      statType: m[4],
-      amount: Number(m[5])
+      isBase: !!m[4],
+      statType: m[5],
+      amount: Number(m[6])
     });
   }
   return rules;
@@ -5091,6 +5673,41 @@ function computeDerivedStatBonus(deltaStats, rules) {
   });
   return bonus;
 }
+// ---- 「每學習 N 種相關X的技能，Y+M」道具效果解析（例：狼顧陰符） ----
+// 例句：「我方每學習 5 種相關統御的任意類型技能，智力 +1」
+function parseSkillCountStatRules(text) {
+  const rules = [];
+  if (!text) return rules;
+  const re = new RegExp(
+    `每學習\\s*(\\d+)?\\s*種相關(${STAT_NAMES.join("|")})的(?:任意類型)?技能[，,、]?(${STAT_NAMES.join("|")})\\s*\\+\\s*(\\d+)`,
+    "g"
+  );
+  let m;
+  while ((m = re.exec(text))) {
+    rules.push({
+      full: m[0],
+      perSkill: Number(m[1] || 1),
+      sourceStatChar: m[2][0],           // 武力→武、智力→智、魅力→魅、統御→統
+      targetStat: STAT_KEY_BY_NAME[m[3]],
+      amount: Number(m[4])
+    });
+  }
+  return rules;
+}
+// 依「已裝備的技能格」（前軍技/後軍技/英雄技/輔助技/內政技），計算目前英雄已學習、
+// 且與指定四維（武/智/魅/統，取自 troopSkills 的 type 欄位）相關的技能數量
+function countEquippedSkillsForStat(member, statChar) {
+  if (!member?.gear) return 0;
+  let count = 0;
+  Object.values(member.gear).forEach(gear => {
+    if (!gear?.item || !loadoutSkillCategories.has(gear.cat)) return;
+    const troopSkill = troopSkills.find(s => s.name === gear.item.name);
+    const type = troopSkill ? troopSkill.type : null;
+    if (!type) return;
+    if (type.includes("四維") || type.includes(statChar)) count++;
+  });
+  return count;
+}
 // 統一計算四維增量：裝備加成 + 天賦覺醒輪迴連動加成，回傳 bonus（純增量，不含基礎值）
 function computeStatBonus(member, hero) {
   const totals = { force: hero.force || 0, intel: hero.intel || 0, charm: hero.charm || 0, command: hero.command || 0 };
@@ -5099,7 +5716,18 @@ function computeStatBonus(member, hero) {
   Object.values(member.gear).forEach(gear => {
     loadoutGearEffectiveGrades(gear).forEach(gr => {
       const activeText = getActiveEffectText(gr.effect || "", hero, member);
-      const parsed = parseStatBonus(activeText);
+      let flatText = activeText;
+      parseSkillCountStatRules(activeText).forEach(rule => {
+        flatText = flatText.replace(rule.full, "");
+        const learnedCount = countEquippedSkillsForStat(member, rule.sourceStatChar);
+        const times = Math.floor(learnedCount / rule.perSkill);
+        if (times > 0) {
+          const amt = times * rule.amount;
+          totals[rule.targetStat] += amt;
+          bonus[rule.targetStat] += amt;
+        }
+      });
+      const parsed = parseStatBonus(flatText);
       Object.keys(totals).forEach(key => { totals[key] += parsed[key] || 0; bonus[key] += parsed[key] || 0; });
     });
 });
@@ -5134,6 +5762,52 @@ function switchLoadoutSummaryTab(tab) {
   renderLoadoutSummary();
 }
 
+// 品質等級順序，用來比較「達到某品質以上」
+const GRADE_ORDER_LIST = ["白", "綠", "藍", "紫", "金"];
+
+// 計算目前已裝備、且屬於指定套裝、品質達到 minGrade（含）以上的寶物件數
+// minGrade 為 null 時，不限品質，只要屬於該套裝就算
+function countEquippedSetPieces(member, setName, minGrade) {
+  if (!member?.gear || !setName) return 0;
+  let count = 0;
+  Object.values(member.gear).forEach(gear => {
+    const item = gear?.item;
+    if (!item || item.set !== setName) return;
+    const grade = item.grades?.[gear.gradeIndex]?.grade;
+    if (!grade) return;
+    if (!minGrade || GRADE_ORDER_LIST.indexOf(grade) >= GRADE_ORDER_LIST.indexOf(minGrade)) count++;
+  });
+  return count;
+}
+
+// 解析「裝備N件(顏色)套裝(後生效|時)，必須含有XXX」這類複合條件文字；不是這類句型則回傳 null
+// 例：「裝備2件金色饕餮套後生效，必須含有饕餮搏天杖」
+function parseSetPieceCondition(text) {
+  const re = /裝備\s*(\d+)\s*件(?:(金|紫|藍|綠|白)色)?(?:品質)?([^\s，,、（）()]+?)套(?:裝)?(?:後生效|時)[，,、]?(?:必須含有([^\s，,、）)]+))?/;
+  const m = text.match(re);
+  if (!m) return null;
+  return {
+    index: m.index,
+    count: Number(m[1]),
+    grade: m[2] || null,
+    setName: m[3] + "套裝",
+    requiredItem: m[4] || null
+  };
+}
+
+// 判斷「裝備N件(顏色)套裝，必須含有XXX」這類複合條件是否成立：
+// 需同時滿足「同套裝達到指定品質的件數 >= N」以及（若有指定）「必須裝備的特定寶物確實已裝備」
+function evaluateSetPieceCondition(cond, member) {
+  if (!member) return false;
+  const count = countEquippedSetPieces(member, cond.setName, cond.grade);
+  if (count < cond.count) return false;
+  if (cond.requiredItem) {
+    const equippedNames = getEquippedItemNames(member);
+    if (!equippedNames.has(cond.requiredItem)) return false;
+  }
+  return true;
+}
+
 // 掃描目前英雄所有已裝備寶物效果文字，解析成分類數值
 // 各類條件式加成的判斷規則
 const CLASS_CONDITIONS = [
@@ -5165,6 +5839,11 @@ function resolveConditionalTexts(rawTexts, hero, member) {
 // 依條件關鍵字位置切割文字，回傳「已濾除不成立條件」的文字片段陣列
 // 跟 renderConditionalEffectHtml 用同一套判斷邏輯，確保顯示和計算一致
 function splitTextByConditions(text, hero, member) {
+  const setPieceCond = parseSetPieceCondition(text);
+  if (setPieceCond) {
+    const met = evaluateSetPieceCondition(setPieceCond, member);
+    return met ? [text.slice(0, setPieceCond.index).replace(/[（(]\s*$/, "")] : [];
+  }
   const equippedNames = member ? getEquippedItemNames(member) : new Set();
   const classRe = new RegExp(`(${CLASS_CONDITIONS.map(c => c.key).join("|")})`, "g");
   const matches = [];
@@ -5179,6 +5858,9 @@ function splitTextByConditions(text, hero, member) {
 
   const gradeRe = /若?英雄品質達到\s*(藍|紫|金|紅)\s*色以上[，,、]?/g;
   while ((m = gradeRe.exec(text))) matches.push({ index: m.index, kind: "grade", length: m[0].length, value: m[1] });
+
+  const setPiecePrefixRe = /同時裝備\s*(\d+)\s*件([^\s，,、（）()]+?)套(?:裝)?[，,、]?/g;
+  while ((m = setPiecePrefixRe.exec(text))) matches.push({ index: m.index, kind: "setpiece", length: m[0].length, count: Number(m[1]), setName: m[2] + "套裝" });
 
   if (!matches.length) return [text];
   matches.sort((a, b) => a.index - b.index);
@@ -5201,11 +5883,16 @@ function splitTextByConditions(text, hero, member) {
       const heroPlainName = hero ? stripShenPrefix(hero.name) : "";
       const m1 = clauseText.match(/^([\u4e00-\u9fa5]{2,6})裝備時[，,、]?/);
       const m2 = clauseText.match(/^若同時裝備([\u4e00-\u9fa5]{2,8})[，,、]?/);
-      if (m1) { met = heroPlainName && m1[1] === heroPlainName; prefixLen = m1[0].length; }
+      if (m1 && m1[1] === "已覺醒英雄") { met = !!member?.awakened; prefixLen = m1[0].length; }
+      else if (m1 && m1[1] === "已輪迴英雄") { met = !!member?.reincarnated; prefixLen = m1[0].length; }
+      else if (m1) { met = heroPlainName && m1[1] === heroPlainName; prefixLen = m1[0].length; }
       else if (m2) { met = equippedNames.has(m2[1]); prefixLen = m2[0].length; }
       else { met = true; prefixLen = 0; }
     } else if (match.kind === "level") {
       met = (member?.heroLevel || 1) >= match.value;
+      prefixLen = match.length;
+    } else if (match.kind === "setpiece") {
+      met = countEquippedSetPieces(member, match.setName, null) >= match.count;
       prefixLen = match.length;
     } else { // grade
       met = heroGradeMeets(member?.heroGrade || "藍", match.value);
@@ -5238,6 +5925,13 @@ function findNamedConditionSpans(text) {
 
 // 把效果文字依職業/稀有度條件、或具名（英雄/寶物）條件套用刪除線樣式
 function renderConditionalEffectHtml(text, hero, member) {
+  const setPieceCond = parseSetPieceCondition(text);
+  if (setPieceCond) {
+    const met = evaluateSetPieceCondition(setPieceCond, member);
+    return met
+      ? escapeHtml(text)
+      : `<span style="color:#666;text-decoration:line-through;">${escapeHtml(text)}</span>`;
+  }
   const equippedNames = member ? getEquippedItemNames(member) : new Set();
 
   // 收集所有條件關鍵字出現的位置（職業類 + 具名類），依位置排序切句
@@ -5249,6 +5943,9 @@ function renderConditionalEffectHtml(text, hero, member) {
   findNamedConditionSpans(text).forEach(span => {
     matches.push({ index: span.index, kind: "named", name: span.name });
   });
+
+  const setPiecePrefixRe = /同時裝備\s*(\d+)\s*件([^\s，,、（）()]+?)套(?:裝)?[，,、]?/g;
+  while ((m = setPiecePrefixRe.exec(text))) matches.push({ index: m.index, kind: "setpiece", length: m[0].length, count: Number(m[1]), setName: m[2] + "套裝" });
 
   if (!matches.length) return escapeHtml(text);
 
@@ -5276,8 +5973,10 @@ while ((m = gradeRe.exec(text))) matches.push({ index: m.index, kind: "grade", v
   met = (member?.heroLevel || 1) >= match.value;
 } else if (match.kind === "grade") {
   met = heroGradeMeets(member?.heroGrade || "白", match.value);
+} else if (match.kind === "setpiece") {
+  met = countEquippedSetPieces(member, match.setName, null) >= match.count;
 } else {
-  met = checkNamedCondition(clauseText, hero, equippedNames);
+  met = checkNamedCondition(clauseText, hero, equippedNames, member);
 }
     parts.push(met
       ? escapeHtml(clauseText)
@@ -5308,23 +6007,25 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
   texts.forEach(text => {
     let m;
 
-    // 基礎攻擊/防禦/兵力（支援「+」與「提升／提高」兩種寫法）
-    const flatTroopRe = /(前軍|後軍|步兵|騎兵|弓兵|方士)(?:各)?(?:基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
+    // 攻擊/防禦/兵力：需區分「直接加成」與「基礎攻擊/防禦/兵力」是兩種不同數值，分開記錄（支援「+」與「提升／提高」兩種寫法）
+    const flatTroopRe = /(前軍|後軍|步兵|騎兵|弓兵|方士)(?:各)?(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
     while ((m = flatTroopRe.exec(text))) {
       const troop = m[1];
-      const statType = m[2];
-      const amount = Number(m[3]);
+      const isBase = !!m[2];
+      const statType = m[3];
+      const amount = Number(m[4]);
       const group = TROOP_GROUP_BY_NAME[troop];
-      if (group) add(group, `${troop}基礎${statType}`, amount);
+      if (group) add(group, `${troop}${isBase ? "基礎" : ""}${statType}`, amount);
     }
 
-    // 前後軍各基礎X +N（同時套用到前軍和後軍兩邊）
-    const bothTroopRe = /前後軍各(?:基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
+    // 前後軍各(基礎)X +N（同時套用到前軍和後軍兩邊，同樣區分直接加成與基礎值）
+    const bothTroopRe = /前後軍各(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
     while ((m = bothTroopRe.exec(text))) {
-      const statType = m[1];
-      const amount = Number(m[2]);
-      add("front", `前軍基礎${statType}`, amount);
-      add("back", `後軍基礎${statType}`, amount);
+      const isBase = !!m[1];
+      const statType = m[2];
+      const amount = Number(m[3]);
+      add("front", `前軍${isBase ? "基礎" : ""}${statType}`, amount);
+      add("back", `後軍${isBase ? "基礎" : ""}${statType}`, amount);
     }
 
     const groupSpeedRe = /(前軍|後軍|前後軍)速度(?:額外)?\s*([+\-]\d+)/g;
@@ -5381,11 +6082,12 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
     if (times <= 0) return;
     const totalAmount = times * rule.amount;
     const group = TROOP_GROUP_BY_NAME[rule.troop];
+    const basePrefix = rule.isBase ? "基礎" : "";
     if (rule.statType === "攻防") {
-      add(group, `${rule.troop}基礎攻擊`, totalAmount);
-      add(group, `${rule.troop}基礎防禦`, totalAmount);
+      add(group, `${rule.troop}${basePrefix}攻擊`, totalAmount);
+      add(group, `${rule.troop}${basePrefix}防禦`, totalAmount);
     } else {
-      add(group, `${rule.troop}${rule.statType}`, totalAmount);
+      add(group, `${rule.troop}${basePrefix}${rule.statType}`, totalAmount);
     }
   });
   return { groups, phase };
@@ -5402,7 +6104,9 @@ function getEquippedItemNames(member) {
 // 判斷「XX裝備時」「若同時裝備XX」這類條件是否成立
 // heroNameMatch: 若 clause 提到的名字剛好等於目前英雄名字 → 成立
 // itemNameMatch: 若 clause 提到的名字等於目前已裝備的其他寶物名字 → 成立
-function checkNamedCondition(clauseText, hero, equippedNames) {
+function checkNamedCondition(clauseText, hero, equippedNames, member) {
+  if (clauseText.startsWith("已覺醒英雄裝備時")) return !!member?.awakened;
+  if (clauseText.startsWith("已輪迴英雄裝備時")) return !!member?.reincarnated;
   const heroPlainName = hero ? stripShenPrefix(hero.name) : "";
   if (heroPlainName && clauseText.includes(heroPlainName)) return true;
   for (const name of equippedNames) {
