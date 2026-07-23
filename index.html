@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>皇者私塾 - 英雄配裝工具</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1095,6 +1096,61 @@
       background: linear-gradient(180deg, #e4be35, #bd8f11);
       color: #101010;
     }
+    .share-link-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.6);
+    }
+    .share-link-overlay.show { display: flex; }
+    .share-link-box {
+      position: relative;
+      width: min(520px, 90vw);
+      background: var(--bg-panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 12px;
+      padding: 28px 24px 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.5);
+    }
+    .share-link-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .share-link-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: .5px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .share-link-row {
+      display: flex;
+      gap: 8px;
+    }
+    .share-link-row input {
+      flex: 1;
+      min-width: 0;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 12px;
+    }
+    .share-link-hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #7bd88f;
+      min-height: 16px;
+      letter-spacing: .5px;
+    }
     .loadout-grid {
       display: grid;
       grid-template-columns: minmax(590px, 1.38fr) minmax(340px, .92fr);
@@ -1939,6 +1995,7 @@
   <div class="loadout-shell">
     <div class="loadout-actions">
       <button class="loadout-btn primary" type="button">&#9729; &#37197;&#35037;&#23637;&#31034;</button>
+      <button class="loadout-btn" type="button" onclick="shareLoadoutConfig()">&#128279; &#20998;&#20139;&#37197;&#35037;&#36899;&#32080;</button>
     </div>
     <div class="loadout-grid">
   <section class="loadout-left">
@@ -1995,6 +2052,20 @@
         </div>
       </aside>
     </div>
+  </div>
+</div>
+
+<!-- 分享配裝連結彈窗 -->
+<div id="shareLinkOverlay" class="share-link-overlay" onclick="closeShareModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeShareModal()">&times;</button>
+    <div class="share-link-title">&#128279; &#20998;&#20139;&#37197;&#35037;&#36899;&#32080;</div>
+    <div class="share-link-sub">&#22857;&#36865;&#19979;&#26041;&#38468;&#32218;&#65292;&#21035;&#20154;&#25171;&#38283;&#23601;&#33021;&#30475;&#21040;&#36889;&#22871;&#37197;&#35037;</div>
+    <div class="share-link-row">
+      <input id="shareLinkInput" type="text" readonly onclick="this.select()">
+      <button type="button" class="loadout-btn primary" onclick="copyShareLink()">&#35079;&#21046;</button>
+    </div>
+    <div id="shareLinkCopiedHint" class="share-link-hint"></div>
   </div>
 </div>
 
@@ -7220,6 +7291,125 @@ function renderLoadoutSummary() {
   target.innerHTML = skillCountBar + statsHtml + talentBlock + awakenBlock + reincarnBlock + derivedBlock + summaryLine +
     (effects.length ? `<div class="loadout-effects">${effects.join("")}</div>` : "");
 }
+
+// ===================== 配裝分享連結 =====================
+// 把目前 9 位成員的配裝，濃縮成精簡的資料格式（只存英雄/寶物 id 與必要數值），
+// 避免把完整的英雄/寶物資料塞進網址，讓連結盡量短。
+function serializeLoadoutTeam(team) {
+  return team.map(member => {
+    const gear = {};
+    Object.entries(member.gear || {}).forEach(([slotKey, g]) => {
+      if (!g || !g.item) return;
+      const entry = { i: g.item.id, g: g.gradeIndex, c: g.cat };
+      if (g.locked) entry.lk = 1;
+      if (g.minLevel != null) entry.ml = g.minLevel;
+      gear[slotKey] = entry;
+    });
+    return {
+      h: member.hero || "",
+      hl: member.heroLevel || 1,
+      hg: member.heroGrade || "藍",
+      aw: member.awakened ? 1 : 0,
+      re: member.reincarnated ? 1 : 0,
+      g: gear,
+      sg: member.slotGrade || {},
+      dp: member.deputy || {}
+    };
+  });
+}
+
+function deserializeLoadoutTeam(data) {
+  return data.map(d => {
+    const gear = {};
+    Object.entries(d.g || {}).forEach(([slotKey, entry]) => {
+      const item = baowuList.find(it => it.id === entry.i);
+      if (!item) return;
+      const g = { item, gradeIndex: entry.g, cat: entry.c };
+      if (entry.lk) g.locked = true;
+      if (entry.ml != null) g.minLevel = entry.ml;
+      gear[slotKey] = g;
+    });
+    return {
+      hero: d.h || "",
+      heroLevel: d.hl || 1,
+      heroGrade: d.hg || "藍",
+      awakened: !!d.aw,
+      reincarnated: !!d.re,
+      gear,
+      chosen: !!d.h,
+      slotGrade: d.sg || {},
+      deputy: d.dp || {}
+    };
+  });
+}
+
+function buildLoadoutShareUrl() {
+  const data = serializeLoadoutTeam(loadoutTeam);
+  const json = JSON.stringify(data);
+  const packed = window.LZString ? LZString.compressToEncodedURIComponent(json) : encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
+  const base = location.origin + location.pathname;
+  return `${base}?share=${packed}`;
+}
+
+function shareLoadoutConfig() {
+  let url;
+  try {
+    url = buildLoadoutShareUrl();
+  } catch (e) {
+    alert("產生分享連結失敗，請稍後再試。");
+    return;
+  }
+  const overlay = document.getElementById("shareLinkOverlay");
+  const input = document.getElementById("shareLinkInput");
+  const hint = document.getElementById("shareLinkCopiedHint");
+  if (!overlay || !input) return;
+  input.value = url;
+  if (hint) hint.textContent = "";
+  overlay.classList.add("show");
+  requestAnimationFrame(() => { input.focus(); input.select(); });
+}
+
+function closeShareModal(e) {
+  if (e && e.target && e.target.id !== "shareLinkOverlay") return;
+  document.getElementById("shareLinkOverlay")?.classList.remove("show");
+}
+
+async function copyShareLink() {
+  const input = document.getElementById("shareLinkInput");
+  const hint = document.getElementById("shareLinkCopiedHint");
+  if (!input) return;
+  input.select();
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(input.value);
+      ok = true;
+    } else {
+      ok = document.execCommand("copy");
+    }
+  } catch (e) { ok = false; }
+  if (hint) hint.textContent = ok ? "已複製到剪貼簿！" : "複製失敗，請手動選取後 Ctrl+C 複製";
+}
+
+// 若網址帶有 ?share=xxx，載入頁面時自動還原該配裝並跳轉到配裝頁面
+function tryLoadSharedLoadout() {
+  const params = new URLSearchParams(location.search);
+  const packed = params.get("share");
+  if (!packed) return;
+  try {
+    const json = window.LZString ? LZString.decompressFromEncodedURIComponent(packed) : decodeURIComponent(escape(atob(decodeURIComponent(packed))));
+    if (!json) return;
+    const data = JSON.parse(json);
+    if (!Array.isArray(data)) return;
+    loadoutTeam = deserializeLoadoutTeam(data);
+    loadoutState.activeMember = 0;
+    closeWelcomeScreen();
+    switchTab("loadout");
+  } catch (e) {
+    console.error("分享連結解析失敗", e);
+  }
+}
+tryLoadSharedLoadout();
 </script>
 </body>
 </html>
