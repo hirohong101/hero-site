@@ -1194,6 +1194,35 @@
       font-size: 13px;
       padding: 24px 0;
     }
+    .wall-publish-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .wall-publish-bar input {
+      height: 38px;
+      min-width: 240px;
+      padding: 0 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 13px;
+    }
+    .wall-card {
+      display: flex;
+      flex-direction: column;
+      cursor: default;
+    }
+    .wall-card-heroes {
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .wall-card-load {
+      margin-top: 14px;
+      width: 100%;
+    }
     .loadout-grid {
       display: grid;
       grid-template-columns: minmax(590px, 1.38fr) minmax(340px, .92fr);
@@ -1759,6 +1788,9 @@
       <div class="nav-item" id="navLoadout" onclick="switchTab('loadout')">
         <span class="icon">🛡</span><span>配裝模擬</span>
       </div>
+      <div class="nav-item" id="navWall" onclick="switchTab('wall')">
+        <span class="icon">🏛</span><span>公開配裝牆</span>
+      </div>
       <div class="nav-item active" id="navHero" onclick="switchTab('hero')">
         <span class="icon">⚔</span><span>英雄</span>
         <span class="badge" id="heroBadge"></span>
@@ -2038,7 +2070,7 @@
   <div class="loadout-shell">
     <div class="loadout-actions">
       <button class="loadout-btn primary" type="button" onclick="shareLoadoutConfig()">&#128279; &#20998;&#20139;&#37197;&#35037;&#36899;&#32080;</button>
-      <button class="loadout-btn" type="button" onclick="openWallModal()">&#127963; &#20844;&#38283;&#25918;&#37197;&#35037;&#22317;</button>
+      <button class="loadout-btn" type="button" onclick="quickPublishLoadoutToWall()">&#127963; &#30330;&#24067;&#21040;&#20844;&#38283;&#37197;&#35037;&#22317;</button>
     </div>
     <div class="loadout-grid">
   <section class="loadout-left">
@@ -2098,6 +2130,22 @@
   </div>
 </div>
 
+<!-- 公開配裝牆頁 -->
+<div id="wallPage" style="display:none;">
+  <div class="topbar">
+    <div class="topbar-title">公開配裝牆</div>
+    <div class="filters">
+      <div class="wall-publish-bar">
+        <input type="text" id="wallPublishTitle" placeholder="幫目前的配裝取個名字（例如：xx陣容）" maxlength="40">
+        <button type="button" class="loadout-btn primary" onclick="publishLoadoutToWall()">&#128228; 發布目前配裝</button>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="hero-grid" id="wallGrid"></div>
+  </div>
+</div>
+
 <!-- 分享配裝連結彈窗 -->
 <div id="shareLinkOverlay" class="share-link-overlay" onclick="closeShareModal(event)">
   <div class="share-link-box" onclick="event.stopPropagation()">
@@ -2112,17 +2160,16 @@
   </div>
 </div>
 
-<!-- 公開配裝牆彈窗 -->
-<div id="wallOverlay" class="share-link-overlay" onclick="closeWallModal(event)">
-  <div class="share-link-box wall-box" onclick="event.stopPropagation()">
-    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeWallModal()">&times;</button>
-    <div class="share-link-title">&#127963; &#20844;&#38283;&#25918;&#37197;&#35037;&#22317;</div>
-    <div class="share-link-sub">把目前的配裝發布到公開牆，讓大家都能看到並直接載入；也可以瀏覽別人發布的配裝。</div>
-    <div class="wall-publish-row">
-      <input id="wallPublishTitle" type="text" placeholder="幫這套配裝取個名字（例如：xx陣容）" maxlength="40">
-      <button type="button" class="loadout-btn primary" onclick="publishLoadoutToWall()">發布</button>
+<!-- 快速發布到公開牆：取名彈窗 -->
+<div id="quickPublishOverlay" class="share-link-overlay" onclick="closeQuickPublishModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeQuickPublishModal()">&times;</button>
+    <div class="share-link-title">&#127963; &#30330;&#24067;&#21040;&#20844;&#38283;&#37197;&#35037;&#22317;</div>
+    <div class="share-link-sub">幫這套配裝取個名字，發布後大家都能在公開牆看到並直接載入。</div>
+    <div class="share-link-row">
+      <input id="quickPublishTitle" type="text" placeholder="例如：xx陣容" maxlength="40" onkeydown="if(event.key==='Enter')confirmQuickPublishLoadoutToWall()">
+      <button type="button" class="loadout-btn primary" onclick="confirmQuickPublishLoadoutToWall()">發布</button>
     </div>
-    <div id="wallList" class="wall-list"></div>
   </div>
 </div>
 
@@ -4823,12 +4870,12 @@ let currentBaowuCat = 'all';
 
 
     
-    const allTabs = ['hero','baowu','skill','formation','beast','soul','battleplan','reincarnCond','god','puppet','holyawaken','loadout'];
+    const allTabs = ['hero','baowu','skill','formation','beast','soul','battleplan','reincarnCond','god','puppet','holyawaken','loadout','wall'];
     const tabNavMap = {
   hero:'navHero', baowu:'navBaowu', skill:'navSkill', formation:'navFormation',
   beast:'navBeast', soul:'navSoul', battleplan:'navBattlePlan', reincarnCond:'navReincarn',
   god:'navGod', puppet:'navPuppet', holyawaken:'navHolyAwaken',
-  loadout:'navLoadout'
+  loadout:'navLoadout', wall:'navWall'
 };
 
     // ===== 漣漪效果 =====
@@ -4872,6 +4919,7 @@ let currentBaowuCat = 'all';
   if (tab === 'baowu') filterBaowuList();
   if (tab === 'skill') renderSkills(troopSkills);
   if (tab === 'loadout') requestAnimationFrame(() => initLoadoutPage());
+  if (tab === 'wall') loadWallList();
   if (window.innerWidth <= 900 && !document.body.classList.contains('sidebar-collapsed')) toggleSidebar();
 }
 function renderHeroes(list) {
@@ -7535,24 +7583,12 @@ function initWallSupabase() {
   }
 }
 
-function openWallModal() {
-  document.getElementById("wallOverlay")?.classList.add("show");
-  loadWallList();
-}
-
-function closeWallModal(e) {
-  if (e && e.target && e.target.id !== "wallOverlay") return;
-  document.getElementById("wallOverlay")?.classList.remove("show");
-}
-
-async function publishLoadoutToWall() {
+async function publishLoadoutToWallCore(title) {
   const db = initWallSupabase();
   if (!db) {
     alert("公開牆尚未設定資料庫（Supabase），請聯絡網站管理者完成設定後再試。");
-    return;
+    return false;
   }
-  const titleInput = document.getElementById("wallPublishTitle");
-  const title = (titleInput?.value || "").trim() || "未命名配裝";
   let packed;
   try {
     const data = serializeLoadoutTeam(loadoutTeam);
@@ -7560,50 +7596,100 @@ async function publishLoadoutToWall() {
     packed = window.LZString ? LZString.compressToEncodedURIComponent(json) : encodeURIComponent(btoa(unescape(encodeURIComponent(json))));
   } catch (e) {
     alert("打包配裝資料失敗，請稍後再試。");
-    return;
+    return false;
   }
   try {
-    const { error } = await db.from("shared_loadouts").insert({ title, packed });
+    const { error } = await db.from("shared_loadouts").insert({ title: title || "未命名配裝", packed });
     if (error) throw error;
-    if (titleInput) titleInput.value = "";
-    loadWallList();
+    return true;
   } catch (e) {
     alert("發布失敗：" + (e.message || e));
+    return false;
+  }
+}
+
+// 公開牆頁面上的發布欄：從輸入框讀取名字後發布
+async function publishLoadoutToWall() {
+  const titleInput = document.getElementById("wallPublishTitle");
+  const title = (titleInput?.value || "").trim();
+  const ok = await publishLoadoutToWallCore(title);
+  if (ok) {
+    if (titleInput) titleInput.value = "";
+    loadWallList();
+  }
+}
+
+// 配裝頁按鈕：直接跳出取名彈窗，命名後自動發布並跳到公開牆查看結果
+function quickPublishLoadoutToWall() {
+  document.getElementById("quickPublishOverlay")?.classList.add("show");
+  const input = document.getElementById("quickPublishTitle");
+  if (input) { input.value = ""; requestAnimationFrame(() => input.focus()); }
+}
+
+function closeQuickPublishModal(e) {
+  if (e && e.target && e.target.id !== "quickPublishOverlay") return;
+  document.getElementById("quickPublishOverlay")?.classList.remove("show");
+}
+
+async function confirmQuickPublishLoadoutToWall() {
+  const input = document.getElementById("quickPublishTitle");
+  const title = (input?.value || "").trim();
+  const ok = await publishLoadoutToWallCore(title);
+  if (ok) {
+    closeQuickPublishModal();
+    switchTab("wall");
+  }
+}
+
+// 從壓縮資料中還原出配裝內的英雄名字（只取有選英雄的成員），供卡片預覽使用
+function getWallEntryHeroNames(packed) {
+  try {
+    const json = window.LZString ? LZString.decompressFromEncodedURIComponent(packed) : decodeURIComponent(escape(atob(decodeURIComponent(packed))));
+    const data = JSON.parse(json);
+    if (!Array.isArray(data)) return [];
+    return data
+      .filter(d => d && d.h)
+      .map(d => heroes.find(h => h.id === d.h)?.name || d.h);
+  } catch (e) {
+    return [];
   }
 }
 
 async function loadWallList() {
-  const listEl = document.getElementById("wallList");
-  if (!listEl) return;
+  const gridEl = document.getElementById("wallGrid");
+  if (!gridEl) return;
   const db = initWallSupabase();
   if (!db) {
-    listEl.innerHTML = `<div class="wall-empty">公開牆尚未設定資料庫（Supabase），請聯絡網站管理者完成設定</div>`;
+    gridEl.innerHTML = `<div class="no-result">公開牆尚未設定資料庫（Supabase），請聯絡網站管理者完成設定</div>`;
     return;
   }
-  listEl.innerHTML = `<div class="wall-empty">載入中...</div>`;
+  gridEl.innerHTML = `<div class="no-result">載入中...</div>`;
   try {
     const { data, error } = await db
       .from("shared_loadouts")
-      .select("id, title, created_at")
+      .select("id, title, packed, created_at")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(60);
     if (error) throw error;
     if (!data || !data.length) {
-      listEl.innerHTML = `<div class="wall-empty">目前還沒有人發布配裝，當第一個分享的人吧！</div>`;
+      gridEl.innerHTML = `<div class="no-result">目前還沒有人發布配裝，當第一個分享的人吧！</div>`;
       return;
     }
-    listEl.innerHTML = data.map(d => {
+    gridEl.innerHTML = data.map(d => {
       const date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
-      return `<div class="wall-item">
-        <div>
-          <div class="wall-item-title">${escapeHtml(d.title || "未命名配裝")}</div>
-          <div class="wall-item-date">${escapeHtml(date)}</div>
-        </div>
-        <button class="loadout-btn primary" type="button" onclick="loadWallEntry('${d.id}')">載入</button>
+      const heroNames = getWallEntryHeroNames(d.packed);
+      const heroChips = heroNames.length
+        ? heroNames.map(n => `<span class="stat-chip">${escapeHtml(n)}</span>`).join("")
+        : `<span class="stat-chip">（無資料）</span>`;
+      return `<div class="hero-card wall-card">
+        <div class="hero-name">${escapeHtml(d.title || "未命名配裝")}</div>
+        <div class="hero-meta">${escapeHtml(date)}</div>
+        <div class="hero-stats-mini wall-card-heroes">${heroChips}</div>
+        <button class="loadout-btn primary wall-card-load" type="button" onclick="loadWallEntry('${d.id}')">載入這套配裝</button>
       </div>`;
     }).join("");
   } catch (e) {
-    listEl.innerHTML = `<div class="wall-empty">載入失敗：${escapeHtml(e.message || String(e))}</div>`;
+    gridEl.innerHTML = `<div class="no-result">載入失敗：${escapeHtml(e.message || String(e))}</div>`;
   }
 }
 
@@ -7620,7 +7706,6 @@ async function loadWallEntry(id) {
     if (!Array.isArray(parsed)) throw new Error("資料格式錯誤");
     loadoutTeam = deserializeLoadoutTeam(parsed);
     loadoutState.activeMember = 0;
-    closeWallModal();
     switchTab("loadout");
   } catch (e) {
     alert("載入失敗：" + (e.message || e));
