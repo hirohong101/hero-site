@@ -2384,10 +2384,10 @@
       <input id="authNickname" type="text" placeholder="暱稱（會顯示在公開配裝上）" maxlength="20">
     </div>
     <div class="share-link-row" style="margin-bottom:10px;">
-      <input id="authUsername" type="text" placeholder="帳號（英文/數字/底線，3-20字）" maxlength="20" autocomplete="username">
+      <input id="authEmail" type="email" placeholder="電子信箱">
     </div>
     <div class="share-link-row" style="margin-bottom:10px;">
-      <input id="authPassword" type="password" placeholder="密碼（至少6碼）" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuthForm()">
+      <input id="authPassword" type="password" placeholder="密碼（至少6碼）" onkeydown="if(event.key==='Enter')submitAuthForm()">
     </div>
     <div class="share-link-row">
       <button type="button" class="loadout-btn primary" id="authSubmitBtn" style="width:100%;" onclick="submitAuthForm()">登入</button>
@@ -7895,10 +7895,9 @@ tryLoadSharedLoadout();
 //
 // 3. 左側選單「Project Settings」→「API」，複製「Project URL」和「anon public」金鑰
 // 4. 把下面兩個值換成你剛剛複製的內容，存檔後重新整理頁面即可使用
-// 5. 這個工具的「帳號/密碼」不會收使用者的信箱，前端會自動把帳號轉成一組假信箱（xxx@huangzhe-player.local）
-//    餵給 Supabase 當登入識別碼，這組假信箱收不到任何信。
-//    所以【一定要】到左側選單「Authentication」→「Providers」→「Email」，把「Confirm email」關掉，
-//    不然使用者註冊後系統會想寄驗證信到一個不存在的信箱，導致永遠無法完成驗證、卡在無法登入。
+// 5. 登入/註冊功能（Email + 密碼）預設就是開啟的，不用額外設定。
+//    如果不想讓新用戶收驗證信、註冊後要馬上能登入，可以到左側選單「Authentication」→「Providers」→「Email」，
+//    把「Confirm email」關掉（小專案自己玩可以關，正式對外營運建議保留開啟比較安全）。
 const SUPABASE_URL = "https://ohjruabyssjkndpwylyc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oanJ1YWJ5c3Nqa25kcHd5bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NjU4NzIsImV4cCI6MjEwMDQ0MTg3Mn0.tripdIs6AOKEHOUtJchzw50Pgv4q18dY0mfYoxcABK8";
 
@@ -7944,7 +7943,7 @@ async function initAuthState() {
 
 function getCurrentNickname() {
   if (!currentAuthUser) return "";
-  return currentAuthUser.user_metadata?.nickname || currentAuthUser.user_metadata?.username || "玩家";
+  return currentAuthUser.user_metadata?.nickname || currentAuthUser.email?.split("@")[0] || "玩家";
 }
 
 // 訪客模式：直接關掉歡迎畫面進入 app，不需要登入
@@ -8036,7 +8035,7 @@ function applyAuthModeUI() {
   const isSignup = authMode === "signup";
   document.getElementById("authModalTitle").textContent = isSignup ? "註冊帳號" : "登入";
   document.getElementById("authModalSub").textContent = isSignup
-    ? "設定暱稱、帳號和密碼，註冊後即可使用公開配裝牆。"
+    ? "設定暱稱、信箱和密碼，註冊後即可使用公開配裝牆。"
     : "登入後才能瀏覽和發布公開配裝牆。";
   const nicknameRow = document.getElementById("authNicknameRow");
   if (nicknameRow) nicknameRow.style.display = isSignup ? "flex" : "none";
@@ -8045,35 +8044,23 @@ function applyAuthModeUI() {
   document.getElementById("authToggleLink").textContent = isSignup ? "登入" : "註冊一個";
 }
 
-// 帳號系統不收使用者信箱，但 Supabase Auth 底層還是要吃 email 格式，
-// 所以這裡把「帳號」轉成一組看不出真實信箱、也永遠不會真的寄信的假信箱，純粹拿來當登入識別碼用。
-function usernameToFakeEmail(username) {
-  const clean = (username || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
-  return clean + "@huangzhe-player.local";
-}
-function isValidUsername(username) {
-  return /^[a-zA-Z0-9_]{3,20}$/.test((username || "").trim());
-}
-
 async function submitAuthForm() {
   const db = initWallSupabase();
   const errorEl = document.getElementById("authError");
   if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
   if (!db) { if (errorEl) errorEl.textContent = "資料庫尚未設定，請聯絡網站管理者。"; return; }
-  const username = (document.getElementById("authUsername")?.value || "").trim();
+  const email = (document.getElementById("authEmail")?.value || "").trim();
   const password = document.getElementById("authPassword")?.value || "";
   const nickname = (document.getElementById("authNickname")?.value || "").trim();
-  if (!username || !password) { if (errorEl) errorEl.textContent = "請輸入帳號和密碼。"; return; }
-  if (!isValidUsername(username)) { if (errorEl) errorEl.textContent = "帳號限英文字母、數字、底線，3-20字。"; return; }
+  if (!email || !password) { if (errorEl) errorEl.textContent = "請輸入信箱和密碼。"; return; }
   if (password.length < 6) { if (errorEl) errorEl.textContent = "密碼至少需要 6 碼。"; return; }
-  const email = usernameToFakeEmail(username);
   try {
     if (authMode === "signup") {
       if (!nickname) { if (errorEl) errorEl.textContent = "請輸入暱稱。"; return; }
-      const { data, error } = await db.auth.signUp({ email, password, options: { data: { nickname, username } } });
+      const { data, error } = await db.auth.signUp({ email, password, options: { data: { nickname } } });
       if (error) throw error;
       if (!data.session) {
-        if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "註冊成功，請重新登入。"; }
+        if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "註冊成功！請去信箱收認證信，完成後即可登入。"; }
         return;
       }
     } else {
@@ -8084,10 +8071,7 @@ async function submitAuthForm() {
     enterApp();
     switchTab("wall");
   } catch (e) {
-    let msg = e.message || "發生錯誤，請稍後再試。";
-    if (/already registered|already exists/i.test(msg)) msg = "這個帳號已經被註冊過了，換一個試試。";
-    else if (/invalid login credentials/i.test(msg)) msg = "帳號或密碼錯誤。";
-    if (errorEl) errorEl.textContent = msg;
+    if (errorEl) errorEl.textContent = e.message || "發生錯誤，請稍後再試。";
   }
 }
 
