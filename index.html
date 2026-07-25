@@ -87,6 +87,16 @@
   background: var(--gold-bright);
   color: #14180f;
 }
+.welcome-btn-outline {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+.welcome-btn-outline:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  border-color: var(--text-dim);
+}
 @media (max-width: 760px) {
   .welcome-title { font-size: 30px; letter-spacing: 6px; }
   .welcome-greeting { font-size: 14px; letter-spacing: 2px; }
@@ -444,6 +454,77 @@
       color: var(--text-dim);
       text-align: center;
       letter-spacing: 1px;
+    }
+
+    .user-avatar-wrap {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 400;
+    }
+    .user-avatar-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-dim);
+      background: var(--bg-panel);
+      color: var(--gold-bright);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .user-avatar-btn:hover {
+      border-color: var(--gold-bright);
+      background: rgba(212,168,75,0.1);
+    }
+    .user-avatar-btn.logged-in {
+      background: rgba(212,168,75,0.16);
+    }
+    .user-avatar-menu {
+      display: none;
+      position: absolute;
+      top: 48px;
+      right: 0;
+      min-width: 180px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .user-avatar-menu.show { display: block; }
+    .user-avatar-menu-status {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-avatar-menu-btn {
+      width: 100%;
+      font-size: 12px;
+      padding: 7px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--gold-bright);
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+    .user-avatar-menu-btn:hover {
+      border-color: var(--gold-dim);
+      background: rgba(212,168,75,0.08);
+    }
+    @media (max-width: 760px) {
+      .user-avatar-wrap { top: 10px; right: 12px; }
+      .user-avatar-btn { width: 34px; height: 34px; font-size: 14px; }
     }
 
     /* ===== 主內容區 ===== */
@@ -1622,6 +1703,11 @@
   padding: 6px 5px;
   cursor: pointer;
 }
+    .loadout-gear-item.disabled {
+  cursor: not-allowed;
+  opacity: .4;
+  filter: grayscale(60%);
+}
     .loadout-gear-icon {
   width: 56px;
   height: 56px;
@@ -1879,7 +1965,10 @@
       <div class="welcome-title">皇者私塾</div>
       <div class="welcome-greeting">歡迎來到皇者私塾</div>
       <div class="welcome-sub">英雄圖鑑 · 裝備配裝 · 陣法搭配</div>
-      <button class="welcome-btn" onclick="closeWelcomeScreen();">進入</button>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <button class="welcome-btn" onclick="enterAsGuest();">訪客模式</button>
+        <button class="welcome-btn welcome-btn-outline" onclick="openAuthModal('signin');">註冊 / 登入</button>
+      </div>
     </div>
   </div>
 
@@ -1896,6 +1985,7 @@
       </div>
       <div class="nav-item" id="navWall" onclick="switchTab('wall')">
         <span class="icon">🏛</span><span>公開配裝牆</span>
+        <span class="badge" id="wallLockBadge" style="display:none;">🔒</span>
       </div>
       <div class="nav-item active" id="navHero" onclick="switchTab('hero')">
         <span class="icon">⚔</span><span>英雄</span>
@@ -1936,6 +2026,16 @@
     <div class="sidebar-footer">v1.0 · 皇者私塾</div>
   </aside>
   <div class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">✕</div>
+
+  <!-- 右上角帳號頭像 -->
+  <div class="user-avatar-wrap" id="userAvatarWrap">
+    <button type="button" class="user-avatar-btn" id="userAvatarBtn" onclick="toggleAvatarMenu(event)">👤</button>
+    <div class="user-avatar-menu" id="userAvatarMenu">
+      <div class="user-avatar-menu-status" id="avatarMenuStatus">訪客模式</div>
+      <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
+    </div>
+  </div>
+
 <!-- 主內容 -->
   <div class="main">
 
@@ -2176,7 +2276,7 @@
   <div class="loadout-shell">
     <div class="loadout-actions">
       <button class="loadout-btn primary" type="button" onclick="shareLoadoutConfig()">&#128279; &#20998;&#20139;&#37197;&#35037;&#36899;&#32080;</button>
-      <button class="loadout-btn" type="button" onclick="quickPublishLoadoutToWall()">&#127963; &#30330;&#24067;&#21040;&#20844;&#38283;&#37197;&#35037;&#22317;</button>
+      <button class="loadout-btn" type="button" onclick="quickPublishLoadoutToWall()">&#127963; 發布到公開配裝牆</button>
     </div>
     <div class="loadout-grid">
   <section class="loadout-left">
@@ -2264,15 +2364,39 @@
 <div id="quickPublishOverlay" class="share-link-overlay" onclick="closeQuickPublishModal(event)">
   <div class="share-link-box" onclick="event.stopPropagation()">
     <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeQuickPublishModal()">&times;</button>
-    <div class="share-link-title">&#127963; &#30330;&#24067;&#21040;&#20844;&#38283;&#37197;&#35037;&#22317;</div>
+    <div class="share-link-title">&#127963; 發布到公開配裝牆</div>
     <div class="share-link-sub">幫這套配裝取個名字，發布後大家都能在公開牆看到並直接載入。</div>
-    <div class="share-link-row" style="margin-bottom:10px;">
-      <input id="quickPublishAuthor" type="text" placeholder="你的名字（作者）" maxlength="20">
-    </div>
+    <div id="quickPublishAuthorLine" style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">作者：</div>
     <div class="share-link-row">
       <input id="quickPublishTitle" type="text" placeholder="例如：xx陣容" maxlength="40" onkeydown="if(event.key==='Enter')confirmQuickPublishLoadoutToWall()">
       <button type="button" class="loadout-btn primary" onclick="confirmQuickPublishLoadoutToWall()">發布</button>
     </div>
+  </div>
+</div>
+
+<!-- 登入 / 註冊彈窗（公開配裝牆需要登入才能用） -->
+<div id="authOverlay" class="share-link-overlay" onclick="closeAuthModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeAuthModal()">&times;</button>
+    <div class="share-link-title" id="authModalTitle">登入</div>
+    <div class="share-link-sub" id="authModalSub">登入後才能瀏覽和發布公開配裝牆。</div>
+    <div class="share-link-row" id="authNicknameRow" style="display:none;margin-bottom:10px;">
+      <input id="authNickname" type="text" placeholder="暱稱（會顯示在公開配裝上）" maxlength="20">
+    </div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="authUsername" type="text" placeholder="帳號（英文/數字/底線，3-20字）" maxlength="20" autocomplete="username">
+    </div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="authPassword" type="password" placeholder="密碼（至少6碼）" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuthForm()">
+    </div>
+    <div class="share-link-row">
+      <button type="button" class="loadout-btn primary" id="authSubmitBtn" style="width:100%;" onclick="submitAuthForm()">登入</button>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--text-dim);text-align:center;">
+      <span id="authToggleText">還沒有帳號？</span>
+      <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color:var(--gold-bright);">註冊一個</a>
+    </div>
+    <div id="authError" style="margin-top:10px;font-size:12px;color:#e08b8b;"></div>
   </div>
 </div>
 
@@ -5030,7 +5154,7 @@ let currentBaowuCat = 'all';
   if (tab === 'baowu') filterBaowuList();
   if (tab === 'skill') renderSkills(troopSkills);
   if (tab === 'loadout') requestAnimationFrame(() => initLoadoutPage());
-  if (tab === 'wall') loadWallList();
+  if (tab === 'wall') { if (currentAuthUser) loadWallList(); else renderWallGate(); }
   if (window.innerWidth <= 900 && !document.body.classList.contains('sidebar-collapsed')) toggleSidebar();
 }
 function renderHeroes(list) {
@@ -5677,11 +5801,77 @@ let loadoutTeam = Array.from({ length: LOADOUT_TEAM_SIZE }, () => ({
   heroLevel: 1, heroGrade: "藍"   // 新增
 }));
 let loadoutState = { activeMember: 0, activeCat: L.weapon, activeSlot: "slot-0-0", pickerMode: "gear", activeGroup: "gear" };
+// 副將是否擁有「可擔當任意英雄的任意兵種副將」天賦——有的話不受兵種限制
+function heroHasUniversalDeputyTalent(hero) {
+  return !!hero && Array.isArray(hero.skills) && hero.skills.some(s => typeof s === "string" && s.includes("可擔當任意英雄的任意兵種副將"));
+}
+
+// 判斷某位英雄能不能擔任「這個主將」在「這個位置（前軍/後軍）」的副將：
+// 沒有萬能副將天賦的話，副將自己在同一側（前軍副將看副將的前軍兵種、後軍副將看副將的後軍兵種）
+// 必須跟主將同一側的兵種相同，才能上陣。例如司馬懿（騎兵/方士），關羽（騎兵/弓兵）——
+// 兩人前軍同為騎兵，關羽可以當司馬懿的前軍副將；但後軍司馬懿是方士、關羽是弓兵，兵種不同，不能當後軍副將。
+function isDeputyTroopEligible(deputyHero, mainHero, cat) {
+  if (!deputyHero) return false;
+  if (heroHasUniversalDeputyTalent(deputyHero)) return true;
+  if (!mainHero) return true; // 主將還沒選，先不限制，避免卡住流程
+  const mainTroop = heroTroopType[mainHero.id];
+  const deputyTroop = heroTroopType[deputyHero.id];
+  if (!mainTroop || !deputyTroop) return true; // 兵種資料不齊全時不誤擋
+  if (cat === L.frontDeputy) return deputyTroop.front === mainTroop.front;
+  if (cat === L.backDeputy) return deputyTroop.back === mainTroop.back;
+  return true;
+}
+
+// 換主將後，檢查現有的前/後軍副將是否還符合兵種規則，不符合的話自動卸下（回傳被卸下的英雄名稱清單）
+function clearIneligibleDeputies(member, mainHero) {
+  if (!member?.deputy) return [];
+  const frontKey = loadoutGroupSlotKey("deputy", 0, 0);
+  const backKey = loadoutGroupSlotKey("deputy", 0, 1);
+  const removed = [];
+  [[frontKey, L.frontDeputy], [backKey, L.backDeputy]].forEach(([slotKey, cat]) => {
+    const deputyId = member.deputy[slotKey];
+    if (!deputyId) return;
+    const deputyHero = heroes.find(h => h.id === deputyId);
+    if (!isDeputyTroopEligible(deputyHero, mainHero, cat)) {
+      removed.push(deputyHero ? stripShenPrefix(deputyHero.name) : deputyId);
+      delete member.deputy[slotKey];
+    }
+  });
+  return removed;
+}
+
+// 收集目前整支隊伍（9個位置）中，已經被指派為「主將」或「副將」的英雄 id
+// 全隊唯一：同一位英雄不能同時/重複被拿去當任何位置的主將或副將
+function getUsedHeroIds() {
+  const used = new Set();
+  loadoutTeam.forEach(m => {
+    if (m.hero) used.add(m.hero);
+    Object.values(m.deputy || {}).forEach(id => { if (id) used.add(id); });
+  });
+  return used;
+}
+
+// 重新產生主將下拉選單：已經被別的位置用掉的英雄（不管是主將還是副將）會變成灰色不可選
+// 目前這個位置自己選的英雄仍會正常顯示、可以維持選取
+function renderLoadoutHeroSelectOptions() {
+  const heroSelect = document.getElementById("loadoutHeroSelect");
+  if (!heroSelect) return;
+  const member = loadoutTeam[loadoutState.activeMember];
+  const currentValue = member?.hero || "";
+  const used = getUsedHeroIds();
+  const withFlag = heroes.map(h => ({ h, isUsedElsewhere: used.has(h.id) && h.id !== currentValue }));
+  const sorted = [...withFlag.filter(x => !x.isUsedElsewhere), ...withFlag.filter(x => x.isUsedElsewhere)];
+  heroSelect.innerHTML = `<option value="">請選擇英雄</option>` +
+    sorted.map(({ h, isUsedElsewhere }) => {
+      return `<option value="${escapeHtml(h.id)}" ${isUsedElsewhere ? "disabled" : ""}>${escapeHtml(stripShenPrefix(h.name))}${isUsedElsewhere ? "（已在隊上）" : ""}</option>`;
+    }).join("");
+  heroSelect.value = currentValue;
+}
+
 function initLoadoutPage() {
   const heroSelect = document.getElementById("loadoutHeroSelect");
   if (!heroSelect) return;
-  heroSelect.innerHTML = `<option value="">請選擇英雄</option>` +
-  heroes.map(h => `<option value="${escapeHtml(h.id)}">${escapeHtml(stripShenPrefix(h.name))}</option>`).join("");
+  renderLoadoutHeroSelectOptions();
 
   // 不再自動塞入 heroes[0]，保持空白直到玩家手動選擇
   const setSelect = document.getElementById("loadoutSetSelect");
@@ -5778,7 +5968,7 @@ function renderLoadoutMemberTabs() {
 function switchLoadoutMember(index, skipTabRerender) {
   loadoutState.activeMember = index;
   const member = loadoutTeam[index];
-  document.getElementById("loadoutHeroSelect").value = member.hero;
+  renderLoadoutHeroSelectOptions();
   document.getElementById("loadoutSetSelect").value = "";
   document.getElementById("loadoutAwaken").checked = !!member.awakened;
   document.getElementById("loadoutReincarn").checked = !!member.reincarnated;
@@ -5798,8 +5988,12 @@ function onLoadoutHeroChange() {
   const hero = heroes.find(h => h.id === member.hero);
   applyHeroInitSkills(member, hero);
   updateLoadoutAwakenReincarnControls(member, hero);
+  const removedDeputies = clearIneligibleDeputies(member, hero);
   if (member.initSkillUnassigned && member.initSkillUnassigned.length) {
     alert(`已自動裝備${escapeHtml(stripShenPrefix(hero?.name || ""))}的自帶技能。\n以下技能目前尚無資料庫，暫無法自動裝備：${member.initSkillUnassigned.join("、")}`);
+  }
+  if (removedDeputies.length) {
+    alert(`已更換主將，以下副將因兵種不符已自動卸下：${removedDeputies.join("、")}`);
   }
   renderLoadoutSlots();
   renderLoadoutMemberTabs();
@@ -6407,15 +6601,25 @@ if (cat === L.frontSkill || cat === L.backSkill) {
 }
     const query = (document.getElementById("loadoutGearSearch")?.value || "").trim();
     const member = loadoutTeam[loadoutState.activeMember];
+    const mainHero = heroes.find(h => h.id === member.hero);
     const slotKey = loadoutState.activeSlot;
     const currentDeputyId = member.deputy?.[slotKey];
+    const used = getUsedHeroIds();
     const list = heroes.filter(h => !query || h.name.includes(query) || stripShenPrefix(h.name).includes(query));
-    listEl.innerHTML = list.map(h => {
+    const withFlag = list.map(h => {
       const isCurrent = currentDeputyId === h.id;
-      return `<div class="loadout-gear-item ${isCurrent ? "current" : ""}" onclick="selectLoadoutDeputy('${escapeHtml(h.id)}')">
+      const isUsedElsewhere = used.has(h.id) && !isCurrent;
+      const troopEligible = isDeputyTroopEligible(h, mainHero, cat);
+      const disabled = isUsedElsewhere || (!troopEligible && !isCurrent);
+      const reason = isUsedElsewhere ? "(已在隊上)" : (!troopEligible ? "(兵種不符)" : "");
+      return { h, isCurrent, disabled, reason };
+    });
+    const sorted = [...withFlag.filter(x => !x.disabled), ...withFlag.filter(x => x.disabled)];
+    listEl.innerHTML = sorted.map(({ h, isCurrent, disabled, reason }) => {
+      return `<div class="loadout-gear-item ${isCurrent ? "current" : ""} ${disabled ? "disabled" : ""}" ${disabled ? "" : `onclick="selectLoadoutDeputy('${escapeHtml(h.id)}')"`}>
         <div class="loadout-gear-icon">${loadoutSlotIcons[cat] || "*"}</div>
         <div>
-          <div class="loadout-gear-name">${escapeHtml(stripShenPrefix(h.name))}${isCurrent ? ' <span style="color:#e8c96a;font-size:11px">(點擊取消)</span>' : ""}</div>
+          <div class="loadout-gear-name">${escapeHtml(stripShenPrefix(h.name))}${isCurrent ? ' <span style="color:#e8c96a;font-size:11px">(點擊取消)</span>' : ""}${reason ? ` <span style="color:#888;font-size:11px">${reason}</span>` : ""}</div>
           <div class="loadout-gear-meta">${escapeHtml(h.rarity)}・${escapeHtml(h.type)}</div>
         </div>
       </div>`;
@@ -6448,16 +6652,19 @@ if (cat === L.frontSkill || cat === L.backSkill) {
     ? computeStatBonus(loadoutTeam[loadoutState.activeMember], currentHero).totals
     : null;
 
-  listEl.innerHTML = items.map(item => {
+  const itemsWithMeta = items.map(item => {
     const gradeIndex = Math.max(0, (item.grades || []).length - 1);
     const grade = item.grades?.[gradeIndex]?.grade || "金";
     const isCurrent = currentGear && currentGear.item.id === item.id;
     const used = !isCurrent && isLoadoutItemUsed(item, cat, loadoutState.activeMember, loadoutState.activeSlot);
-
     const needsCheck = loadoutSkillCategories.has(cat) && (item.require || item.learn);
     const lockReason = (!isCurrent && needsCheck) ? getSkillLockReason(item, currentHero, effectiveStats, cat) : null;
-
     const disabled = used || !!lockReason;
+    return { item, gradeIndex, grade, isCurrent, used, lockReason, disabled };
+  });
+  const sortedItems = [...itemsWithMeta.filter(x => !x.disabled), ...itemsWithMeta.filter(x => x.disabled)];
+
+  listEl.innerHTML = sortedItems.map(({ item, gradeIndex, grade, isCurrent, used, lockReason, disabled }) => {
 if (isLoadoutSkillItem(item)) {
       const maxLevel = item.grades[item.grades.length - 1].level;
       const defaultLevel = isCurrent ? (item.grades[currentGear.gradeIndex]?.level || 1) : 1;
@@ -7666,18 +7873,32 @@ tryLoadSharedLoadout();
 //      id uuid primary key default gen_random_uuid(),
 //      title text,
 //      author text,
+//      user_id uuid references auth.users(id),
 //      packed text not null,
 //      created_at timestamptz not null default now()
 //    );
 //    alter table shared_loadouts enable row level security;
-//    create policy "Public read" on shared_loadouts for select using (true);
-//    create policy "Public insert" on shared_loadouts for insert with check (true);
+//    -- 公開配裝牆現在需要登入才能瀏覽/發布，所以讀取跟新增都限定「已登入」，不是任何人都能讀：
+//    create policy "Authenticated read" on shared_loadouts for select to authenticated using (true);
+//    create policy "Authenticated insert own" on shared_loadouts for insert to authenticated with check (auth.uid() = user_id);
+//    -- 讓使用者可以刪除自己發布過的配裝：
+//    create policy "Users delete own" on shared_loadouts for delete to authenticated using (auth.uid() = user_id);
 //
-//    ※ 如果你的資料庫是先前就建好的舊表，還沒有 author 欄位，改跑這行即可補上：
+//    ※ 如果你的資料庫是先前就建好的舊表，改跑下面這幾行來補欄位、換掉舊的公開權限即可（不用重建表）：
 //    alter table shared_loadouts add column if not exists author text;
+//    alter table shared_loadouts add column if not exists user_id uuid references auth.users(id);
+//    drop policy if exists "Public read" on shared_loadouts;
+//    drop policy if exists "Public insert" on shared_loadouts;
+//    create policy "Authenticated read" on shared_loadouts for select to authenticated using (true);
+//    create policy "Authenticated insert own" on shared_loadouts for insert to authenticated with check (auth.uid() = user_id);
+//    create policy "Users delete own" on shared_loadouts for delete to authenticated using (auth.uid() = user_id);
 //
 // 3. 左側選單「Project Settings」→「API」，複製「Project URL」和「anon public」金鑰
 // 4. 把下面兩個值換成你剛剛複製的內容，存檔後重新整理頁面即可使用
+// 5. 這個工具的「帳號/密碼」不會收使用者的信箱，前端會自動把帳號轉成一組假信箱（xxx@huangzhe-player.local）
+//    餵給 Supabase 當登入識別碼，這組假信箱收不到任何信。
+//    所以【一定要】到左側選單「Authentication」→「Providers」→「Email」，把「Confirm email」關掉，
+//    不然使用者註冊後系統會想寄驗證信到一個不存在的信箱，導致永遠無法完成驗證、卡在無法登入。
 const SUPABASE_URL = "https://ohjruabyssjkndpwylyc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oanJ1YWJ5c3Nqa25kcHd5bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NjU4NzIsImV4cCI6MjEwMDQ0MTg3Mn0.tripdIs6AOKEHOUtJchzw50Pgv4q18dY0mfYoxcABK8";
 
@@ -7689,7 +7910,7 @@ function initWallSupabase() {
     if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("請填入")) return null;
     if (typeof supabase === "undefined" || !supabase.createClient) return null;
     wallDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
     });
     return wallDb;
   } catch (e) {
@@ -7698,10 +7919,193 @@ function initWallSupabase() {
   }
 }
 
-async function publishLoadoutToWallCore(title, author) {
+// ---- 登入 / 註冊（公開配裝牆需要登入才能使用，其他功能訪客模式即可用） ----
+let currentAuthUser = null;
+let authMode = "signin";
+let hasEnteredApp = false; // 是否已經通過歡迎畫面（訪客模式 or 登入）
+
+async function initAuthState() {
+  const db = initWallSupabase();
+  if (!db) return;
+  try {
+    const { data } = await db.auth.getSession();
+    currentAuthUser = data?.session?.user || null;
+  } catch (e) {
+    console.error("讀取登入狀態失敗", e);
+  }
+  // 已經有登入狀態（例如上次登入過，瀏覽器還記得），就不用再選一次，直接進去
+  if (currentAuthUser) enterApp();
+  updateAuthUI();
+  db.auth.onAuthStateChange((event, session) => {
+    currentAuthUser = session?.user || null;
+    updateAuthUI();
+  });
+}
+
+function getCurrentNickname() {
+  if (!currentAuthUser) return "";
+  return currentAuthUser.user_metadata?.nickname || currentAuthUser.user_metadata?.username || "玩家";
+}
+
+// 訪客模式：直接關掉歡迎畫面進入 app，不需要登入
+function enterAsGuest() {
+  enterApp();
+}
+function enterApp() {
+  hasEnteredApp = true;
+  closeWelcomeScreen();
+}
+
+function toggleAvatarMenu(e) {
+  if (e) e.stopPropagation();
+  document.getElementById("userAvatarMenu")?.classList.toggle("show");
+}
+document.addEventListener("click", (e) => {
+  const wrap = document.getElementById("userAvatarWrap");
+  const menu = document.getElementById("userAvatarMenu");
+  if (menu && menu.classList.contains("show") && wrap && !wrap.contains(e.target)) {
+    menu.classList.remove("show");
+  }
+});
+function handleAvatarMenuAction() {
+  document.getElementById("userAvatarMenu")?.classList.remove("show");
+  if (currentAuthUser) signOutUser();
+  else openAuthModal("signin");
+}
+
+function updateAuthUI() {
+  const avatarBtn = document.getElementById("userAvatarBtn");
+  const statusEl = document.getElementById("avatarMenuStatus");
+  const actionBtn = document.getElementById("avatarMenuBtn");
+  const lockBadge = document.getElementById("wallLockBadge");
+  if (avatarBtn && statusEl && actionBtn) {
+    if (currentAuthUser) {
+      const nickname = getCurrentNickname();
+      avatarBtn.textContent = nickname.slice(0, 1).toUpperCase();
+      avatarBtn.classList.add("logged-in");
+      statusEl.textContent = `已登入：${nickname}`;
+      actionBtn.textContent = "登出";
+    } else {
+      avatarBtn.textContent = "👤";
+      avatarBtn.classList.remove("logged-in");
+      statusEl.textContent = "訪客模式";
+      actionBtn.textContent = "登入 / 註冊";
+    }
+  }
+  if (lockBadge) lockBadge.style.display = currentAuthUser ? "none" : "inline-block";
+  // 如果目前正停在公開配裝牆頁面，登入狀態一變就重新整理內容
+  const wallPage = document.getElementById("wallPage");
+  if (wallPage && wallPage.style.display !== "none") {
+    if (currentAuthUser) loadWallList();
+    else renderWallGate();
+  }
+}
+
+// 公開配裝牆需要登入才能看：沒登入時顯示這個引導畫面，取代原本的清單
+function renderWallGate() {
+  const gridEl = document.getElementById("wallGrid");
+  if (!gridEl) return;
+  gridEl.innerHTML = `
+    <div class="no-result" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 20px;">
+      <div style="font-size:32px;">🔒</div>
+      <div style="font-size:15px;color:var(--text);">登入後才能瀏覽和發布公開配裝牆</div>
+      <div style="font-size:12px;color:var(--text-dim);">其他功能（配裝模擬、資料庫查詢…）不用登入也能用</div>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button type="button" class="loadout-btn primary" onclick="openAuthModal('signin')">登入</button>
+        <button type="button" class="loadout-btn" onclick="openAuthModal('signup')">註冊帳號</button>
+      </div>
+    </div>`;
+}
+
+function openAuthModal(mode) {
+  authMode = mode || "signin";
+  applyAuthModeUI();
+  const errorEl = document.getElementById("authError");
+  if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
+  document.getElementById("authOverlay")?.classList.add("show");
+}
+function closeAuthModal(e) {
+  if (e && e.target && e.target.id !== "authOverlay") return;
+  document.getElementById("authOverlay")?.classList.remove("show");
+}
+function toggleAuthMode() {
+  authMode = authMode === "signin" ? "signup" : "signin";
+  applyAuthModeUI();
+}
+function applyAuthModeUI() {
+  const isSignup = authMode === "signup";
+  document.getElementById("authModalTitle").textContent = isSignup ? "註冊帳號" : "登入";
+  document.getElementById("authModalSub").textContent = isSignup
+    ? "設定暱稱、帳號和密碼，註冊後即可使用公開配裝牆。"
+    : "登入後才能瀏覽和發布公開配裝牆。";
+  const nicknameRow = document.getElementById("authNicknameRow");
+  if (nicknameRow) nicknameRow.style.display = isSignup ? "flex" : "none";
+  document.getElementById("authSubmitBtn").textContent = isSignup ? "註冊" : "登入";
+  document.getElementById("authToggleText").textContent = isSignup ? "已經有帳號？" : "還沒有帳號？";
+  document.getElementById("authToggleLink").textContent = isSignup ? "登入" : "註冊一個";
+}
+
+// 帳號系統不收使用者信箱，但 Supabase Auth 底層還是要吃 email 格式，
+// 所以這裡把「帳號」轉成一組看不出真實信箱、也永遠不會真的寄信的假信箱，純粹拿來當登入識別碼用。
+function usernameToFakeEmail(username) {
+  const clean = (username || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+  return clean + "@huangzhe-player.local";
+}
+function isValidUsername(username) {
+  return /^[a-zA-Z0-9_]{3,20}$/.test((username || "").trim());
+}
+
+async function submitAuthForm() {
+  const db = initWallSupabase();
+  const errorEl = document.getElementById("authError");
+  if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
+  if (!db) { if (errorEl) errorEl.textContent = "資料庫尚未設定，請聯絡網站管理者。"; return; }
+  const username = (document.getElementById("authUsername")?.value || "").trim();
+  const password = document.getElementById("authPassword")?.value || "";
+  const nickname = (document.getElementById("authNickname")?.value || "").trim();
+  if (!username || !password) { if (errorEl) errorEl.textContent = "請輸入帳號和密碼。"; return; }
+  if (!isValidUsername(username)) { if (errorEl) errorEl.textContent = "帳號限英文字母、數字、底線，3-20字。"; return; }
+  if (password.length < 6) { if (errorEl) errorEl.textContent = "密碼至少需要 6 碼。"; return; }
+  const email = usernameToFakeEmail(username);
+  try {
+    if (authMode === "signup") {
+      if (!nickname) { if (errorEl) errorEl.textContent = "請輸入暱稱。"; return; }
+      const { data, error } = await db.auth.signUp({ email, password, options: { data: { nickname, username } } });
+      if (error) throw error;
+      if (!data.session) {
+        if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "註冊成功，請重新登入。"; }
+        return;
+      }
+    } else {
+      const { error } = await db.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    }
+    closeAuthModal();
+    enterApp();
+    switchTab("wall");
+  } catch (e) {
+    let msg = e.message || "發生錯誤，請稍後再試。";
+    if (/already registered|already exists/i.test(msg)) msg = "這個帳號已經被註冊過了，換一個試試。";
+    else if (/invalid login credentials/i.test(msg)) msg = "帳號或密碼錯誤。";
+    if (errorEl) errorEl.textContent = msg;
+  }
+}
+
+async function signOutUser() {
+  const db = initWallSupabase();
+  if (!db) return;
+  await db.auth.signOut();
+  if (document.getElementById("wallPage")?.style.display !== "none") switchTab("hero");
+}
+
+async function publishLoadoutToWallCore(title) {
   const db = initWallSupabase();
   if (!db) {
     alert("公開牆尚未設定資料庫（Supabase），請聯絡網站管理者完成設定後再試。");
+    return false;
+  }
+  if (!currentAuthUser) {
+    alert("請先登入才能發布到公開配裝牆。");
     return false;
   }
   let packed;
@@ -7716,7 +8120,8 @@ async function publishLoadoutToWallCore(title, author) {
   try {
     const { error } = await db.from("shared_loadouts").insert({
       title: title || "未命名配裝",
-      author: author || "匿名",
+      author: getCurrentNickname() || "匿名",
+      user_id: currentAuthUser.id,
       packed
     });
     if (error) throw error;
@@ -7728,17 +8133,18 @@ async function publishLoadoutToWallCore(title, author) {
 }
 
 // 配裝頁按鈕：直接跳出取名彈窗，命名後自動發布並跳到公開牆查看結果
+// 沒登入的話先跳出登入視窗，而不是直接開發布視窗
 function quickPublishLoadoutToWall() {
+  if (!currentAuthUser) {
+    openAuthModal("signin");
+    return;
+  }
   document.getElementById("quickPublishOverlay")?.classList.add("show");
   const titleInput = document.getElementById("quickPublishTitle");
-  const authorInput = document.getElementById("quickPublishAuthor");
+  const authorLine = document.getElementById("quickPublishAuthorLine");
   if (titleInput) titleInput.value = "";
-  if (authorInput) {
-    let savedAuthor = "";
-    try { savedAuthor = localStorage.getItem("wallAuthorName") || ""; } catch (e) {}
-    authorInput.value = savedAuthor;
-  }
-  requestAnimationFrame(() => (authorInput || titleInput)?.focus());
+  if (authorLine) authorLine.textContent = `作者：${getCurrentNickname()}`;
+  requestAnimationFrame(() => titleInput?.focus());
 }
 
 function closeQuickPublishModal(e) {
@@ -7748,12 +8154,9 @@ function closeQuickPublishModal(e) {
 
 async function confirmQuickPublishLoadoutToWall() {
   const titleInput = document.getElementById("quickPublishTitle");
-  const authorInput = document.getElementById("quickPublishAuthor");
   const title = (titleInput?.value || "").trim();
-  const author = (authorInput?.value || "").trim();
-  const ok = await publishLoadoutToWallCore(title, author);
+  const ok = await publishLoadoutToWallCore(title);
   if (ok) {
-    if (author) { try { localStorage.setItem("wallAuthorName", author); } catch (e) {} }
     closeQuickPublishModal();
     switchTab("wall");
   }
@@ -7767,6 +8170,7 @@ async function loadWallList() {
     gridEl.innerHTML = `<div class="no-result">公開牆尚未設定資料庫（Supabase），請聯絡網站管理者完成設定</div>`;
     return;
   }
+  if (!currentAuthUser) { renderWallGate(); return; }
   gridEl.innerHTML = `<div class="no-result">載入中...</div>`;
   try {
     const { data, error } = await db
@@ -7802,10 +8206,11 @@ async function openWallEntryModal(id) {
   const bodyEl = document.getElementById("wallDetailBody");
   const overlay = document.getElementById("wallDetailOverlay");
   if (!db || !bodyEl || !overlay) return;
+  if (!currentAuthUser) { openAuthModal("signin"); return; }
   bodyEl.innerHTML = `<div class="no-result">載入中...</div>`;
   overlay.classList.add("show");
   try {
-    const { data, error } = await db.from("shared_loadouts").select("title, author, packed, created_at").eq("id", id).single();
+    const { data, error } = await db.from("shared_loadouts").select("title, author, user_id, packed, created_at").eq("id", id).single();
     if (error) throw error;
     if (!data) { bodyEl.innerHTML = `<div class="no-result">找不到這筆配裝，可能已被刪除。</div>`; return; }
     const json = window.LZString ? LZString.decompressFromEncodedURIComponent(data.packed) : decodeURIComponent(escape(atob(decodeURIComponent(data.packed))));
@@ -7821,6 +8226,7 @@ async function openWallEntryModal(id) {
 function renderWallDetailBody(entry, team, id) {
   const author = entry.author && entry.author.trim() ? entry.author.trim() : "匿名";
   const title = entry.title && entry.title.trim() ? entry.title.trim() : "未命名配裝";
+  const canDelete = !!(currentAuthUser && entry.user_id && entry.user_id === currentAuthUser.id);
   const membersHtml = team.map((member, idx) => {
     const hero = member.hero ? heroes.find(h => h.id === member.hero) : null;
     if (!hero) {
@@ -7852,10 +8258,25 @@ function renderWallDetailBody(entry, team, id) {
     <div class="wall-detail-author">作者：${escapeHtml(author)}</div>
     <div class="wall-detail-title">${escapeHtml(title)}</div>
     ${membersHtml}
-    <div class="wall-detail-load-row">
-      <button type="button" class="loadout-btn primary" onclick="loadWallEntry('${id}')">查看配裝</button>
+    <div class="wall-detail-load-row" style="display:flex;gap:10px;">
+      <button type="button" class="loadout-btn primary" style="flex:1;" onclick="loadWallEntry('${id}')">查看配裝</button>
+      ${canDelete ? `<button type="button" class="loadout-btn" style="flex:0 0 auto;color:#e08b8b;" onclick="deleteWallEntry('${id}')">刪除</button>` : ""}
     </div>
   `;
+}
+
+async function deleteWallEntry(id) {
+  if (!confirm("確定要刪除這篇公開配裝嗎？此動作無法復原。")) return;
+  const db = initWallSupabase();
+  if (!db) return;
+  try {
+    const { error } = await db.from("shared_loadouts").delete().eq("id", id);
+    if (error) throw error;
+    closeWallDetailModal();
+    loadWallList();
+  } catch (e) {
+    alert("刪除失敗：" + (e.message || e));
+  }
 }
 
 function closeWallDetailModal(e) {
@@ -7866,6 +8287,7 @@ function closeWallDetailModal(e) {
 async function loadWallEntry(id) {
   const db = initWallSupabase();
   if (!db) return;
+  if (!currentAuthUser) { openAuthModal("signin"); return; }
   try {
     const { data, error } = await db.from("shared_loadouts").select("packed").eq("id", id).single();
     if (error) throw error;
@@ -7882,6 +8304,8 @@ async function loadWallEntry(id) {
     alert("載入失敗：" + (e.message || e));
   }
 }
+
+initAuthState();
 </script>
 </body>
 </html>
