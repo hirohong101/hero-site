@@ -1250,13 +1250,6 @@
       color: var(--text);
       font-size: 13px;
     }
-    .wall-list {
-      max-height: 50vh;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
     .wall-item {
       display: flex;
       align-items: center;
@@ -1296,6 +1289,7 @@
       flex-direction: column;
       gap: 10px;
     }
+    /* 手機（預設）：卡片直向堆疊、寬度吃滿螢幕，方便單手滑動點擊 */
     .wall-card-long {
       display: flex;
       align-items: center;
@@ -1335,6 +1329,26 @@
       color: var(--text-dim);
       flex-shrink: 0;
       white-space: nowrap;
+    }
+    /* 電腦版（寬螢幕）：改成置中、卡片排成多欄網格，不會整排卡片黏在左邊、右邊留一大片空白 */
+    @media (min-width: 761px) {
+      #wallPage .content {
+        max-width: 1160px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .wall-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 14px;
+      }
+      .wall-card-long {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .wall-card-long-title { white-space: normal; }
+      .wall-card-long-meta { align-self: flex-start; }
     }
     .wall-detail-box {
       width: min(760px, 94vw);
@@ -2032,6 +2046,7 @@
     <button type="button" class="user-avatar-btn" id="userAvatarBtn" onclick="toggleAvatarMenu(event)">👤</button>
     <div class="user-avatar-menu" id="userAvatarMenu">
       <div class="user-avatar-menu-status" id="avatarMenuStatus">訪客模式</div>
+      <button type="button" class="user-avatar-menu-btn" id="avatarSettingsBtn" style="display:none;" onclick="openAccountSettingsModal()">帳號設定</button>
       <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
     </div>
   </div>
@@ -2396,7 +2411,32 @@
       <span id="authToggleText">還沒有帳號？</span>
       <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color:var(--gold-bright);">註冊一個</a>
     </div>
+    <div id="authForgotRow" style="margin-top:6px;font-size:12px;color:var(--text-dim);text-align:center;">
+      <a href="javascript:void(0)" onclick="sendForgotPasswordEmail()" style="color:var(--gold-bright);">忘記密碼？</a>
+    </div>
     <div id="authError" style="margin-top:10px;font-size:12px;color:#e08b8b;"></div>
+  </div>
+</div>
+
+<!-- 帳號設定：更改密碼彈窗 -->
+<div id="accountSettingsOverlay" class="share-link-overlay" onclick="closeAccountSettingsModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeAccountSettingsModal()">&times;</button>
+    <div class="share-link-title">帳號設定</div>
+    <div class="share-link-sub">更改登入密碼。</div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="settingsOldPassword" type="password" placeholder="原來密碼" autocomplete="current-password" onkeydown="if(event.key==='Enter')document.getElementById('settingsNewPassword').focus()">
+    </div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="settingsNewPassword" type="password" placeholder="新密碼（至少6碼）" autocomplete="new-password" onkeydown="if(event.key==='Enter')document.getElementById('settingsConfirmPassword').focus()">
+    </div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="settingsConfirmPassword" type="password" placeholder="確認新密碼" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitChangePassword()">
+    </div>
+    <div class="share-link-row">
+      <button type="button" class="loadout-btn primary" style="width:100%;" onclick="submitChangePassword()">確認更改密碼</button>
+    </div>
+    <div id="settingsError" style="margin-top:10px;font-size:12px;color:#e08b8b;"></div>
   </div>
 </div>
 
@@ -7909,7 +7949,11 @@ function initWallSupabase() {
     if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes("請填入")) return null;
     if (typeof supabase === "undefined" || !supabase.createClient) return null;
     wallDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+      // detectSessionInUrl: true → 使用者點了「信箱驗證信」裡的連結後，
+      // Supabase 會把登入憑證（access_token / refresh_token）夾在跳轉回來的網址後面傳過來，
+      // 這裡開啟後，網頁載入時會自動讀出這組由 Supabase 傳回來的憑證、直接幫使用者完成登入，
+      // 不用再手動輸入一次帳號密碼。
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
     });
     return wallDb;
   } catch (e) {
@@ -7976,6 +8020,7 @@ function updateAuthUI() {
   const avatarBtn = document.getElementById("userAvatarBtn");
   const statusEl = document.getElementById("avatarMenuStatus");
   const actionBtn = document.getElementById("avatarMenuBtn");
+  const settingsBtn = document.getElementById("avatarSettingsBtn");
   const lockBadge = document.getElementById("wallLockBadge");
   if (avatarBtn && statusEl && actionBtn) {
     if (currentAuthUser) {
@@ -7984,11 +8029,13 @@ function updateAuthUI() {
       avatarBtn.classList.add("logged-in");
       statusEl.textContent = `已登入：${nickname}`;
       actionBtn.textContent = "登出";
+      if (settingsBtn) settingsBtn.style.display = "block";
     } else {
       avatarBtn.textContent = "👤";
       avatarBtn.classList.remove("logged-in");
       statusEl.textContent = "訪客模式";
       actionBtn.textContent = "登入 / 註冊";
+      if (settingsBtn) settingsBtn.style.display = "none";
     }
   }
   if (lockBadge) lockBadge.style.display = currentAuthUser ? "none" : "inline-block";
@@ -8042,6 +8089,8 @@ function applyAuthModeUI() {
   document.getElementById("authSubmitBtn").textContent = isSignup ? "註冊" : "登入";
   document.getElementById("authToggleText").textContent = isSignup ? "已經有帳號？" : "還沒有帳號？";
   document.getElementById("authToggleLink").textContent = isSignup ? "登入" : "註冊一個";
+  const forgotRow = document.getElementById("authForgotRow");
+  if (forgotRow) forgotRow.style.display = isSignup ? "none" : "block";
 }
 
 async function submitAuthForm() {
@@ -8059,6 +8108,12 @@ async function submitAuthForm() {
       if (!nickname) { if (errorEl) errorEl.textContent = "請輸入暱稱。"; return; }
       const { data, error } = await db.auth.signUp({ email, password, options: { data: { nickname } } });
       if (error) throw error;
+      // Supabase 對「這個信箱其實已經註冊過」不會直接回傳錯誤（避免被拿來試探信箱是否存在），
+      // 而是照樣回傳成功、但 identities 陣列會是空的，藉此判斷這其實是重複註冊。
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        if (errorEl) { errorEl.style.color = "#e08b8b"; errorEl.textContent = "這個信箱已經註冊過了，請直接登入，或點下面的「忘記密碼？」重設密碼。"; }
+        return;
+      }
       if (!data.session) {
         if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "註冊成功！請去信箱收認證信，完成後即可登入。"; }
         return;
@@ -8071,7 +8126,28 @@ async function submitAuthForm() {
     enterApp();
     switchTab("wall");
   } catch (e) {
-    if (errorEl) errorEl.textContent = e.message || "發生錯誤，請稍後再試。";
+    let msg = e.message || "發生錯誤，請稍後再試。";
+    if (/already registered|already exists/i.test(msg)) msg = "這個信箱已經註冊過了，請直接登入，或點下面的「忘記密碼？」重設密碼。";
+    else if (/invalid login credentials/i.test(msg)) msg = "信箱或密碼錯誤。";
+    if (errorEl) errorEl.textContent = msg;
+  }
+}
+
+async function sendForgotPasswordEmail() {
+  const db = initWallSupabase();
+  const errorEl = document.getElementById("authError");
+  if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
+  if (!db) { if (errorEl) errorEl.textContent = "資料庫尚未設定，請聯絡網站管理者。"; return; }
+  const email = (document.getElementById("authEmail")?.value || "").trim();
+  if (!email) { if (errorEl) errorEl.textContent = "請先在上面輸入你註冊時用的信箱，再點忘記密碼。"; return; }
+  try {
+    // 這裡沒指定 redirectTo，會用 Supabase 後台「Site URL」設定的網址，
+    // 使用者點重設密碼信裡的連結後會跳回那個網址，並帶著可以設定新密碼的憑證。
+    const { error } = await db.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+    if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "已經寄出重設密碼信，請去信箱收信並點連結設定新密碼。"; }
+  } catch (e) {
+    if (errorEl) errorEl.textContent = e.message || "寄送失敗，請稍後再試。";
   }
 }
 
@@ -8080,6 +8156,52 @@ async function signOutUser() {
   if (!db) return;
   await db.auth.signOut();
   if (document.getElementById("wallPage")?.style.display !== "none") switchTab("hero");
+}
+
+function openAccountSettingsModal() {
+  document.getElementById("userAvatarMenu")?.classList.remove("show");
+  if (!currentAuthUser) return;
+  const errorEl = document.getElementById("settingsError");
+  if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
+  const oldEl = document.getElementById("settingsOldPassword");
+  const newEl = document.getElementById("settingsNewPassword");
+  const confirmEl = document.getElementById("settingsConfirmPassword");
+  if (oldEl) oldEl.value = "";
+  if (newEl) newEl.value = "";
+  if (confirmEl) confirmEl.value = "";
+  document.getElementById("accountSettingsOverlay")?.classList.add("show");
+}
+function closeAccountSettingsModal(e) {
+  if (e && e.target && e.target.id !== "accountSettingsOverlay") return;
+  document.getElementById("accountSettingsOverlay")?.classList.remove("show");
+}
+async function submitChangePassword() {
+  const db = initWallSupabase();
+  const errorEl = document.getElementById("settingsError");
+  if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
+  if (!db || !currentAuthUser) { if (errorEl) errorEl.textContent = "請先登入。"; return; }
+  const oldPassword = document.getElementById("settingsOldPassword")?.value || "";
+  const newPassword = document.getElementById("settingsNewPassword")?.value || "";
+  const confirmPassword = document.getElementById("settingsConfirmPassword")?.value || "";
+  if (!oldPassword || !newPassword || !confirmPassword) { if (errorEl) errorEl.textContent = "請把三個欄位都填寫完整。"; return; }
+  if (newPassword.length < 6) { if (errorEl) errorEl.textContent = "新密碼至少需要 6 碼。"; return; }
+  if (newPassword !== confirmPassword) { if (errorEl) errorEl.textContent = "兩次輸入的新密碼不一致。"; return; }
+  if (newPassword === oldPassword) { if (errorEl) errorEl.textContent = "新密碼不能跟原來的密碼一樣。"; return; }
+  try {
+    // Supabase 的 updateUser 本身不會驗證「原密碼」對不對，所以這裡先用信箱+原密碼重新登入一次，
+    // 用登入成不成功來確認原密碼是不是真的正確，確認過了才真的去改密碼。
+    const { error: verifyError } = await db.auth.signInWithPassword({ email: currentAuthUser.email, password: oldPassword });
+    if (verifyError) { if (errorEl) errorEl.textContent = "原來的密碼不正確。"; return; }
+    const { error: updateError } = await db.auth.updateUser({ password: newPassword });
+    if (updateError) throw updateError;
+    if (errorEl) { errorEl.style.color = "#8ec98e"; errorEl.textContent = "密碼已更新成功！"; }
+    document.getElementById("settingsOldPassword").value = "";
+    document.getElementById("settingsNewPassword").value = "";
+    document.getElementById("settingsConfirmPassword").value = "";
+    setTimeout(() => closeAccountSettingsModal(), 1200);
+  } catch (e) {
+    if (errorEl) errorEl.textContent = e.message || "更改密碼失敗，請稍後再試。";
+  }
 }
 
 async function publishLoadoutToWallCore(title) {
