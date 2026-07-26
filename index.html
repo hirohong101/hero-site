@@ -23,6 +23,19 @@
       --text: #b8c8b0;
       --text-dim: #4a5e44;
     }
+    /* 淺色（黑白）介面：套在 body.theme-light 上，覆蓋掉所有顏色變數 */
+    body.theme-light {
+      --gold: #8a6d1f;
+      --gold-bright: #6b5414;
+      --gold-dim: #b8a15c;
+      --bg-deep: #f4f4f2;
+      --bg-panel: #ffffff;
+      --bg-card: #f7f7f5;
+      --bg-card-hover: #ececea;
+      --border: #d8d8d4;
+      --text: #1c1c1a;
+      --text-dim: #6b6b66;
+    }
 /* ===== 歡迎畫面 ===== */
 .welcome-screen {
   position: fixed;
@@ -463,6 +476,7 @@
       z-index: 400;
     }
     .user-avatar-btn {
+      position: relative;
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -484,6 +498,97 @@
     }
     .user-avatar-btn.logged-in {
       background: rgba(212,168,75,0.16);
+    }
+    /* 頭像相框：純 CSS box-shadow 疊環，不用額外圖片素材 */
+    .avatar-frame-qinglong { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #4fd1e8, 0 0 10px 2px rgba(79,209,232,0.55) !important; }
+    .avatar-frame-zhuque   { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #e8674f, 0 0 10px 2px rgba(232,103,79,0.55) !important; }
+    .avatar-frame-baihu    { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #e5e5e5, 0 0 10px 2px rgba(229,229,229,0.5) !important; }
+    .avatar-frame-xuanwu   { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #4fe89a, 0 0 10px 2px rgba(79,232,154,0.5) !important; }
+    .avatar-frame-jinhui   { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #d4a84b, 0 0 10px 2px rgba(212,168,75,0.6) !important; }
+    .avatar-frame-royal    { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #b06ee8, 0 0 0 6px #d4a84b, 0 0 12px 2px rgba(176,110,232,0.55) !important; }
+    .avatar-frame-zhuqijinmiao { box-shadow: 0 0 0 2px #14110c, 0 0 0 5px #7a1f1f, 0 0 0 6px #d4a84b, 0 0 10px 1px rgba(122,31,31,0.5) !important; }
+    .avatar-frame-feicui   { box-shadow: 0 0 0 2px #14110c, 0 0 0 5px #1f6b4a, 0 0 10px 2px rgba(60,200,140,0.5) !important; }
+    .avatar-frame-lieyan   { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #e8674f, 0 0 12px 3px rgba(255,140,60,0.6), 0 0 22px 4px rgba(255,90,30,0.3) !important; }
+    .avatar-frame-suyin    { box-shadow: 0 0 0 2px #14110c, 0 0 0 4px #c8c8c8, 0 0 6px 1px rgba(200,200,200,0.35) !important; }
+    .avatar-frame-leidian  { box-shadow: 0 0 0 2px #14110c, 0 0 0 6px #6b3fa0, 0 0 10px 2px rgba(176,110,232,0.5) !important; }
+    .avatar-frame-leidian::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 1px;
+      border-radius: 50%;
+      background: transparent;
+      pointer-events: none;
+      box-shadow:
+        20px 3px 0 0.4px #ffe97a,
+        14px 15px 0 0.3px #ffe97a,
+        -5px 20px 0 0.4px #ffe97a,
+        -15px 13px 0 0.3px #ffe97a,
+        -19px -4px 0 0.4px #ffe97a,
+        -10px -18px 0 0.3px #ffe97a,
+        8px -19px 0 0.4px #ffe97a,
+        18px -9px 0 0.3px #ffe97a;
+    }
+    .avatar-frame-mojin { box-shadow: 0 0 0 2px #14110c, 0 0 0 8px #0a0a0a, 0 0 10px 1px rgba(212,168,75,0.35) !important; }
+    .avatar-frame-mojin::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1px;
+      height: 1px;
+      border-radius: 50%;
+      background: transparent;
+      pointer-events: none;
+      box-shadow:
+        20px 1px 0 0.35px #d4a84b,
+        15px 13px 0 0.3px #d4a84b,
+        6px 18px 0 0.4px #d4a84b,
+        -6px 18px 0 0.3px #d4a84b,
+        -15px 13px 0 0.4px #d4a84b,
+        -19px 3px 0 0.3px #d4a84b,
+        -16px -10px 0 0.4px #d4a84b,
+        -8px -18px 0 0.3px #d4a84b,
+        6px -18px 0 0.4px #d4a84b,
+        15px -11px 0 0.3px #d4a84b;
+    }
+    .avatar-frame-swatch {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-panel);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold-bright);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin: 0 auto 6px;
+    }
+    .avatar-frame-option {
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .avatar-frame-option.selected {
+      border-color: var(--gold-dim);
+      background: rgba(212,168,75,0.08);
+      color: var(--gold-bright);
+    }
+    .avatar-frame-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
     }
     .user-avatar-menu {
       display: none;
@@ -1411,6 +1516,19 @@
       background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);
     }
+    .wall-detail-gear-fallback {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      height: 34px;
+      padding: 0 8px;
+      font-size: 11px;
+      color: var(--gold-bright);
+      border-radius: 6px;
+      background: rgba(212,168,75,0.08);
+      border: 1px dashed var(--gold-dim);
+      white-space: nowrap;
+    }
     .wall-detail-stats {
       font-size: 12px;
       color: var(--gold-bright);
@@ -1971,6 +2089,10 @@
   </style>	
 </head>
 <body>
+<script>
+  // 先套用上次選好的主題（深色／淺色），避免畫面先閃一下深色才切成淺色
+  if (localStorage.getItem("theme") === "light") document.body.classList.add("theme-light");
+</script>
 
   <!-- 歡迎畫面 -->
   <div id="welcomeScreen" class="welcome-screen">
@@ -2013,7 +2135,7 @@
       </div>
       <div class="nav-item" id="navBaowu" onclick="switchTab('baowu')">
         <span class="icon">💎</span><span>寶物</span>
-        <span class="badge" id="baowuBadge">70</span>
+        <span class="badge" id="baowuBadge"></span>
       </div>
       <div class="nav-item" id="navSkill" onclick="switchTab('skill')">
         <span class="icon">✨</span><span>技能</span>
@@ -2047,7 +2169,9 @@
     <div class="user-avatar-menu" id="userAvatarMenu">
       <div class="user-avatar-menu-status" id="avatarMenuStatus">訪客模式</div>
       <button type="button" class="user-avatar-menu-btn" id="avatarSettingsBtn" style="display:none;" onclick="openAccountSettingsModal()">帳號設定</button>
-      <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
+      <button type="button" class="user-avatar-menu-btn" style="margin-top:6px;" onclick="openAvatarFrameModal()">更換頭像相框</button>
+      <button type="button" class="user-avatar-menu-btn" style="margin-top:6px;" onclick="toggleTheme()" id="themeToggleBtn">切換淺色模式</button>
+      <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" style="margin-top:6px;" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
     </div>
   </div>
 
@@ -2437,6 +2561,20 @@
       <button type="button" class="loadout-btn primary" style="width:100%;" onclick="submitChangePassword()">確認更改密碼</button>
     </div>
     <div id="settingsError" style="margin-top:10px;font-size:12px;color:#e08b8b;"></div>
+  </div>
+</div>
+
+<!-- 更換頭像相框彈窗 -->
+<div id="avatarFrameOverlay" class="share-link-overlay" onclick="closeAvatarFrameModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeAvatarFrameModal()">&times;</button>
+    <div class="share-link-title">更換頭像相框</div>
+    <div class="share-link-sub">選一個喜歡的相框，套用在右上角頭像上。</div>
+    <div class="avatar-frame-grid" id="avatarFrameGrid"></div>
+    <div class="share-link-row">
+      <button type="button" class="loadout-btn primary" style="width:100%;" onclick="confirmAvatarFrame()">套用</button>
+    </div>
+    <div id="avatarFrameNote" style="margin-top:10px;font-size:12px;color:var(--text-dim);"></div>
   </div>
 </div>
 
@@ -6318,6 +6456,18 @@ function findLoadoutSlotKeyByCat(cat, used = new Set()) {
   }
   return "";
 }
+// 判斷是否為「集齊5件金色品質套」的額外加成道具（例如天罰秘書、軒轅玉佩、祖龍袞衣這類）
+// 這類道具效果都寫「裝備5件...套」或「裝備5件金色品質...套」，只有集滿整套5件基本件才會生效，
+// 單一英雄一鍵套裝時不該選到它（它是給另一位英雄額外配戴、湊團隊套裝數用的）。
+function isSetBindingBonusItem(item) {
+  return (item.grades || []).some(g => {
+    // 先把括號內的附註條件拿掉（例如主件常見的「（裝備5件金色套後生效）」），
+    // 避免把主件誤判成加成道具，只看效果敘述本身是不是就是「裝備5件套」開頭的團隊效果。
+    const text = (g.effect || "").replace(/（[^）]*）/g, "");
+    return /裝備\s*5\s*件.*套/.test(text);
+  });
+}
+
 // ---- 一鍵套裝（只套用到目前選中的英雄，已被別人用掉的會跳過並提示） ----
 function applyLoadoutSet() {
   const setName = document.getElementById("loadoutSetSelect")?.value || "";
@@ -6339,7 +6489,7 @@ function applyLoadoutSet() {
   const used = new Set();
   const skipped = [];
   baowuList
-    .filter(item => item.set === setName && setCats.includes(item.cat))
+    .filter(item => item.set === setName && setCats.includes(item.cat) && !isSetBindingBonusItem(item))
     .forEach(item => {
       if (isItemUsedElsewhere(item.id, loadoutState.activeMember)) {
         skipped.push(item.name);
@@ -8039,6 +8189,8 @@ function updateAuthUI() {
     }
   }
   if (lockBadge) lockBadge.style.display = currentAuthUser ? "none" : "inline-block";
+  applyAvatarFrame(getSavedAvatarFrame());
+  updateThemeToggleLabel();
   // 如果目前正停在公開配裝牆頁面，登入狀態一變就重新整理內容
   const wallPage = document.getElementById("wallPage");
   if (wallPage && wallPage.style.display !== "none") {
@@ -8156,6 +8308,81 @@ async function signOutUser() {
   if (!db) return;
   await db.auth.signOut();
   if (document.getElementById("wallPage")?.style.display !== "none") switchTab("hero");
+}
+
+// 頭像相框：純 CSS 樣式，不用額外圖片素材，用四靈 + 金輝/帝王紫命名
+const AVATAR_FRAMES = [
+  { id: "none",     name: "無相框" },
+  { id: "jinhui",   name: "金輝" },
+  { id: "qinglong", name: "青龍" },
+  { id: "zhuque",   name: "朱雀" },
+  { id: "baihu",    name: "白虎" },
+  { id: "xuanwu",   name: "玄武" },
+  { id: "royal",    name: "帝王紫" },
+  { id: "mojin",    name: "墨金鑲點" },
+  { id: "zhuqijinmiao", name: "朱漆描金" },
+  { id: "feicui",   name: "翡翠" },
+  { id: "lieyan",   name: "烈焰" },
+  { id: "suyin",    name: "素銀" },
+  { id: "leidian",  name: "雷電紫金" }
+];
+let pendingAvatarFrame = null;
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle("theme-light");
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+  updateThemeToggleLabel();
+}
+function updateThemeToggleLabel() {
+  const btn = document.getElementById("themeToggleBtn");
+  if (btn) btn.textContent = document.body.classList.contains("theme-light") ? "切換深色模式" : "切換淺色模式";
+}
+
+function getSavedAvatarFrame() {
+  if (currentAuthUser?.user_metadata?.avatarFrame) return currentAuthUser.user_metadata.avatarFrame;
+  return localStorage.getItem("avatarFrame") || "none";
+}
+function applyAvatarFrame(frameId) {
+  const avatarBtn = document.getElementById("userAvatarBtn");
+  if (!avatarBtn) return;
+  AVATAR_FRAMES.forEach(f => avatarBtn.classList.remove("avatar-frame-" + f.id));
+  if (frameId && frameId !== "none") avatarBtn.classList.add("avatar-frame-" + frameId);
+}
+function openAvatarFrameModal() {
+  document.getElementById("userAvatarMenu")?.classList.remove("show");
+  pendingAvatarFrame = getSavedAvatarFrame();
+  const grid = document.getElementById("avatarFrameGrid");
+  const nickname = getCurrentNickname() || "";
+  const initial = (nickname.slice(0, 1) || "👤").toUpperCase() || "👤";
+  grid.innerHTML = AVATAR_FRAMES.map(f => `
+    <div class="avatar-frame-option ${f.id === pendingAvatarFrame ? "selected" : ""}" id="avatarFrameOpt_${f.id}" onclick="selectAvatarFrame('${f.id}')">
+      <div class="avatar-frame-swatch ${f.id !== "none" ? "avatar-frame-" + f.id : ""}">${currentAuthUser ? escapeHtml(initial) : "👤"}</div>
+      ${f.name}
+    </div>
+  `).join("");
+  const noteEl = document.getElementById("avatarFrameNote");
+  if (noteEl) noteEl.textContent = currentAuthUser ? "登入狀態下會記住在你的帳號上，換裝置也會一樣。" : "訪客模式下只會存在這台裝置、這個瀏覽器裡。";
+  document.getElementById("avatarFrameOverlay")?.classList.add("show");
+}
+function selectAvatarFrame(frameId) {
+  pendingAvatarFrame = frameId;
+  AVATAR_FRAMES.forEach(f => document.getElementById("avatarFrameOpt_" + f.id)?.classList.toggle("selected", f.id === frameId));
+}
+function closeAvatarFrameModal(e) {
+  if (e && e.target && e.target.id !== "avatarFrameOverlay") return;
+  document.getElementById("avatarFrameOverlay")?.classList.remove("show");
+}
+async function confirmAvatarFrame() {
+  const frameId = pendingAvatarFrame || "none";
+  localStorage.setItem("avatarFrame", frameId);
+  applyAvatarFrame(frameId);
+  if (currentAuthUser) {
+    const db = initWallSupabase();
+    if (db) {
+      try { await db.auth.updateUser({ data: { avatarFrame: frameId } }); } catch (e) {}
+    }
+  }
+  closeAvatarFrameModal();
 }
 
 function openAccountSettingsModal() {
@@ -8343,7 +8570,10 @@ function renderWallDetailBody(entry, team, id) {
     }
     const gearItems = Object.values(member.gear || {}).filter(g => g && g.item);
     const gearHtml = gearItems.length
-      ? gearItems.map(g => `<img src="${g.item.img}" alt="${escapeHtml(g.item.name)}" title="${escapeHtml(g.item.name)}" onerror="this.style.display='none';">`).join("")
+      ? gearItems.map(g => `<span style="display:inline-flex;">
+          <img src="${g.item.img}" alt="${escapeHtml(g.item.name)}" title="${escapeHtml(g.item.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <span class="wall-detail-gear-fallback" title="${escapeHtml(g.item.name)}（圖片讀取失敗）">${escapeHtml(g.item.name)}</span>
+        </span>`).join("")
       : `<span style="font-size:12px;color:var(--text-dim);">（無裝備）</span>`;
     let statsText = "武力+0 智力+0 魅力+0 統御+0";
     try {
