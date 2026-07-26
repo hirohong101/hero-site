@@ -2084,7 +2084,7 @@
           </div>
           <div class="search-wrap">
             <span class="icon">🔍</span>
-            <input type="text" id="search" placeholder="搜尋英雄..." onkeyup="filterHeroes()">
+            <input type="text" id="search" placeholder="搜尋英雄..." onkeyup="filterHeroes()" autocomplete="off" name="hero-search-nofill">
           </div>
         </div>
       </div>
@@ -2148,7 +2148,7 @@
           </select>
           <div class="search-wrap">
             <span class="icon">🔍</span>
-            <input type="text" id="baowuSearch" placeholder="搜尋寶物名稱或詞條..." oninput="filterBaowuList()">
+            <input type="text" id="baowuSearch" placeholder="搜尋寶物名稱或詞條..." oninput="filterBaowuList()" autocomplete="off" name="baowu-search-nofill">
           </div>
         </div>
       </div>
@@ -2164,7 +2164,7 @@
     <div class="filters">
       <div class="skill-search-wrap">
   <span class="icon">🔍</span>
-  <input type="text" id="skillSearch" placeholder="搜尋技能名稱、效果關鍵字..." onkeyup="filterSkills(); toggleSkillClear();">
+  <input type="text" id="skillSearch" placeholder="搜尋技能名稱、效果關鍵字..." onkeyup="filterSkills(); toggleSkillClear();" autocomplete="off" name="skill-search-nofill">
   <button type="button" class="skill-search-clear" id="skillSearchClear" onclick="clearSkillSearch()">✕</button>
 </div>
   </div>
@@ -2219,7 +2219,7 @@
     <div class="filters">
       <div class="search-wrap">
         <span class="icon">🔍</span>
-        <input type="text" id="battleplanSearch" placeholder="搜尋戰計名稱..." onkeyup="filterBattleplans()" style="width:260px;">
+        <input type="text" id="battleplanSearch" placeholder="搜尋戰計名稱..." onkeyup="filterBattleplans()" style="width:260px;" autocomplete="off" name="battleplan-search-nofill">
       </div>
     </div>
   </div>
@@ -2396,13 +2396,13 @@
     <div class="share-link-title" id="authModalTitle">登入</div>
     <div class="share-link-sub" id="authModalSub">登入後才能瀏覽和發布公開配裝牆。</div>
     <div class="share-link-row" id="authNicknameRow" style="display:none;margin-bottom:10px;">
-      <input id="authNickname" type="text" placeholder="暱稱（會顯示在公開配裝上）" maxlength="20">
+      <input id="authNickname" type="text" placeholder="暱稱（會顯示在公開配裝上）" maxlength="20" autocomplete="nickname">
     </div>
     <div class="share-link-row" style="margin-bottom:10px;">
-      <input id="authEmail" type="email" placeholder="電子信箱">
+      <input id="authEmail" type="email" placeholder="電子信箱" autocomplete="email">
     </div>
     <div class="share-link-row" style="margin-bottom:10px;">
-      <input id="authPassword" type="password" placeholder="密碼（至少6碼）" onkeydown="if(event.key==='Enter')submitAuthForm()">
+      <input id="authPassword" type="password" placeholder="密碼（至少6碼）" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuthForm()">
     </div>
     <div class="share-link-row">
       <button type="button" class="loadout-btn primary" id="authSubmitBtn" style="width:100%;" onclick="submitAuthForm()">登入</button>
