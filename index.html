@@ -36,6 +36,59 @@
       --text: #1c1c1a;
       --text-dim: #6b6b66;
     }
+    /* 配裝系統的裝備格／屬性彙總面板：原本背景是寫死的深色（不會跟著淺色模式變白）。
+       這裡改成淺色模式下也跟著整體風格變白／淺色，並把裡面原本寫死的白字、淺灰字、
+       淡白色分隔線，一併換成深色系文字與對應邊框色，跟其他頁面風格一致。 */
+    body.theme-light .loadout-board {
+      background:
+        repeating-linear-gradient(135deg, rgba(0,0,0,.02) 0 1px, transparent 1px 84px),
+        linear-gradient(180deg, var(--bg-card), var(--bg-panel));
+      border-right: 1px solid var(--border);
+    }
+    body.theme-light .loadout-slot {
+      background: radial-gradient(circle at 50% 34%, rgba(138,109,31,.16), var(--bg-card) 58%, var(--bg-panel));
+      color: rgba(138,109,31,.55);
+    }
+    body.theme-light .loadout-slot.filled,
+    body.theme-light .loadout-slot-name {
+      color: var(--text);
+    }
+    body.theme-light .loadout-grade-btn {
+      background: var(--bg-card);
+    }
+    body.theme-light .loadout-summary {
+      background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
+    }
+    body.theme-light .loadout-summary h2,
+    body.theme-light .loadout-stat-card,
+    body.theme-light .loadout-calc-title {
+      border-color: var(--border);
+    }
+    body.theme-light .loadout-empty,
+    body.theme-light .loadout-calc-empty {
+      color: var(--text-dim);
+    }
+    body.theme-light .loadout-bar {
+      background: var(--border);
+    }
+    body.theme-light .loadout-summary-line {
+      color: var(--text-dim);
+    }
+    body.theme-light .loadout-summary-line strong {
+      color: var(--text);
+    }
+    body.theme-light .loadout-summary-tab {
+      background: var(--bg-card);
+    }
+    body.theme-light .loadout-calc-row {
+      color: var(--text-dim);
+    }
+    body.theme-light .loadout-calc-row span.val {
+      color: #2f8f52;
+    }
+    body.theme-light .loadout-calc-row span.val.neg {
+      color: #b8433f;
+    }
 /* ===== 歡迎畫面 ===== */
 .welcome-screen {
   position: fixed;
@@ -137,6 +190,10 @@
   max-width: 88px;
 }
 
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
     body {
       font-family: "Noto Serif TC", "Microsoft JhengHei", serif;
       background: var(--bg-deep);
@@ -635,14 +692,18 @@
     /* ===== 主內容區 ===== */
     .main {
       margin-left: var(--sidebar-w);
+      width: calc(100% - var(--sidebar-w));
+      max-width: calc(100% - var(--sidebar-w));
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: margin-left 0.25s ease;
+      transition: margin-left 0.25s ease, width 0.25s ease, max-width 0.25s ease;
     }
     body.sidebar-collapsed .main {
       margin-left: 0;
+      width: 100%;
+      max-width: 100%;
     }
 
     .topbar {
@@ -1435,7 +1496,10 @@
       flex-shrink: 0;
       white-space: nowrap;
     }
-    /* 電腦版（寬螢幕）：改成置中、卡片排成多欄網格，不會整排卡片黏在左邊、右邊留一大片空白 */
+    /* 電腦版（寬螢幕）：改成置中、卡片改用 flex 自動換行＋置中排列
+       （原本用 CSS grid 的 auto-fill，卡片數量少時會固定卡在左邊第一欄，
+       右邊留下一大片空白，看起來像整個牆「跑到最右邊/左邊去」；
+       改用 flex-wrap + justify-content:center 後，不管卡片有幾張都會置中） */
     @media (min-width: 761px) {
       #wallPage .content {
         max-width: 1160px;
@@ -1443,17 +1507,30 @@
         width: 100%;
       }
       .wall-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
         gap: 14px;
       }
       .wall-card-long {
+        flex: 0 1 280px;
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
       }
       .wall-card-long-title { white-space: normal; }
       .wall-card-long-meta { align-self: flex-start; }
+    }
+    /* 手機版（窄螢幕）：明確鎖定卡片直向堆疊、滿版寬度 */
+    @media (max-width: 760px) {
+      .wall-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .wall-card-long {
+        width: 100%;
+      }
     }
     .wall-detail-box {
       width: min(760px, 94vw);
@@ -1950,6 +2027,55 @@
       color: var(--gold-bright, #e8c96a);
       font-size: 14px;
     }
+    .loadout-slot.locked-req {
+      opacity: 0.55;
+      cursor: not-allowed;
+      border-style: dashed;
+      background: repeating-linear-gradient(135deg, rgba(255,255,255,.02) 0 6px, transparent 6px 12px), var(--bg-card);
+    }
+    .loadout-slot-lock-icon {
+      font-size: 18px;
+      opacity: 0.7;
+    }
+    .loadout-slot-lock-text {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      text-align: center;
+      padding: 0 4px;
+    }
+    .loadout-free-alloc-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: -6px 0 12px;
+    }
+    .loadout-free-alloc-label {
+      font-size: 12px;
+      color: var(--text-dim, #9a9a9a);
+      letter-spacing: 1px;
+    }
+    .loadout-free-alloc-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-bright);
+      background: rgba(232, 201, 106, 0.14);
+      color: var(--gold-bright);
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+    .loadout-free-alloc-btn:hover {
+      background: var(--gold-bright);
+      color: #14180f;
+    }
     .loadout-effects {
       margin-top: 16px;
       padding-top: 14px;
@@ -2090,8 +2216,8 @@
 </head>
 <body>
 <script>
-  // 先套用上次選好的主題（深色／淺色），避免畫面先閃一下深色才切成淺色
-  if (localStorage.getItem("theme") === "light") document.body.classList.add("theme-light");
+  // 淺色／深色模式功能先關閉，固定使用深色模式（原本存過淺色偏好也不再套用）
+  document.body.classList.remove("theme-light");
 </script>
 
   <!-- 歡迎畫面 -->
@@ -2170,7 +2296,6 @@
       <div class="user-avatar-menu-status" id="avatarMenuStatus">訪客模式</div>
       <button type="button" class="user-avatar-menu-btn" id="avatarSettingsBtn" style="display:none;" onclick="openAccountSettingsModal()">帳號設定</button>
       <button type="button" class="user-avatar-menu-btn" style="margin-top:6px;" onclick="openAvatarFrameModal()">更換頭像相框</button>
-      <button type="button" class="user-avatar-menu-btn" style="margin-top:6px;" onclick="toggleTheme()" id="themeToggleBtn">切換淺色模式</button>
       <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" style="margin-top:6px;" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
     </div>
   </div>
@@ -2404,8 +2529,6 @@
       </div>
     </div>
 
-
-  </div>
 <!-- 配裝模擬頁 -->
 
 <div id="loadoutPage" style="display:none;">
@@ -2485,6 +2608,7 @@
   </div>
 </div>
 
+  </div>
 <!-- 分享配裝連結彈窗 -->
 <div id="shareLinkOverlay" class="share-link-overlay" onclick="closeShareModal(event)">
   <div class="share-link-box" onclick="event.stopPropagation()">
@@ -2578,6 +2702,17 @@
   </div>
 </div>
 
+<!-- 輪迴：自由分配四維彈窗 -->
+<div id="freeAllocOverlay" class="share-link-overlay" onclick="closeFreeAllocModal(event)">
+  <div class="share-link-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeFreeAllocModal()">&times;</button>
+    <div class="share-link-title">自由分配四維</div>
+    <div class="share-link-sub">輪迴後可自由分配的點數，選一種分配方式套用在武力／智力／魅力／統御上。</div>
+    <div id="freeAllocBody"></div>
+    <button type="button" class="loadout-btn primary" style="width:100%;margin-top:14px;" onclick="closeFreeAllocModal()">選擇完畢</button>
+  </div>
+</div>
+
 <!-- 公開牆：配裝詳細內容大彈窗 -->
 <div id="wallDetailOverlay" class="share-link-overlay" onclick="closeWallDetailModal(event)">
   <div class="share-link-box wall-detail-box" onclick="event.stopPropagation()">
@@ -2612,7 +2747,7 @@
 
   <script>
     const heroes = [
-      { id:"simayi", name:"神·司馬懿", type:"文官", rarity:"國士", force:64, intel:99, charm:91, command:100, talent:"魏國權臣，西晉奠基人，善謀奇策。斬孟達，平遼東，兩度抵禦諸葛亮北伐，戰功赫赫。", skillName:"鷹視狼顧", skills:["己方每戰損 100 兵力，司馬懿便引導冤魂纏繞敵方，反噬敵軍 5 兵力，對戰文官時反噬七倍","己方兵力缺損，攻擊不會衰減（原本最多衰減 40%）","每提升 1 點統御，方士基礎攻防 +8，且【離間】有額外 3% 機率導致【內訌】","每提升 1 級【剛毅】，騎兵兵力 +60，方士兵力 +20"], awakens:["每學習一種相關統禦的任意類型技能，前後軍兵力各 +150","若【農耕】達到 20 級，統禦 +1，戰鬥開始時發動【軍屯】，增援我方 5% 的最大兵力，且我方的不良狀態抗性 +50%"], reincarn:["全軍傷害和免傷 +30%。對戰文官時傷害額外 +25%，且反噬兵力的效果提升至 15 倍","英雄可自由分配四維 +2","英雄主動技能位 +1","騎兵免傷 +16%","英雄可自由分配四維 +4"], destiny:[{name:"千里決勝",hero:"合擊技",effect:"與任意文官同時上陣，戰鬥開始時對敵後軍造成 80% 的傷害，有 40% 的機率導致敵軍內訌，持續 1 回合"},{name:"不戰屈人",hero:"諸葛亮",effect:"前軍兵力 +120、後軍兵力 +80"},{name:"劍閣崢嶸",hero:"張郃",effect:"前軍對步兵傷害 +20%"},{name:"賢能舉薦",hero:"荀彧",effect:"魅力 +5"}], initSkills:[{name:"剛毅", lv:7}, {name:"蝕甲", lv:7}, {name:"離間", lv:7}]},
+      { id:"simayi", name:"神·司馬懿", type:"文官", rarity:"國士", force:64, intel:99, charm:91, command:100, talent:"魏國權臣，西晉奠基人，善謀奇策。斬孟達，平遼東，兩度抵禦諸葛亮北伐，戰功赫赫。", skillName:"鷹視狼顧", skills:["己方每戰損 100 兵力，司馬懿便引導冤魂纏繞敵方，反噬敵軍 5 兵力，對戰文官時反噬七倍","己方兵力缺損，攻擊不會衰減（原本最多衰減 40%）","每提升 1 點統御，方士基礎攻防 +8，且【離間】有額外 3% 機率導致【內訌】","每提升 1 級【剛毅】，騎兵兵力 +60，方士兵力 +20"], awakens:["每學習一種相關統御的任意類型技能，前後軍兵力各 +150","若【農耕】達到 20 級，統御 +1，戰鬥開始時發動【軍屯】，增援我方 5% 的最大兵力，且我方的不良狀態抗性 +50%"], reincarn:["全軍傷害和免傷 +30%。對戰文官時傷害額外 +25%，且反噬兵力的效果提升至 15 倍","英雄可自由分配四維 +2","英雄主動技能位 +1","騎兵免傷 +16%","英雄可自由分配四維 +4"], destiny:[{name:"千里決勝",hero:"合擊技",effect:"與任意文官同時上陣，戰鬥開始時對敵後軍造成 80% 的傷害，有 40% 的機率導致敵軍內訌，持續 1 回合"},{name:"不戰屈人",hero:"諸葛亮",effect:"前軍兵力 +120、後軍兵力 +80"},{name:"劍閣崢嶸",hero:"張郃",effect:"前軍對步兵傷害 +20%"},{name:"賢能舉薦",hero:"荀彧",effect:"魅力 +5"}], initSkills:[{name:"剛毅", lv:7}, {name:"蝕甲", lv:7}, {name:"離間", lv:7}]},
       { id:"lvbu", name:"神·呂布", type:"武將", rarity:"國士", force:100, intel:63, charm:86, command:89, talent:"數次易主，被譏為三姓家奴。但武力冠絕於世，當之無愧的三國第一猛將。", skillName:"蓋世無雙", skills:["遠戰第二回合，【無雙】就能額外發動一次","遠戰回合部隊傷害減免 +15%","每提升 1 級【無雙】，騎兵基礎攻擊 +5，騎兵基礎防禦 +2"], awakens:["【亂舞】可連發 2 次，且每擊有額外 10% 機率造成混亂","若【咒印】達到 15 級，武力 +5"], reincarn:["武力 +10，所有武將類英雄主動技，傷害強度 +50%，並額外提高 40% 暴擊率。對戰全才時，傷害和免傷 +15%","英雄可自由分配四維 +2","英雄主動技能位 +1","英雄技傷害 +20%","英雄可自由分配四維 +4"], destiny:[{name:"迷情飛將",hero:"貂蟬",effect:"同時上陣，戰鬥開始時對敵軍造成 115% 的傷害，有 20% 的機率導致敵軍內訌，持續 1 回合"},{name:"白門樓上",hero:"張遼",effect:"對全才傷害 +20%"},{name:"虎牢關下",hero:"華雄",effect:"前軍對步兵傷害 +20%"},{name:"詭計猛將",hero:"陳宮",effect:"統御 +5"}], initSkills:[{name:"鐵蹄", lv:5}, {name:"無雙", lv:7}, {name:"暴烈", lv:5}]},
       { id:"zhouyu", name:"神·周瑜", type:"全才", rarity:"國士", force:74, intel:98, charm:99, command:95, talent:"世間豪傑英雄士、江左風流美丈夫，周瑜於赤壁之戰大破曹軍，奠定三分天下基礎。", skillName:"江左美才", skills:["【業火】傷害增加 15%，且遠戰首回合有 60% 機率額外發動一次【業火】","每提升 1 點魅力，提高英雄技能傷害 2%（最多 50%）","每提升 1 級【火箭】，弓兵基礎攻防 +7","每提升 1 級【業火】，前後軍兵力 +12"], awakens:["每提升 1 點統御，魅力 +1","若統御達到 115，【火箭】可連發 3 次，且每擊有額外 30% 機率造成火災"], reincarn:["攻擊處於【火災】狀態的目標時，傷害強度 +50%","英雄可自由分配四維 +2","英雄主動技能位 +1","弓兵傷害 +25%","英雄可自由分配四維 +4"], destiny:[{name:"水火無情",hero:"合擊技",effect:"與任意武將同時上陣，戰鬥開始時對敵軍造成 105% 的傷害，若智力高於對手，額外造成 30% 的傷害"},{name:"苦肉之計",hero:"黃蓋",effect:"前軍攻擊 +40、後軍攻擊 +60"},{name:"水路並進",hero:"魯肅",effect:"後軍對騎兵傷害 +10%"},{name:"情困荊州",hero:"小喬",effect:"魅力 +5"}], initSkills:[{name:"火箭", lv:7}, {name:"金汁", lv:5}, {name:"業火", lv:7}]},
       { id:"menghuo", name:"神·孟獲", type:"武將", rarity:"國士", force:98, intel:71, charm:88, command:97, talent:"南蠻之王，為人光明磊落，勇猛無畏，深得民心，曾起兵叛蜀，後終於誠心歸順。", skillName:"南蠻大王", skills:["國戰攻城時，若孟獲傲氣低於 3，則攻防各提升 30%，且【巨象】可在戰鬥開始額外發動一次","受到按比例損失兵力的效果減半，但受到【火災】狀態的燃燒傷害加倍","每提升 1 級【巨象】，所有兵種技能傷害 +2%","每提升 1 級【增員】，騎兵基礎攻防 +2，弓兵基礎攻防 +6"], awakens:["國戰攻城時，傷害 +30%","若【行軍】達到 20 級，全軍基礎攻擊 +100，全軍基礎防禦 +20"], reincarn:["免傷 +15%，國戰攻城時，若敵方有傲氣，己方攻防額外 +30%","英雄可自由分配四維 +2","英雄主動技能位 +1","兵種主動技傷害 +15%","英雄可自由分配四維 +4"], destiny:[{name:"蠻荒之力",hero:"祝融",effect:"同時上陣，【巨象】傷害提升 30%"},{name:"丞相之恩",hero:"姜維",effect:"對全才傷害 +30%"},{name:"心隨蜀向",hero:"馬岱",effect:"前軍受到弓兵傷害 -20%"},{name:"七擒七縱",hero:"諸葛亮",effect:"統御 +2"}], initSkills:[{name:"不屈", lv:7}, {name:"奔襲", lv:5}, {name:"巨象", lv:7}]},
@@ -2643,10 +2778,10 @@
       { id:"weiyan", name:"魏延", type:"武將", rarity:"名將", force:92, intel:76, charm:70, command:87, talent:"蜀漢大將，有勇有謀，深受劉備器重。曾獻子午谷奇謀于孔明，卻因過於冒險而棄用。", skillName:"出其不意", skills:["遠戰首回合有 50% 機率發動一次【衝鋒】，且【衝鋒】技能傷害提高 20%","每提升 1 級【衝鋒】，步兵基礎攻擊 +3"]},
       { id:"fafa", name:"法正", type:"文官", rarity:"名將", force:58, intel:94, charm:79, command:82, talent:"蜀地謀士，常因不遇明主而感歎自己的遭遇。得知劉備入蜀，便助其入主成都。", skillName:"睚眥必報", skills:["不會觸發敵軍弓兵【回射】","每提升 1 級【罡氣】，【罡氣】發動時格擋率 +3%"]},
       { id:"xushu", name:"徐庶", type:"文官", rarity:"名將", force:67, intel:95, charm:84, command:85, talent:"初為劉備帳下謀士，擅長臨陣破敵，一改劉備連戰皆敗的頹勢。但因母被曹操所獲而出仕曹操。", skillName:"折節學問", skills:["對戰武將時，免傷 +15%","每提升 1 級【回射】，減免 2% 的英雄主動技能傷害（最多減免 40%）"]},
-      { id:"xiahoudun2", name:"夏侯淵", type:"武將", rarity:"名將", force:92, intel:77, charm:80, command:88, talent:"曹魏名將，擅長千里奔襲作戰，常常出敵不意。但勇猛有餘，卻不重視謀略，曹操常以此誡之。", skillName:"兵貴神速", skills:["【奔襲】技能傷害 +15%","每提升 1 級【行軍】，提升攻擊和防禦 1%（最多 20%）"]},
+      { id:"xiahouyuan", name:"夏侯淵", type:"武將", rarity:"名將", force:92, intel:77, charm:80, command:88, talent:"曹魏名將，擅長千里奔襲作戰，常常出敵不意。但勇猛有餘，卻不重視謀略，曹操常以此誡之。", skillName:"兵貴神速", skills:["【奔襲】技能傷害 +15%","每提升 1 級【行軍】，提升攻擊和防禦 1%（最多 20%）"]},
       { id:"zhanghe", name:"張郃", type:"全才", rarity:"名將", force:92, intel:87, charm:82, command:92, talent:"郃識變數，善處營陳，料戰勢地形，無不如計，劉備及諸葛亮都極為忌憚他。", skillName:"因敵制宜", skills:["攻擊和防禦提升 10%，且己方兵力缺損，攻擊不會衰減（原本最多衰減 40%）","每提升 1 級【奔襲】，英雄主動技能傷害提高 2%（最多提高 30%）"]},
-      { id:"dianwei", name:"神·典韋", type:"武將", rarity:"良才", force:99, intel:65, charm:61, command:76, talent:"曹操親衛大將，相貌魁梧，膂力過人，身披雙鎧，手持雙戟，每戰先登，攻無不克！", skillName:null, skills:[], awakens:["單場對決中，己方步兵可豁免 5 次會導致全滅的攻擊傷害", "步兵兵力缺損，攻擊不會衰減（原本最多衰減 40%）", "每提升 1 級【勇武】，步兵攻擊 +210，步兵暴擊率 +10%"], reincarnation:["武力每比對手高 10，全軍傷害 +5%，步兵額外豁免 1 次會導致全滅的攻擊傷害", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "步兵的不良狀態抗性 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"元老悍將", hero:"夏侯惇", effect:"前軍對弓兵傷害 +15%"}, {name:"力拔山河", hero:"許褚", effect:"前軍對步兵傷害 +15%"}, {name:"戟鬥濮陽", hero:"呂布", effect:"前軍對騎兵傷害 +15%"}], skin:[{name:"古之惡來", cost:1000, effect:"前軍步兵傷害 +5%"}], initSkills:[{name:"剛體", lv:5}, {name:"激戰", lv:5}] },
-      { id:"zhoutai", name:"神·周泰", type:"武將", rarity:"良才", force:95, intel:68, charm:70, command:81, talent:"周泰身經百戰，戰則如熊虎，數次於危難間護得孫權周全。受創幾十次，傷疤如雕畫一般。", skillName:null, skills:[], awakens:["近戰首回合輪到周泰行動時，將本戰己方戰損兵力的 50% 一次性反噬對手", "當己方剩餘兵力少於一半時，全軍防禦提升 30%", "每提升 1 級【剛體】，前後軍兵力各 +50"], reincarnation:["遠戰第二回合發動【鋼筋鐵骨】，使我方全軍獲得相當於最大兵力 100% 的護盾，可承擔全部傷害直至破碎", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"侵略如火", hero:"甘寧", effect:"速度 +5"}, {name:"令出必行", hero:"周瑜", effect:"統御 +3"}, {name:"金瘡妙手", hero:"華佗", effect:"戰鬥勝利後發動【複生】，前後軍各可治療 5% 的傷兵"}], skin:[], initSkills:[{name:"盾牆", lv:5}, {name:"靈敏", lv:5}] },
+      { id:"dianwei", name:"神·典韋", type:"武將", rarity:"良才", force:99, intel:65, charm:61, command:76, talent:"曹操親衛大將，相貌魁梧，膂力過人，身披雙鎧，手持雙戟，每戰先登，攻無不克！", skillName:null, skills:[], awakens:["單場對決中，己方步兵可豁免 5 次會導致全滅的攻擊傷害", "步兵兵力缺損，攻擊不會衰減（原本最多衰減 40%）", "每提升 1 級【勇武】，步兵攻擊 +210，步兵暴擊率 +10%"], reincarn:["武力每比對手高 10，全軍傷害 +5%，步兵額外豁免 1 次會導致全滅的攻擊傷害", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "步兵的不良狀態抗性 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"元老悍將", hero:"夏侯惇", effect:"前軍對弓兵傷害 +15%"}, {name:"力拔山河", hero:"許褚", effect:"前軍對步兵傷害 +15%"}, {name:"戟鬥濮陽", hero:"呂布", effect:"前軍對騎兵傷害 +15%"}], skin:[{name:"古之惡來", cost:1000, effect:"前軍步兵傷害 +5%"}], initSkills:[{name:"剛體", lv:5}, {name:"激戰", lv:5}] },
+      { id:"zhoutai", name:"神·周泰", type:"武將", rarity:"良才", force:95, intel:68, charm:70, command:81, talent:"周泰身經百戰，戰則如熊虎，數次於危難間護得孫權周全。受創幾十次，傷疤如雕畫一般。", skillName:null, skills:[], awakens:["近戰首回合輪到周泰行動時，將本戰己方戰損兵力的 50% 一次性反噬對手", "當己方剩餘兵力少於一半時，全軍防禦提升 30%", "每提升 1 級【剛體】，前後軍兵力各 +50"], reincarn:["遠戰第二回合發動【鋼筋鐵骨】，使我方全軍獲得相當於最大兵力 100% 的護盾，可承擔全部傷害直至破碎", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"侵略如火", hero:"甘寧", effect:"速度 +5"}, {name:"令出必行", hero:"周瑜", effect:"統御 +3"}, {name:"金瘡妙手", hero:"華佗", effect:"戰鬥勝利後發動【複生】，前後軍各可治療 5% 的傷兵"}], skin:[], initSkills:[{name:"盾牆", lv:5}, {name:"靈敏", lv:5}] },
       { id:"sunshangxiang", name:"神·孫尚香", type:"全才", rarity:"巾幗", force:91, intel:82, charm:94, command:86, talent:"孫權之妹，為鞏固吳蜀聯盟而嫁于劉備，巾幗無雙，隨侍婢女皆配刀劍，劉備愛之憚之。", skillName:"弓腰姬", skills:["【萬箭】技能傷害 +20%，且每次亂射都有 50% 機率導致敵方【混亂】，持續 1 回合","每提升 1 級【回射】，弓兵基礎攻擊 +3，弓兵暴擊率 +2%"], awakens:["【萬箭】可忽略敵方被動技能，且額外增加 2 次亂射","若【靈敏】達到 15 級，【齊射】額外增加 3 波傷害"], reincarn:["【萬箭】無視敵方 20% 的防禦，且可在近戰首回合額外發動一次","英雄可自由分配四維 +2","英雄主動技能位 +1","全軍暴擊率 +15%","英雄可自由分配四維 +4"], destiny:[{name:"兄妹情深",hero:"孫策",effect:"同時上陣，【萬箭】傷害提升 20%"},{name:"香嵐劍雨",hero:"趙雲",effect:"對文官傷害 +25%"},{name:"和親之謀",hero:"魯肅",effect:"後軍對方士傷害 +20%"},{name:"巾幗英雄",hero:"馬雲祿",effect:"智力 +5"}], initSkills:[{name:"回射", lv:5}, {name:"火箭", lv:5}, {name:"萬箭", lv:5}]},
       { id:"banyushsangzhu", name:"神·班育雙姝", type:"全才", rarity:"巾幗", force:71, intel:89, charm:94, command:93, talent:"孫魯班＆孫魯育，字大虎＆小虎，皆為孫權與步練師之女。然命運弄人，在姐姐誣陷下，妹妹終為宮鬥犧牲。", skillName:"二宮之主", skills:["受到兵種技傷害 -20%，且班育雙姝不會被特殊效果斬落","發動任意能造成傷害的英雄技後，都有 35% 的機率再次連發（連發不受原英雄技的次數限制）","每提升 1 級【株連】，方士基礎攻防 +5，兵力 +25","每提升 1 級【殺意】，對女性英雄傷害 +2%"], awakens:["英雄主動技能位 +1，且任意能造成傷害的英雄技，連發機率 +15%","每有一種英雄技達到 25 級，四維各 +1，且受到英雄技傷害 -4%"], reincarn:["每提升 4 點任意四維，英雄技傷害 +1%（最多提升 25%）","英雄可自由分配四維 +2","英雄主動技能位 +1","英雄技傷害 +20%","英雄可自由分配四維 +4"], destiny:[{name:"淒美麗人",hero:"甄姬",effect:"同時上陣，任意能造成傷害的英雄技，連發機率 +10%"},{name:"出將入相",hero:"陸遜",effect:"任意能造成傷害的英雄技，連發機率 +5%"},{name:"無冕母后",hero:"步練師",effect:"任意能造成傷害的英雄技，連發機率 +5%"},{name:"父君仲謀",hero:"孫權",effect:"任意能造成傷害的英雄技，連發機率 +5%"}], initSkills:[{name:"罡氣", lv:7}, {name:"咒印", lv:5}, {name:"株連", lv:7}]},
       { id:"zhurong", name:"神·祝融", type:"武將", rarity:"巾幗", force:97, intel:84, charm:98, command:90, talent:"據傳乃火神後裔，武藝高強，善使飛刀，百發百中。與蜀軍交戰時，生擒蜀軍二將。", skillName:"南疆女神", skills:["所有武將類英雄技，都可提前一回合釋放，最早提前到戰鬥開始，但威力下降 10%","每提升 1 點武力，魅力 +1","每提升 1 級【捨身】，騎兵基礎攻擊 +11，基礎防禦 +3","每提升 1 級【亂舞】，全軍暴擊率提升 2%"], awakens:["對戰全才時，免傷 +35%","若【尋礦】達到 20 級，騎兵兵力缺損，攻擊不減反增最多 20%"], reincarn:["【荊棘之花】發動後，我方騎兵傷害和免傷 +25%。對戰全才時，我方騎兵傷害和免傷額外 +20%","英雄可自由分配四維 +2","英雄主動技能位 +1","英雄技傷害 +20%","英雄可自由分配四維 +4"], destiny:[{name:"荊棘之花",hero:"合擊技",effect:"與任意巾幗同時上陣，受到任意傷害，輪到己方英雄行動時全額反噬，每場對決限一次"},{name:"西域巾幗",hero:"馬雲祿",effect:"對全才傷害 +35%"},{name:"女中豪傑",hero:"孫尚香",effect:"前軍對步兵傷害 +20%"},{name:"狂野戰侶",hero:"孟獲",effect:"前軍對弓兵傷害 +20%"}], initSkills:[{name:"地刺", lv:5}, {name:"亂舞", lv:7}, {name:"捨身", lv:7}]},
@@ -2668,34 +2803,34 @@
       { id:"zhenji", name:"神·甄姬", type:"文官", rarity:"巾幗", force:51, intel:90, charm:95, command:84, talent:"初為袁紹兒媳，姿貌絕倫。鄴城城破後為曹丕所納，備受寵愛，其子後繼位為帝。", skillName:"母儀天下", skills:["【鼓舞】效果額外 +5%，且額外持續 2 個回合","對戰男性英雄時，免傷 +15%","每提升 1 級【修養】，提升攻擊和防禦各 4%（最多提升 20%）"], awakens:["每提升 1 點魅力，智力 +1","若【悲歌】達到 15 級，步兵基礎攻防 +30，方士基礎攻防 +60"], reincarn:["【鼓舞】存在期間，額外提升攻擊和防禦各 30%，且不良狀態抗性 +50%","英雄可自由分配四維 +2","英雄主動技能位 +1","全軍免傷 +8%","英雄可自由分配四維 +4"], destiny:[{name:"天妒紅顏",hero:"郭嘉",effect:"同時上陣，【疾風】傷害提升 20%"},{name:"文武之別",hero:"孫尚香",effect:"對武將傷害 +20%"},{name:"國色天香",hero:"貂蟬",effect:"統御 +5"},{name:"郎君如玉",hero:"馬雲祿",effect:"前軍對方士傷害 +20%"}], initSkills:[{name:"堅守", lv:5}, {name:"疾風", lv:5}, {name:"鼓舞", lv:7}]},
       { id:"caiwenji", name:"神·蔡文姬", type:"全才", rarity:"巾幗", force:56, intel:97, charm:99, command:75, talent:"博學多才，精通音律，端操有蹤，幽閒有容，雖為女子之身，卻可謂漢末文學大家。", skillName:"至柔動剛", skills:["學習任意技能時不受職業和屬性限制","蔡文姬每習得一種英雄技，都能禁止敵方發動同種英雄技，化解於無形","己方兵種造成的傷害加成 80%，但戰鬥中敵方每發動一次英雄技，該加成縮減 15%，最低保有 20% 加成","每提升 1 級【忘憂】，弓兵兵力 +20，弓兵被動免傷 +2%（最大 50%）"], awakens:["國戰守城時，免傷 +20%，格擋率 +75%","若【築城】達到 20 級，全軍基礎攻擊 +40，全軍基礎防禦 +80"], reincarn:["敵我雙方每有 1 種相同的英雄技，遠戰第二回合可發動 1 次【弦外之音】，消滅敵方前軍或後軍 15% 的最大兵力","英雄可自由分配四維 +2","英雄主動技能位 +1","弓兵傷害 +25%","英雄可自由分配四維 +4"], destiny:[{name:"胡笳伴舞",hero:"小喬",effect:"同時上陣，對戰武將時，免傷 +40%"},{name:"婉娩智囊",hero:"黃月英",effect:"對文官傷害 +35%"},{name:"美女野獸",hero:"董卓",effect:"統御 +10"},{name:"同命相憐",hero:"甄姬",effect:"受到傷害 -15%"}], initSkills:[{name:"金汁", lv:7}, {name:"傾國", lv:5}, {name:"忘憂", lv:7}]},
       { id:"zhugeyguo", name:"神·諸葛果", type:"文官", rarity:"巾幗", force:81, intel:99, charm:97, command:78, talent:"諸葛亮之女，容貌甚偉，時人異焉。生來天資聰慧，對道學由衷熱愛，修成仙道，羽化升天。", skillName:"修成仙道", skills:["我方英雄技及兵種技攻擊時，強制鎖定目標為敵方後軍，且每有 1 點智力技能威力 +2%（最大 +300%）","敵方後軍遭受傷害後若兵力低於 30%，諸葛果可發動【神耀】，立即消滅敵方後軍（無視豁免全滅效果）","每提升 3 點魅力，智力和統御各 +1","每提升 1 級【策謀】，敵方後軍傷害 -1%，免傷 -2%，治療、增援兵力類效果 -5%"], awakens:["英雄技傷害 +50%，對戰全才時，英雄技傷害額外 +100%","敵方後軍首次全滅時，我方全軍獲得【祈禳】狀態，完全免疫 2 次損傷"], reincarn:["【神耀】在敵方後軍兵力低於 40% 時即可發動，並使敵方前軍進入【潰逃】【寒顫】狀態 3 回合","英雄可自由分配四維 +2","英雄主動技能位 +1","英雄技傷害 +20%","英雄可自由分配四維 +4"], destiny:[{name:"母女情深",hero:"黃月英",effect:"英雄技能傷害 +20%"},{name:"參悟天機",hero:"諸葛亮",effect:"對文官傷害 +25%"},{name:"諸葛氏族",hero:"諸葛瑾",effect:"受到全才傷害 -25%"},{name:"蜀漢絕色",hero:"關銀屏",effect:"對敵方後軍傷害 +15%、對弓兵傷害 +15%、對方士傷害 +15%"}], initSkills:[{name:"地刺", lv:5}, {name:"策謀", lv:5}, {name:"忘憂", lv:5}]},
-      { id:"baosanniang", name:"神·鮑三娘", type:"武將", rarity:"巾幗", force:96, intel:80, charm:88, command:93, talent:"鮑三娘為鮑員外之女，拒廉康搶親，後與關索成婚，隨夫守蜀漢戰死葭萌關。", skillName:"鳳刃裁敵", skills:["若我方騎兵速度高於敵方前軍，每回合起始時，鮑三娘都有 33% 的機率發動【烈鳳驚鴻】，本回合我方部隊傷害 +120% ，並令騎兵立即額外發動 1 次普攻（攻擊前驅散自身全部不良狀態）","若武力與統禦之和高於對手，我方騎兵發動任意攻擊都可觸發【姝勇】，忽略敵方被動技能，並恢復自身兵力（造成損傷的 33% ，單次最高不超過 4,000 ）","每解鎖任意 3 條兵種技高級效果，統禦 +3 ，騎兵速度 +1 ，【捨身】和騎兵普攻的傷害強度 +25%"], awakens:["近戰首回合起始時，將敵方本場以治療/增援/恢復的兵力數計為 「內應」 ，若 「內應」 超過 2,000 ，則我方發動【潰堤蟻穴】，驅使敵方隨機部隊攻擊自身 5 次，每次損失 「內應」 × 80% 的固定兵力","武力 +10 。對戰男性英雄時，我方兵力缺損時攻擊不會衰減，且發動【烈鳳驚鴻】機率 +33%"],destiny:[{name:"將門義緒",hero:"關羽",effect:"【捨身】的觸發機率 +35% ，且每回合可最多觸發 3 次"},{name:"葭萌同守",hero:"姜維",effect:"對男性英雄傷害 +20%"},{name:"智媛同輝",hero:"黃月英",effect:"受到男性英雄傷害 -20%"},{name:"蠻漢同風",hero:"祝融",effect:"【捨身】和騎兵普攻各有 75% 機率額外造成 1 段傷害"}], initSkills:[{name:"勇武", lv:3}, {name:"行軍", lv:5}, {name:"捨身", lv:5}]},
-	{ id:"guanyinping", name:"神·關銀屏", type:"武將", rarity:"巾幗", force:90, intel:86, charm:95, command:79, talent:"關羽之女，十八歲便學成家傳武藝。關羽被害後，一心為父報仇，將本領推到了新境界。", skillName:"聖刀鐵騎", skills:["可擔當任意英雄的任意兵種副將", "作為副將時，可依照關銀屏品質，為主將提供額外加成：【武聖】有 20% 的概率可同時攻擊敵軍全體；紫色以上：騎兵基礎攻擊 +25，騎兵基礎防禦 +15；金色以上：武力 +2；紅色：騎兵暴擊率 +10%，騎兵速度 +5", "關銀屏自身作為主將時，更可依照品質，解鎖以上全部 4 倍的加成效果"], awakens:["【武聖】的傷害強度 +50%，遠戰首回合可額外發動一次【武聖】，且每次發動【武聖】後，騎兵可獲得【武姬】的特殊效果，完全免疫 2 次損傷", "裝備青龍偃月刀或蒼龍鬼月刀時，武力 +5，魅力 +5，近戰首回合受到所有傷害 -70%"], reincarnation:["英雄技傷害 +10%。每提升 1 點武力，騎兵在遠戰回合免傷 +0.5%，且【武聖】在近戰每個回合的發動機率額外 +1%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"武繼雲長", hero:"關羽", effect:"近戰每個回合，都有額外 30% 的機率發動【武聖】"}, {name:"工神授業", hero:"黃月英", effect:"智力 +2、受到文官傷害 -20%"}, {name:"怪力豪勇", hero:"孟獲", effect:"對戰女性英雄時，己方前軍可額外豁免一次會導致全滅的攻擊傷害"}, {name:"鳳舞金蘭", hero:"張星彩", effect:"傷害 +15%"} ], initSkills:[{name:"鐵蹄", lv:5}, {name:"突擊", lv:5}, {name:"武聖", lv:5}] },
-	{ id:"dongbai", name:"神·董白", type:"全才", rarity:"巾幗", force:85, intel:94, charm:96, command:88, talent:"董卓的孫女，極受董卓疼愛，自小就擁有土地及財富，個性任性且殘酷，但在董卓面前則會裝可愛。", skillName:"玉印紫綬", skills:["戰鬥中，敵我雙方的護盾、增援兵力類效果均無效", "每個偶數回合起始時發動【玉印加身】，使敵我雙方部隊本回合獲得【玉印】特殊效果，期間受到的所有傷害降低 80%（含比例類損失）", "若魅力或統禦高於對手，我方所有奇數回合的兵種主動技，可忽略敵方被動技能並無視目標防禦，且額外連發 2 次", "弓兵速度 +20，弓兵每次主動攻擊後，可治療我方全軍 10% 的傷兵"], awakens:["對戰武將時，我方奇數回合傷害 +40%，免傷 +20%", "我方騎兵每造成 1 段傷害，有 20% 的機率導致目標【封技】 1 回合，期間無法發動兵種主動技"], reincarnation:["魅力 +5，統禦 +5，弓兵暴擊率 +30%，若敵方武力為其最高四維，我方弓兵獲得的治療類效果 +100%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"登壇封爵", hero:"董卓", effect:"前後軍傷害各 +20%、前軍傷害 +20%、後軍傷害 +20%"}, {name:"亂世沈浮", hero:"漢獻帝", effect:"受到男性英雄傷害 -20%"}, {name:"處尊居顯", hero:"劉禪", effect:"對男性英雄傷害 +20%"}, {name:"鏡花水月", hero:"甄姬", effect:"智力 +2、魅力 +2、統御 +2、武力 +2"} ], initSkills:[{name:"合圍", lv:5}, {name:"擴編", lv:5}, {name:"輪射", lv:5}] },
-	{ id:"tongyuan", name:"神·童淵", type:"武將", rarity:"傳奇", force:98, intel:60, charm:88, command:92, talent:"並州槍王，成名技為「百鳥朝鳳槍」，罕遇敵手。晚年收趙雲為關門弟子，傳其畢生所學。", skillName:"槍術宗師", skills:["【槍王】有 40% 的機率，可造成 3 連擊傷害", "【槍王】達到 15 級，武力 +5，統御 +4，魅力 +3", "英雄等級每提升 1 級，額外攻擊 +16，額外防禦 +7"], legendary:"主公麾下所有英雄，前後軍最終攻擊各 +?", awakens:["【槍王】進化為【槍皇】，無視 10% 的防禦，提升 35% 的傷害，且發動時不受傲氣影響"], reincarnation:["騎兵免傷 +25%。每提升 1 點武力，【槍王】造成 3 連擊傷害的機率 +1%，全軍遠戰回合免傷 +0.5%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"名師高徒", hero:"趙雲", effect:"受到全才傷害 -30%"}, {name:"武霸一方", hero:"呂布", effect:"對全才傷害 +30%"}, {name:"槍尖智尖", hero:"郭嘉", effect:"對騎兵傷害 +20%"}, {name:"雷鳴朝鳳", hero:"張角", effect:"智力 +10，統御 +2，武力 +3"}], skin:[{name:"槍術宗師", cost:4000, effect:"武力 +1"}], initSkills:[{name:"齊射", lv:7}, {name:"槍王", lv:10}, {name:"勇武", lv:2}] },
-	{ id:"huatuo", name:"神·華佗", type:"全才", rarity:"傳奇", force:88, intel:92, charm:98, command:60, talent:"神醫華佗，研麻沸散，創五禽戲，醫術全面，尤擅外科。一生遊學行醫，不求仕途，青史留名。", skillName:"妙手神醫", skills:["【急救】效果提升 30%，且在近戰回合也能發動", "【急救】達到 15 級，魅力 +5，智力 +4，武力 +3", "英雄等級每提升 1 級，額外攻擊 +15，額外防禦 +8"], legendary:"主公麾下所有英雄，前後軍最終防禦各 +?", awakens:["【急救】進化為【銀針】，額外提升 25% 的治療效果，且戰鬥中每發動一次【銀針】，部隊攻擊積累提高 6%"], reincarnation:["單場對決中，我方增援兵力或治療的累計次數達到 3、6、9 次後，發動【懸壺問世】，導致敵方全體【內訌】【潰逃】 1 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"刮骨療毒", hero:"關羽", effect:"受到文官傷害 -30%"}, {name:"起死回生", hero:"周泰", effect:"對文官傷害 +30%"}, {name:"欺君求情", hero:"荀彧", effect:"對步兵傷害 +20%"}, {name:"根治頭風", hero:"曹操", effect:"智力 +2，魅力 +3，統御 +10"}], skin:[{name:"五禽戲經", cost:4000, effect:"魅力 +1"}], initSkills:[{name:"悲歌", lv:7}, {name:"修養", lv:2}, {name:"急救", lv:10}] },
+      { id:"baosanniang", name:"神·鮑三娘", type:"武將", rarity:"巾幗", force:96, intel:80, charm:88, command:93, talent:"鮑三娘為鮑員外之女，拒廉康搶親，後與關索成婚，隨夫守蜀漢戰死葭萌關。", skillName:"鳳刃裁敵", skills:["若我方騎兵速度高於敵方前軍，每回合起始時，鮑三娘都有 33% 的機率發動【烈鳳驚鴻】，本回合我方部隊傷害 +120% ，並令騎兵立即額外發動 1 次普攻（攻擊前驅散自身全部不良狀態）","若武力與統御之和高於對手，我方騎兵發動任意攻擊都可觸發【姝勇】，忽略敵方被動技能，並恢復自身兵力（造成損傷的 33% ，單次最高不超過 4,000 ）","每解鎖任意 3 條兵種技高級效果，統御 +3 ，騎兵速度 +1 ，【捨身】和騎兵普攻的傷害強度 +25%"], awakens:["近戰首回合起始時，將敵方本場以治療/增援/恢復的兵力數計為 「內應」 ，若 「內應」 超過 2,000 ，則我方發動【潰堤蟻穴】，驅使敵方隨機部隊攻擊自身 5 次，每次損失 「內應」 × 80% 的固定兵力","武力 +10 。對戰男性英雄時，我方兵力缺損時攻擊不會衰減，且發動【烈鳳驚鴻】機率 +33%"],destiny:[{name:"將門義緒",hero:"關羽",effect:"【捨身】的觸發機率 +35% ，且每回合可最多觸發 3 次"},{name:"葭萌同守",hero:"姜維",effect:"對男性英雄傷害 +20%"},{name:"智媛同輝",hero:"黃月英",effect:"受到男性英雄傷害 -20%"},{name:"蠻漢同風",hero:"祝融",effect:"【捨身】和騎兵普攻各有 75% 機率額外造成 1 段傷害"}], initSkills:[{name:"勇武", lv:3}, {name:"行軍", lv:5}, {name:"捨身", lv:5}]},
+	{ id:"guanyinping", name:"神·關銀屏", type:"武將", rarity:"巾幗", force:90, intel:86, charm:95, command:79, talent:"關羽之女，十八歲便學成家傳武藝。關羽被害後，一心為父報仇，將本領推到了新境界。", skillName:"聖刀鐵騎", skills:["可擔當任意英雄的任意兵種副將", "作為副將時，可依照關銀屏品質，為主將提供額外加成：【武聖】有 20% 的概率可同時攻擊敵軍全體；紫色以上：騎兵基礎攻擊 +25，騎兵基礎防禦 +15；金色以上：武力 +2；紅色：騎兵暴擊率 +10%，騎兵速度 +5", "關銀屏自身作為主將時，更可依照品質，解鎖以上全部 4 倍的加成效果"], awakens:["【武聖】的傷害強度 +50%，遠戰首回合可額外發動一次【武聖】，且每次發動【武聖】後，騎兵可獲得【武姬】的特殊效果，完全免疫 2 次損傷", "裝備青龍偃月刀或蒼龍鬼月刀時，武力 +5，魅力 +5，近戰首回合受到所有傷害 -70%"], reincarn:["英雄技傷害 +10%。每提升 1 點武力，騎兵在遠戰回合免傷 +0.5%，且【武聖】在近戰每個回合的發動機率額外 +1%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"武繼雲長", hero:"關羽", effect:"近戰每個回合，都有額外 30% 的機率發動【武聖】"}, {name:"工神授業", hero:"黃月英", effect:"智力 +2、受到文官傷害 -20%"}, {name:"怪力豪勇", hero:"孟獲", effect:"對戰女性英雄時，己方前軍可額外豁免一次會導致全滅的攻擊傷害"}, {name:"鳳舞金蘭", hero:"張星彩", effect:"傷害 +15%"} ], initSkills:[{name:"鐵蹄", lv:5}, {name:"突擊", lv:5}, {name:"武聖", lv:5}] },
+	{ id:"dongbai", name:"神·董白", type:"全才", rarity:"巾幗", force:85, intel:94, charm:96, command:88, talent:"董卓的孫女，極受董卓疼愛，自小就擁有土地及財富，個性任性且殘酷，但在董卓面前則會裝可愛。", skillName:"玉印紫綬", skills:["戰鬥中，敵我雙方的護盾、增援兵力類效果均無效", "每個偶數回合起始時發動【玉印加身】，使敵我雙方部隊本回合獲得【玉印】特殊效果，期間受到的所有傷害降低 80%（含比例類損失）", "若魅力或統御高於對手，我方所有奇數回合的兵種主動技，可忽略敵方被動技能並無視目標防禦，且額外連發 2 次", "弓兵速度 +20，弓兵每次主動攻擊後，可治療我方全軍 10% 的傷兵"], awakens:["對戰武將時，我方奇數回合傷害 +40%，免傷 +20%", "我方騎兵每造成 1 段傷害，有 20% 的機率導致目標【封技】 1 回合，期間無法發動兵種主動技"], reincarn:["魅力 +5，統御 +5，弓兵暴擊率 +30%，若敵方武力為其最高四維，我方弓兵獲得的治療類效果 +100%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"登壇封爵", hero:"董卓", effect:"前後軍傷害各 +20%、前軍傷害 +20%、後軍傷害 +20%"}, {name:"亂世沈浮", hero:"漢獻帝", effect:"受到男性英雄傷害 -20%"}, {name:"處尊居顯", hero:"劉禪", effect:"對男性英雄傷害 +20%"}, {name:"鏡花水月", hero:"甄姬", effect:"智力 +2、魅力 +2、統御 +2、武力 +2"} ], initSkills:[{name:"合圍", lv:5}, {name:"擴編", lv:5}, {name:"輪射", lv:5}] },
+	{ id:"tongyuan", name:"神·童淵", type:"武將", rarity:"傳奇", force:98, intel:60, charm:88, command:92, talent:"並州槍王，成名技為「百鳥朝鳳槍」，罕遇敵手。晚年收趙雲為關門弟子，傳其畢生所學。", skillName:"槍術宗師", skills:["【槍王】有 40% 的機率，可造成 3 連擊傷害", "【槍王】達到 15 級，武力 +5，統御 +4，魅力 +3", "英雄等級每提升 1 級，額外攻擊 +16，額外防禦 +7"], legendary:"主公麾下所有英雄，前後軍最終攻擊各 +?", awakens:["【槍王】進化為【槍皇】，無視 10% 的防禦，提升 35% 的傷害，且發動時不受傲氣影響"], reincarn:["騎兵免傷 +25%。每提升 1 點武力，【槍王】造成 3 連擊傷害的機率 +1%，全軍遠戰回合免傷 +0.5%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"名師高徒", hero:"趙雲", effect:"受到全才傷害 -30%"}, {name:"武霸一方", hero:"呂布", effect:"對全才傷害 +30%"}, {name:"槍尖智尖", hero:"郭嘉", effect:"對騎兵傷害 +20%"}, {name:"雷鳴朝鳳", hero:"張角", effect:"智力 +10，統御 +2，武力 +3"}], skin:[{name:"槍術宗師", cost:4000, effect:"武力 +1"}], initSkills:[{name:"齊射", lv:7}, {name:"槍王", lv:10}, {name:"勇武", lv:2}] },
+	{ id:"huatuo", name:"神·華佗", type:"全才", rarity:"傳奇", force:88, intel:92, charm:98, command:60, talent:"神醫華佗，研麻沸散，創五禽戲，醫術全面，尤擅外科。一生遊學行醫，不求仕途，青史留名。", skillName:"妙手神醫", skills:["【急救】效果提升 30%，且在近戰回合也能發動", "【急救】達到 15 級，魅力 +5，智力 +4，武力 +3", "英雄等級每提升 1 級，額外攻擊 +15，額外防禦 +8"], legendary:"主公麾下所有英雄，前後軍最終防禦各 +?", awakens:["【急救】進化為【銀針】，額外提升 25% 的治療效果，且戰鬥中每發動一次【銀針】，部隊攻擊積累提高 6%"], reincarn:["單場對決中，我方增援兵力或治療的累計次數達到 3、6、9 次後，發動【懸壺問世】，導致敵方全體【內訌】【潰逃】 1 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"刮骨療毒", hero:"關羽", effect:"受到文官傷害 -30%"}, {name:"起死回生", hero:"周泰", effect:"對文官傷害 +30%"}, {name:"欺君求情", hero:"荀彧", effect:"對步兵傷害 +20%"}, {name:"根治頭風", hero:"曹操", effect:"智力 +2，魅力 +3，統御 +10"}], skin:[{name:"五禽戲經", cost:4000, effect:"魅力 +1"}], initSkills:[{name:"悲歌", lv:7}, {name:"修養", lv:2}, {name:"急救", lv:10}] },
 	{ id:"yujii", name:"神·于吉", type:"全才", rarity:"傳奇", force:92, intel:98, charm:60, command:88, talent:"道法高深的道士，往來吳會，施法制符水救人，深得江東民心，為孫策所忌憚。", skillName:"禍星詛咒", skills:["敵軍每存在 1 個不良狀態，則額外承受 30% 傷害，最多生效 3 層","【幻術】達到 15 級，智力 +5，武力 +4，統御 +3","英雄等級每提升 1 級，額外攻擊 +14，額外防禦 +9"], awakens:["【幻術】導致【迷幻】的機率提升 30%，且【幻術】可在戰鬥開始時額外發動一次"], reincarn:["英雄技傷害 +15%，受到兵種技傷害 -20%。【幻術】傷害強度 +60%，敵方若處於【迷幻】狀態，每次攻擊前將自損 40% 的當前兵力","英雄可自由分配四維 +2","英雄主動技能位 +1","敵方的不良狀態抗性 -10%","英雄可自由分配四維 +4"], destiny:[{name:"相疑相隕",hero:"孫策",effect:"對女性英雄傷害 +10%"},{name:"醫道中人",hero:"華佗",effect:"對男性英雄傷害 +10%"},{name:"博學廣論",hero:"司馬徽",effect:"對方士傷害 +20%"},{name:"執念傳人",hero:"孫權",effect:"智力 +3、魅力 +10、武力 +2"}], initSkills:[{name:"鬼影", lv:7}, {name:"幻術", lv:10}, {name:"才學", lv:2}]},
       { id:"simahui", name:"神·司馬徽", type:"文官", rarity:"傳奇", force:60, intel:88, charm:92, command:98, talent:"潁川隱士，清高拔俗，善鑒人才，向劉備推薦了諸葛亮、龐統等人，為世人敬重。", skillName:"水鏡先生", skills:["戰鬥中對手發起的武力、智力、魅力、統御比拼均算失效","【無懈】達到 15 級，統御 +5，魅力 +4，智力 +3","英雄等級每提升 1 級，額外攻擊 +21，額外防禦 +12"], awakens:["【無懈】進化為【謝禮】，發動時在原效果上增加反制，按己方最大兵力的 7%，消滅敵方兵力"], reincarn:["每場對決【無懈】的發動次數無限制","英雄可自由分配四維 +2","英雄主動技能位 +1","全軍傷害 +8%","英雄可自由分配四維 +4"], destiny:[{name:"水鏡真龍",hero:"諸葛亮",effect:"受到武將傷害 -30%"},{name:"晝夜相談",hero:"龐統",effect:"對武將傷害 +30%"},{name:"本家塚虎",hero:"司馬懿",effect:"對弓兵傷害 +20%"},{name:"鑒君推賢",hero:"劉備",effect:"魅力 +2、統御 +3、武力 +10"}], initSkills:[{name:"裂甲", lv:7}, {name:"兵法", lv:2}, {name:"無懈", lv:10}]},
-	{ id:"sunquan", name:"神·孫權", type:"文官", rarity:"傳奇", force:90, intel:96, charm:92, command:92, talent:"字仲謀，碧眼紫髯，相貌奇偉。在繼承父兄基業之後，北據曹魏，西聯蜀漢，終成帝業！", skillName:"江東威龍", skills:["在單次對決中，【龍怒】可無限次發動（每回合最多 1 次）", "每提升 1 級【龍怒】，對武將或文官傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終防禦各 +?", awakens:["暴擊率 +5%，格擋率 +5%", "在包含戰鬥開始的所有回合中，兵力不足 75% 時即可發動【龍怒】，且首次【龍怒】傷害 +25%"], reincarnation:["每次發動【龍怒】後，立即增援我方全軍 5% 的最大兵力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"首席都督", hero:"周瑜", effect:"受到文官傷害 -30%"}, {name:"謀羽取荊", hero:"陸遜", effect:"對武將傷害 +30%"}, {name:"薪火相傳", hero:"孫策", effect:"對步兵傷害 +20%"}, {name:"軍政棟樑", hero:"魯肅", effect:"對弓兵傷害 +20%"}], skin:[{name:"威加九錫", cost:5000, effect:"【龍怒】可無視目標 4% 的防禦"}, {name:"興兵雪恨", cost:7000, effect:"【龍怒】可無視目標 4% 的防禦，且威力 +8%"}], initSkills:[{name:"裂甲", lv:7}, {name:"龍怒", lv:10}, {name:"尋礦", lv:5}] },
-	{ id:"zhangjiao", name:"神·張角", type:"文官", rarity:"傳奇", force:70, intel:97, charm:93, command:94, talent:"太平道創始人。自稱具有超凡神力。後自稱「天公將軍」，率眾起義，企圖推翻漢朝統治。", skillName:"蒼天之患", skills:["每道【落雷】可額外消滅目標 2% 的最大兵力，且戰鬥開始時可以額外發動一次【落雷】", "每提升 1 級【鬼影】，方士被動免傷 +2%（最大 50%）", "每提升 1 級【神光】，方士基礎攻防 +9，方士兵力 +30"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終速度各 +?", awakens:["我軍觸發任意暴擊時，可額外消滅 200 名士兵，且發動【落雷】時暴擊率 +25%"], reincarnation:["發動【落雷】時無需己方騎兵存活，並可額外釋放 4 道落雷", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"野心磅礴", hero:"董卓", effect:"受到女性英雄傷害 -15%"}, {name:"揭竿而起", hero:"曹操", effect:"受到男性英雄傷害 -15%"}, {name:"救世仁君", hero:"劉備", effect:"對騎兵傷害 +20%"}, {name:"制衡天下", hero:"孫權", effect:"對方士傷害 +20%"}], skin:[], initSkills:[{name:"鬼影", lv:7}, {name:"落雷", lv:10}, {name:"農耕", lv:5}] },
-	{ id:"caocao", name:"神·曹操", type:"全才", rarity:"傳奇", force:93, intel:94, charm:81, command:99, talent:"字孟德，胸懷大略廣納賢才，南征北戰多年，消滅群雄，統一北方，奠定曹魏政權基礎。", skillName:"亂世梟雄", skills:["發動【龍怒】有 35% 的機率觸發【梟雄】，直接斬落敵方英雄", "每提升 1 級【龍怒】，對文官或全才傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終攻防各 +?", awakens:["智力 +2，魅力 +2，統御 +2", "與任意傳奇英雄同時上陣，遠戰首回合發動【天下縱橫】，消滅敵方全體 10% 的當前兵力，並導致【碎盾】兩回合，期間防禦 -30% 且禁用格擋"], reincarnation:["【龍怒】傷害強度 +70%，且有 80% 的機率連發 2 次", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"奇佐定基", hero:"郭嘉", effect:"受到全才傷害 -30%"}, {name:"篡朝重臣", hero:"司馬懿", effect:"對文官傷害 +30%"}, {name:"宗族悍將", hero:"夏侯惇", effect:"對步兵傷害 +20%"}, {name:"捨命相救", hero:"典韋", effect:"對方士傷害 +20%"}], skin:[{name:"獻刀七星", cost:5000, effect:"發動【龍怒】時觸發【梟雄】的機率 +5%"}, {name:"魏武霸業", cost:7000, effect:"弓兵攻擊 +400，發動【龍怒】時觸發【梟雄】的機率 +5%"}], initSkills:[{name:"剛毅", lv:7}, {name:"龍怒", lv:10}, {name:"富豪", lv:5}] },
-	{ id:"liubei", name:"神·劉備", type:"武將", rarity:"傳奇", force:96, intel:90, charm:99, command:81, talent:"字玄德，漢室宗親。雖早期連戰不利，但其弘毅寬厚，知人待士，百折不撓，最終稱帝蜀漢。", skillName:"一代仁君", skills:["發動【龍怒】後，必定觸發【仁德】，增援我方全體 15% 的最大兵力", "每提升 1 級【龍怒】，對全才或武將傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終攻擊各 +?", awakens:["魅力 +4，劉備不會被特殊效果斬落", "任意類型戰鬥，疲勞或傲氣低於 2 時，【仁德】的增援量加倍，且發動【仁德】後全軍攻擊 +20%"], reincarnation:["觸發【仁德】後，我方額外發動一次【恩威並施】，對敵方後軍造成 800% 的戰計傷害，並導致其【內訌】 1 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"仁兄義弟", hero:"關羽", effect:"受到武將傷害 -30%"}, {name:"三顧茅廬", hero:"諸葛亮", effect:"對全才傷害 +30%"}, {name:"赤膽忠心", hero:"趙雲", effect:"對騎兵傷害 +20%"}, {name:"玄德翼德", hero:"張飛", effect:"對弓兵傷害 +20%"}], skin:[{name:"御駕親征", cost:5000, effect:"我方的治療、增援兵力類效果 +3%"}, {name:"南征北戰", cost:7000, effect:"我方的治療、增援兵力類效果 +3%，全軍最終免傷 +5%"}], initSkills:[{name:"齊射", lv:7}, {name:"龍怒", lv:10}, {name:"育林", lv:5}] },
-	{ id:"wangyue", name:"神·王越", type:"武將", rarity:"傳奇", force:99, intel:75, charm:96, command:89, talent:"東漢末年遊俠，劍術出神入化。曾指點曹丕，故人稱帝師。在京師擁有極高名望。", skillName:"帝師劍聖", skills:["每提升 1 級【死鬥】，前後軍攻擊各 +20，遠戰回合免傷 +2%", "作為副將時，主將發動任意武將類英雄主動技能，+5% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，前軍最終防禦 +?", awakens:["統禦 +10，遠戰首回合可額外發動一次【死鬥】", "每提升 1 點武力，所有傷害 +1%，我方不良狀態抗性 +1%（最多 +40%）", "若【金剛】達到 20 級，每次發動【死鬥】後，我方騎兵可額外發動【掩殺】，消滅敵方前軍 15% 的最大兵力"], reincarnation:["基礎暴擊率 +40%，累計 6 次暴擊後我方獲得【劍意】，此後我方任意攻擊時傷害強度 +30%，且無視敵方任意護盾、免疫傷害、豁免全滅效果", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"虎賁將軍", hero:"漢獻帝", effect:"同時上陣，【死鬥】有 50% 的機率會提前到近戰首回合發動"}, {name:"帝師佳徒", hero:"曹丕", effect:"對全才傷害 +30%"}, {name:"未嘗敵手", hero:"呂布", effect:"格擋率 +5%、暴擊率 +5%"}, {name:"武藝超群", hero:"文鴦", effect:"武力 +3"}], skin:[{name:"虎賁劍神", cost:4000, effect:"我方騎兵傷害 +5%"}], initSkills:[{name:"突擊", lv:7}, {name:"死鬥", lv:10}, {name:"口才", lv:5}] },
-	{ id:"zuoci", name:"神·左慈", type:"文官", rarity:"傳奇", force:77, intel:100, charm:95, command:64, talent:"道號烏角先生。明五經，兼通星緯，學道術，明六甲，傳說能役使鬼神，坐致行廚。", skillName:"神道方士", skills:["【鬼影】可連發 3 次，且每提升 1 級【遁甲】，【鬼影】技能傷害 +2%", "作為副將時，主將發動任意文官類英雄主動技能，+5% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，後軍最終防禦 +?", awakens:["方士基礎攻擊 +120，方士的不良狀態抗性 +50%，且方士每次攻擊都有 30% 的機率使目標【迷幻】 2 回合", "傲氣低於 5 時，左慈不會被特殊效果斬落，且戰鬥勝利後發動【金丹】，增援我方方士 50% 的最大兵力"], reincarnation:["對敵方後軍造成的傷害 +20%。每次英雄技攻擊後，必定發動【遁甲】，且傷害強度 +40%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "方士傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"師承遁甲", hero:"南華老仙", effect:"同時上陣，【遁甲】可同時攻擊敵方全體"}, {name:"道玄弄策", hero:"孫策", effect:"對武將傷害 +30%"}, {name:"杯酒戲君", hero:"曹操", effect:"對弓兵傷害 +25%"}, {name:"方術相通", hero:"于吉", effect:"對方士傷害 +25%"}], skin:[], initSkills:[{name:"鬼影", lv:10}, {name:"遁甲", lv:7}, {name:"口才", lv:5}] },
-	{ id:"nanhualaoxian", name:"神·南華老仙", type:"全才", rarity:"傳奇", force:63, intel:99, charm:87, command:93, talent:"以道為念，心系天下，通曉太平遁甲之能，甚可逆天改命。張角、于吉、左慈均拜其為師。", skillName:"太平天仙", skills:["【遁甲】每回合最多發動 2 次，且每提升 1 級【咒印】，【遁甲】發動機率和技能傷害各 +1%", "作為副將時，主將發動任意兵種主動技能，+3% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，後軍最終兵力 +?", awakens:["方士基礎攻擊 +100，方士傷害 +30%，方士速度 +30，方士兵力缺損時攻擊不衰減（原本最多衰減 40%）", "若【遁甲】達到 20 級，魅力 +5，統御 +5，我方方士可豁免 4 次會導致全滅的攻擊傷害"], reincarnation:["方士不會受到不良狀態的影響，且每次攻擊會額外附加 75% 前軍攻擊力的傷害", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "方士傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"太平要術", hero:"張角", effect:"同時上陣，任意方士主動技能，可連續發動 2 次"}, {name:"隱世奇翁", hero:"司馬徽", effect:"對文官傷害 +30%"}, {name:"青領太平", hero:"于吉", effect:"對步兵傷害 +25%"}, {name:"遁甲天書", hero:"左慈", effect:"對騎兵傷害 +25%"}], skin:[{name:"仙界帝王", cost:5000, effect:"【遁甲】每回合最多發動次數 +1"}], initSkills:[{name:"咒印", lv:7}, {name:"遁甲", lv:10}, {name:"育林", lv:5}] },
-	{ id:"yuanshao", name:"神·袁紹", type:"武將", rarity:"傳奇", force:92, intel:86, charm:88, command:93, talent:"可摜盔迎敵，亦能謀定後動，乃是諸侯討董隊伍中的帶頭大哥，坐擁四州名滿天下。", skillName:"豪貴名門", skills:["若武力或統御高於對手，則盛氣凜然，遠戰回合禁用敵方英雄技", "若智力或魅力高於對手，己方英雄技的每段打擊都可觸發【聲勢】，額外消滅大量敵軍（受己方最大兵力加成）", "己方在遠戰回合的英雄技，都延緩 2 回合發動並提升 100% 傷害"], legendary:"主公麾下所有英雄，後軍暴擊率 +?", awakens:["武力 +1，智力 +1，魅力 +1，統御 +1", "對戰武將時，傷害 +35%", "每提升 1 級【蓄勢】，步兵攻擊 +35，防禦 +15，兵力 +45"], reincarnation:["遠戰第二回合結束時，我方發動【暗伏騎弩】，對敵方前軍造成 950% 的戰計傷害，並導致【破防】狀態 2 回合，降低 50% 傷害減免", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"摯友死敵", hero:"曹操", effect:"同時上陣，萬箭隨機增加 1~3 次亂射"}, {name:"得力悍將", hero:"顏良", effect:"兵力 +15%"}, {name:"河間庭柱", hero:"文醜", effect:"基礎兵力 +100"}, {name:"志同道合", hero:"劉備", effect:"智力 +2，魅力 +2，統御 +2，武力 +2"}], skin:[], initSkills:[{name:"萬箭", lv:10}, {name:"增員", lv:7}, {name:"擴編", lv:7}] },
-{ id:"chenshou", name:"神·陳壽", type:"文官", rarity:"傳奇", force:66, intel:93, charm:83, command:80, talent:"生於三國後期，蜀晉兩朝為官，歷經十年艱辛，完成史學巨著《三國志》，享譽古今中外。", skillName:"一代良史", skills:["可擔當任意英雄的任意兵種副將", "作為後軍副將時，副將主動技能鎖定為【史策丹心】：己方兵力低於一半時發動，以己方主將的前後軍防禦總和作為攻擊，對敵方全體造成大量傷害"], legendary:"主公麾下所有英雄，後軍格擋率 +?", awakens:["作為後軍副將時，我方主將智力 +3，前後軍基礎防禦各 +100", "作為後軍副將時，陳壽不會被敵方斬落，且從開戰回合起，【史策丹心】每晚 1 回合發動，其威力 +70%"], reincarnation:[], destiny:[], skin:[], initSkills:[{name:"反擊", lv:8}, {name:"裂甲", lv:11}, {name:"回射", lv:5}] },
-{ id:"zixushangren", name:"神·紫虛上人", type:"全才", rarity:"傳奇", force:85, intel:96, charm:76, command:82, talent:"居於錦屏山中的異人，能知人生死貴賤。曾道出臥龍雛鳳之未來，天命索然，定數難逃。", skillName:"三露天機", skills:["可擔當任意英雄的任意兵種副將", "作為副將時，戰鬥開始時額外發動【問卦】，吉卦概率為 50%，否則為凶卦。若為吉卦，敵方按我方當前總兵力的 10% 損失前軍兵力；若為凶卦，我方按我方當前總兵力的 5% 損失前軍兵力", "若主將戰力高於對手，吉卦概率 +25%", "若主將四維總數高於對手，吉卦概率 +25%", "自身作為主將時，也可發動【問卦】，且損兵效果提升至 3 倍"], legendary:"主公麾下所有英雄，英雄技能傷害 +?", awakens:["作為主將時，【問卦】結果必定為吉卦，且可在遠戰第二回合額外發動 1 次", "遠戰回合，敵方每次發動英雄技前，我方有 70% 機率發動【逢凶化吉】，使我方全軍獲得【吉星】狀態，各免疫 1 次損傷（吉星不可疊加）"], reincarnation:["魅力 +5，統御 +10。己方每次攻擊時，剩餘兵力的比例每比對手高 1%，則傷害 +2%（最多 50%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"未卜先知", hero:"諸葛亮", effect:"受到男性英雄傷害 -30%"}, {name:"不信也靈", hero:"龐統", effect:"對男性英雄傷害 +30%"}, {name:"醫聖上仙", hero:"華佗", effect:"後軍基礎兵力 +200"}, {name:"出神入化", hero:"童淵", effect:"前軍基礎兵力 +200"}], skin:[], initSkills:[{name:"剛毅", lv:8}, {name:"天命", lv:11}, {name:"尋礦", lv:5}] },
-{ id:"wutugu", name:"神·兀突骨", type:"武將", rarity:"傳奇", force:95, intel:77, charm:79, command:91, talent:"烏戈國國主，據傳身高 2 米 77，不食五穀，以生蛇惡獸為飯。擅長驅象和煉製藤甲。", skillName:"陣中巨獸", skills:["遠戰回合，受到敵方英雄技和副將技傷害 -75%", "【巨象】可連發 2 次，且可追加 30% 的額外傷害（受我方最大兵力加成）", "己方部隊無不良狀態時，兵種傷害 +30%，但每存在 1 個不良狀態，受到傷害 +10%（前後軍各自計算）"], legendary:"主公麾下所有英雄，前軍最終兵力 +?", awakens:["戰鬥中，步兵額外獲得 20 級【合圍】技能，方士額外獲得 20 級【金汁】技能", "若敵方兵力不足 50%，我方免疫按比例損失兵力"], reincarnation:["【巨象】傷害強度 +15%。遠戰第二回合發動【獸魂霸體】，驅散己方前後軍所有不良狀態，並獲得【霸體】狀態 2 回合，期間免傷 +40%，並免疫不良狀態", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"南蠻之威", hero:"孟獲", effect:"前軍基礎兵力 +200"}, {name:"蛇獸為宴", hero:"祝融", effect:"對全才傷害 +25%"}, {name:"大勝而歸", hero:"魏延", effect:"受到全才傷害 -25%"}, {name:"火煉真金", hero:"諸葛亮", effect:"受到傷害 -20%"}], skin:[], initSkills:[{name:"巨象", lv:11}, {name:"暴烈", lv:8}, {name:"行軍", lv:5}] },
-{ id:"mazhong", name:"神·馬忠", type:"武將", rarity:"傳奇", force:87, intel:66, charm:72, command:83, talent:"低調的吳國將領，擅長放冷箭。先後狙落關羽、黃忠，輕描淡寫間，深藏功與名。", skillName:"箭可誅神", skills:["作為弓兵副將時，副將主動技鎖定為【暗箭難防】：當敵方兵力低於一半時可發動，對敵方後軍造成無視防禦的傷害，並有 30% 的機率斬落敵方英雄", "作為弓兵副將時，可依照馬忠品質，為主將提供額外加成：紫色以上：弓兵基礎攻擊 +30，弓兵基礎防禦 +10；金色以上：對武將傷害 +10%；紅色：敵方的治療、增援兵力類效果 -20%", "自身作為主將時，可依照品質解鎖以上 4 倍的加成效果，並可聯合弓兵發動【暗箭難防】，斬落機率提升為 100%"], legendary:"主公麾下所有英雄，後軍最終攻擊 +?", awakens:["斬落敵方英雄後，弓兵可立即發動一次【輪射】", "對戰武將時，弓兵傷害 +25%，免傷 +25%"], reincarnation:["對全才傷害 +20%，受到武將傷害 -20%。當敵方兵力高於一半時，我方弓兵攻擊時可穿透敵方 80% 的防禦，受到傷害時提升 50% 免傷", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"擒獲雙關", hero:"關羽", effect:"受到男性英雄傷害 -10%"}, {name:"一擊必中", hero:"黃忠", effect:"對全才傷害 +15%"}, {name:"東吳虎臣", hero:"呂蒙", effect:"受到武將傷害 -15%"}, {name:"絕世射手", hero:"太史慈", effect:"對騎兵傷害 +20%"}], skin:[], initSkills:[{name:"衝鋒", lv:5}, {name:"火箭", lv:8}, {name:"金汁", lv:10}] },
-	{ id:"huangchengyan", name:"神·黃承彥", type:"全才", rarity:"傳奇", force:68, intel:92, charm:94, command:100, talent:"黃月英之父，諸葛亮岳父，通吃襄陽名士圈。擅長陣法軍略，興趣是遛彎救人破八陣圖。", skillName:"陣法宗師", skills:["作為方士副將時，副將主動技鎖定為【洪荒八陣】：近戰首回合發動，對敵方全軍造成傷害，並有 20% 的機率使之【混亂】 1 回合；命中後若敵方任意部隊處於不良狀態，可再額外發動 1 次【洪荒八陣】", "若主將四維高於對手，【洪荒八陣】有 50% 的機率額外導致目標【火災】 1 回合", "黃承彥自身作為主將時，遠戰第二回合和近戰首回合都可聯合我方方士發動【洪荒八陣】，且每提升 1 級任意陣法，【洪荒八陣】傷害 +2%"], legendary:"主公麾下所有英雄，前軍格擋率 +?", awakens:["作為副將時，若敵方啟動的陣法與我方相同，造成的傷害 +20%", "作為副將時，主將四維各 +1"], reincarnation:[], destiny:[{name:"鼎力相助", hero:"陸遜", effect:"對女性英雄傷害 +10%"}, {name:"父愛如山", hero:"黃月英", effect:"對文官傷害 +15%"}, {name:"翁婿之情", hero:"諸葛亮", effect:"受到文官傷害 -15%"}, {name:"莫逆之交", hero:"司馬徽", effect:"對步兵傷害 +20%"}], skin:[], initSkills:[{name:"不屈", lv:8}, {name:"軍略", lv:10}, {name:"農耕", lv:5}] },
-	{ id:"sunjian", name:"神·孫堅", type:"武將", rarity:"傳奇", force:98, intel:80, charm:90, command:97, talent:"容貌不凡，性闊達，好奇節。年少時計破海盜，成年後斬華雄、破董卓，悍勇非常。", skillName:"威震涵洛", skills:["遠戰每回合結束時，治療我方前軍 50% 的傷兵", "我方前軍受到敵方部隊的近身攻擊時，可觸發【刺甲】效果，將所受的傷害 100% 反震給敵方", "每提升 1 級【蓄勢】，前後軍基礎兵力 +14，近戰回合傷害 +2%"], legendary:"主公麾下所有英雄，英雄技免傷 +?", awakens:["智力 +7，統御 +3，我方的護盾、治療、增援兵力類效果 +50%", "【刺甲】進化為【怒盾】，可將所受的近身傷害 200% 反震給敵方，並且每觸發一次【怒盾】，前軍攻擊 +5%（最多提升 30%）"], reincarnation:["我方前軍受到敵方部隊的近身攻擊後，有 50% 的機率額外觸發【鐵衣】，為我方前軍召喚自身最大兵力 10% 的護盾（最多觸發 3 次）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"威震涵洛", hero:"孫權", effect:"英雄技免傷 +15%，受到英雄技能傷害 -15%"}, {name:"父子連心", hero:"孫策", effect:"對全才傷害 +25%"}, {name:"血脈相連", hero:"孫尚香", effect:"對文官傷害 +15%"}, {name:"吳中脊樑", hero:"吳國太", effect:"前軍基礎兵力 +200"}], skin:[], initSkills:[{name:"金剛", lv:10}, {name:"行軍", lv:5}, {name:"蓄勢", lv:7}] },
-	{ id:"zhangliang", name:"神·張良", type:"文官", rarity:"傳奇", force:73, intel:100, charm:97, command:95, talent:"張良，字子房，漢初三傑之一。在楚漢戰爭中「長計謀平天下」，都為劉邦所採納。", skillName:"遠見卓識", skills:["遠戰第二回合發動【謀聖無疆】，驅散對方所有護盾，並對敵方全軍造成 150% 傷害。【謀聖無疆】發動前，敵方每發動 1 次英雄技，【謀聖無疆】的傷害強度提升 50", "若四維總數高於對手，【謀聖無疆】可在近戰首回合額外發動 1 次", "每提升 1 級【乾坤】，全軍傷害 +1%，免傷 +1%"], legendary:"主公麾下所有英雄，英雄攻擊時忽視目標 ?% 的防禦", awakens:["對陣文官時，可吸取敵方英雄 30 點智力，且【謀聖無疆】可在遠戰首回合額外發動一次", "發動【謀聖無疆】時，有 30% 機率導致目標【挫志】，持續 1 回合，期間部隊無法行動，並降低 40% 臨場防禦"], reincarnation:["我方每次主動發動英雄、兵種或天賦技，全軍攻擊 +2%（最多提升 30%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"遠見卓識", hero:"張角", effect:"英雄技能傷害 +20%"}, {name:"運籌帷幄", hero:"諸葛亮", effect:"對武將傷害 +20%"}, {name:"人中龍鳳", hero:"韓信", effect:"受到文官傷害 -20%"}, {name:"相見恨晚", hero:"劉邦", effect:"基礎攻擊 +100，基礎防禦 +50"}], skin:[], initSkills:[{name:"地刺", lv:7}, {name:"乾坤", lv:10}, {name:"集智", lv:5}] },
-	{ id:"xiangyu", name:"神·項羽", type:"武將", rarity:"傳奇", force:100, intel:76, charm:93, command:98, talent:"曾領軍滅亡秦國。自稱西楚霸王，大封滅秦功臣將領，擁立六國貴族後代為王。", skillName:"西楚霸王", skills:["若敵方僅剩單軍，則立即發動【楚霸天威】，對敵方剩餘部隊進行一次毀滅性打擊，造成 900% 傷害", "對敵方前軍造成的所有傷害提高 60%", "若武力高於對手，我方全軍的不良狀態抗性 +50%", "每提升 1 點武力，前後軍基礎攻擊 +2，【沖陣】的傷害強度 +2%"], legendary:"主公麾下所有英雄，對敵方前軍傷害 +?", awakens:["每提升 3 點非武力四維，武力 +1", "【沖陣】可無視敵方 30% 防禦，並忽略敵方被動技能，且可額外連發一次"], reincarnation:["武力每比對手高 1，所有與武力相關的英雄技，對敵方前軍傷害 +2%（最多 100%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"西楚霸王", hero:"呂布", effect:"【沖陣】可攻擊敵方全體"}, {name:"勇冠三軍", hero:"趙雲", effect:"對全才傷害 +25%"}, {name:"楚漢相爭", hero:"劉邦", effect:"對步兵傷害 +30%"}, {name:"心頭之患", hero:"韓信", effect:"敵方全軍免傷 -15%"}], skin:[], initSkills:[{name:"衝陣", lv:10}, {name:"暴烈", lv:5}, {name:"切割", lv:7}] },
+	{ id:"sunquan", name:"神·孫權", type:"文官", rarity:"傳奇", force:90, intel:96, charm:92, command:92, talent:"字仲謀，碧眼紫髯，相貌奇偉。在繼承父兄基業之後，北據曹魏，西聯蜀漢，終成帝業！", skillName:"江東威龍", skills:["在單次對決中，【龍怒】可無限次發動（每回合最多 1 次）", "每提升 1 級【龍怒】，對武將或文官傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終防禦各 +?", awakens:["暴擊率 +5%，格擋率 +5%", "在包含戰鬥開始的所有回合中，兵力不足 75% 時即可發動【龍怒】，且首次【龍怒】傷害 +25%"], reincarn:["每次發動【龍怒】後，立即增援我方全軍 5% 的最大兵力", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"首席都督", hero:"周瑜", effect:"受到文官傷害 -30%"}, {name:"謀羽取荊", hero:"陸遜", effect:"對武將傷害 +30%"}, {name:"薪火相傳", hero:"孫策", effect:"對步兵傷害 +20%"}, {name:"軍政棟樑", hero:"魯肅", effect:"對弓兵傷害 +20%"}], skin:[{name:"威加九錫", cost:5000, effect:"【龍怒】可無視目標 4% 的防禦"}, {name:"興兵雪恨", cost:7000, effect:"【龍怒】可無視目標 4% 的防禦，且威力 +8%"}], initSkills:[{name:"裂甲", lv:7}, {name:"龍怒", lv:10}, {name:"尋礦", lv:5}] },
+	{ id:"zhangjiao", name:"神·張角", type:"文官", rarity:"傳奇", force:70, intel:97, charm:93, command:94, talent:"太平道創始人。自稱具有超凡神力。後自稱「天公將軍」，率眾起義，企圖推翻漢朝統治。", skillName:"蒼天之患", skills:["每道【落雷】可額外消滅目標 2% 的最大兵力，且戰鬥開始時可以額外發動一次【落雷】", "每提升 1 級【鬼影】，方士被動免傷 +2%（最大 50%）", "每提升 1 級【神光】，方士基礎攻防 +9，方士兵力 +30"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終速度各 +?", awakens:["我軍觸發任意暴擊時，可額外消滅 200 名士兵，且發動【落雷】時暴擊率 +25%"], reincarn:["發動【落雷】時無需己方騎兵存活，並可額外釋放 4 道落雷", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"野心磅礴", hero:"董卓", effect:"受到女性英雄傷害 -15%"}, {name:"揭竿而起", hero:"曹操", effect:"受到男性英雄傷害 -15%"}, {name:"救世仁君", hero:"劉備", effect:"對騎兵傷害 +20%"}, {name:"制衡天下", hero:"孫權", effect:"對方士傷害 +20%"}], skin:[], initSkills:[{name:"鬼影", lv:7}, {name:"落雷", lv:10}, {name:"農耕", lv:5}] },
+	{ id:"caocao", name:"神·曹操", type:"全才", rarity:"傳奇", force:93, intel:94, charm:81, command:99, talent:"字孟德，胸懷大略廣納賢才，南征北戰多年，消滅群雄，統一北方，奠定曹魏政權基礎。", skillName:"亂世梟雄", skills:["發動【龍怒】有 35% 的機率觸發【梟雄】，直接斬落敵方英雄", "每提升 1 級【龍怒】，對文官或全才傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終攻防各 +?", awakens:["智力 +2，魅力 +2，統御 +2", "與任意傳奇英雄同時上陣，遠戰首回合發動【天下縱橫】，消滅敵方全體 10% 的當前兵力，並導致【碎盾】兩回合，期間防禦 -30% 且禁用格擋"], reincarn:["【龍怒】傷害強度 +70%，且有 80% 的機率連發 2 次", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"奇佐定基", hero:"郭嘉", effect:"受到全才傷害 -30%"}, {name:"篡朝重臣", hero:"司馬懿", effect:"對文官傷害 +30%"}, {name:"宗族悍將", hero:"夏侯惇", effect:"對步兵傷害 +20%"}, {name:"捨命相救", hero:"典韋", effect:"對方士傷害 +20%"}], skin:[{name:"獻刀七星", cost:5000, effect:"發動【龍怒】時觸發【梟雄】的機率 +5%"}, {name:"魏武霸業", cost:7000, effect:"弓兵攻擊 +400，發動【龍怒】時觸發【梟雄】的機率 +5%"}], initSkills:[{name:"剛毅", lv:7}, {name:"龍怒", lv:10}, {name:"富豪", lv:5}] },
+	{ id:"liubei", name:"神·劉備", type:"武將", rarity:"傳奇", force:96, intel:90, charm:99, command:81, talent:"字玄德，漢室宗親。雖早期連戰不利，但其弘毅寬厚，知人待士，百折不撓，最終稱帝蜀漢。", skillName:"一代仁君", skills:["發動【龍怒】後，必定觸發【仁德】，增援我方全體 15% 的最大兵力", "每提升 1 級【龍怒】，對全才或武將傷害 +1%", "英雄等級每提升 1 級，前後軍兵力額外各 +12"], legendary:"親率部隊上陣，我方同戰場將士獲得激勵，前後軍最終攻擊各 +?", awakens:["魅力 +4，劉備不會被特殊效果斬落", "任意類型戰鬥，疲勞或傲氣低於 2 時，【仁德】的增援量加倍，且發動【仁德】後全軍攻擊 +20%"], reincarn:["觸發【仁德】後，我方額外發動一次【恩威並施】，對敵方後軍造成 800% 的戰計傷害，並導致其【內訌】 1 回合", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"仁兄義弟", hero:"關羽", effect:"受到武將傷害 -30%"}, {name:"三顧茅廬", hero:"諸葛亮", effect:"對全才傷害 +30%"}, {name:"赤膽忠心", hero:"趙雲", effect:"對騎兵傷害 +20%"}, {name:"玄德翼德", hero:"張飛", effect:"對弓兵傷害 +20%"}], skin:[{name:"御駕親征", cost:5000, effect:"我方的治療、增援兵力類效果 +3%"}, {name:"南征北戰", cost:7000, effect:"我方的治療、增援兵力類效果 +3%，全軍最終免傷 +5%"}], initSkills:[{name:"齊射", lv:7}, {name:"龍怒", lv:10}, {name:"育林", lv:5}] },
+	{ id:"wangyue", name:"神·王越", type:"武將", rarity:"傳奇", force:99, intel:75, charm:96, command:89, talent:"東漢末年遊俠，劍術出神入化。曾指點曹丕，故人稱帝師。在京師擁有極高名望。", skillName:"帝師劍聖", skills:["每提升 1 級【死鬥】，前後軍攻擊各 +20，遠戰回合免傷 +2%", "作為副將時，主將發動任意武將類英雄主動技能，+5% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，前軍最終防禦 +?", awakens:["統御 +10，遠戰首回合可額外發動一次【死鬥】", "每提升 1 點武力，所有傷害 +1%，我方不良狀態抗性 +1%（最多 +40%）", "若【金剛】達到 20 級，每次發動【死鬥】後，我方騎兵可額外發動【掩殺】，消滅敵方前軍 15% 的最大兵力"], reincarn:["基礎暴擊率 +40%，累計 6 次暴擊後我方獲得【劍意】，此後我方任意攻擊時傷害強度 +30%，且無視敵方任意護盾、免疫傷害、豁免全滅效果", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "騎兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"虎賁將軍", hero:"漢獻帝", effect:"同時上陣，【死鬥】有 50% 的機率會提前到近戰首回合發動"}, {name:"帝師佳徒", hero:"曹丕", effect:"對全才傷害 +30%"}, {name:"未嘗敵手", hero:"呂布", effect:"格擋率 +5%、暴擊率 +5%"}, {name:"武藝超群", hero:"文鴦", effect:"武力 +3"}], skin:[{name:"虎賁劍神", cost:4000, effect:"我方騎兵傷害 +5%"}], initSkills:[{name:"突擊", lv:7}, {name:"死鬥", lv:10}, {name:"口才", lv:5}] },
+	{ id:"zuoci", name:"神·左慈", type:"文官", rarity:"傳奇", force:77, intel:100, charm:95, command:64, talent:"道號烏角先生。明五經，兼通星緯，學道術，明六甲，傳說能役使鬼神，坐致行廚。", skillName:"神道方士", skills:["【鬼影】可連發 3 次，且每提升 1 級【遁甲】，【鬼影】技能傷害 +2%", "作為副將時，主將發動任意文官類英雄主動技能，+5% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，後軍最終防禦 +?", awakens:["方士基礎攻擊 +120，方士的不良狀態抗性 +50%，且方士每次攻擊都有 30% 的機率使目標【迷幻】 2 回合", "傲氣低於 5 時，左慈不會被特殊效果斬落，且戰鬥勝利後發動【金丹】，增援我方方士 50% 的最大兵力"], reincarn:["對敵方後軍造成的傷害 +20%。每次英雄技攻擊後，必定發動【遁甲】，且傷害強度 +40%", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "方士傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"師承遁甲", hero:"南華老仙", effect:"同時上陣，【遁甲】可同時攻擊敵方全體"}, {name:"道玄弄策", hero:"孫策", effect:"對武將傷害 +30%"}, {name:"杯酒戲君", hero:"曹操", effect:"對弓兵傷害 +25%"}, {name:"方術相通", hero:"于吉", effect:"對方士傷害 +25%"}], skin:[], initSkills:[{name:"鬼影", lv:10}, {name:"遁甲", lv:7}, {name:"口才", lv:5}] },
+	{ id:"nanhualaoxian", name:"神·南華老仙", type:"全才", rarity:"傳奇", force:63, intel:99, charm:87, command:93, talent:"以道為念，心系天下，通曉太平遁甲之能，甚可逆天改命。張角、于吉、左慈均拜其為師。", skillName:"太平天仙", skills:["【遁甲】每回合最多發動 2 次，且每提升 1 級【咒印】，【遁甲】發動機率和技能傷害各 +1%", "作為副將時，主將發動任意兵種主動技能，+3% 技能強度（可擔當任意英雄的任意兵種副將）"], legendary:"主公麾下所有英雄，後軍最終兵力 +?", awakens:["方士基礎攻擊 +100，方士傷害 +30%，方士速度 +30，方士兵力缺損時攻擊不衰減（原本最多衰減 40%）", "若【遁甲】達到 20 級，魅力 +5，統御 +5，我方方士可豁免 4 次會導致全滅的攻擊傷害"], reincarn:["方士不會受到不良狀態的影響，且每次攻擊會額外附加 75% 前軍攻擊力的傷害", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "方士傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"太平要術", hero:"張角", effect:"同時上陣，任意方士主動技能，可連續發動 2 次"}, {name:"隱世奇翁", hero:"司馬徽", effect:"對文官傷害 +30%"}, {name:"青領太平", hero:"于吉", effect:"對步兵傷害 +25%"}, {name:"遁甲天書", hero:"左慈", effect:"對騎兵傷害 +25%"}], skin:[{name:"仙界帝王", cost:5000, effect:"【遁甲】每回合最多發動次數 +1"}], initSkills:[{name:"咒印", lv:7}, {name:"遁甲", lv:10}, {name:"育林", lv:5}] },
+	{ id:"yuanshao", name:"神·袁紹", type:"武將", rarity:"傳奇", force:92, intel:86, charm:88, command:93, talent:"可摜盔迎敵，亦能謀定後動，乃是諸侯討董隊伍中的帶頭大哥，坐擁四州名滿天下。", skillName:"豪貴名門", skills:["若武力或統御高於對手，則盛氣凜然，遠戰回合禁用敵方英雄技", "若智力或魅力高於對手，己方英雄技的每段打擊都可觸發【聲勢】，額外消滅大量敵軍（受己方最大兵力加成）", "己方在遠戰回合的英雄技，都延緩 2 回合發動並提升 100% 傷害"], legendary:"主公麾下所有英雄，後軍暴擊率 +?", awakens:["武力 +1，智力 +1，魅力 +1，統御 +1", "對戰武將時，傷害 +35%", "每提升 1 級【蓄勢】，步兵攻擊 +35，防禦 +15，兵力 +45"], reincarn:["遠戰第二回合結束時，我方發動【暗伏騎弩】，對敵方前軍造成 950% 的戰計傷害，並導致【破防】狀態 2 回合，降低 50% 傷害減免", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"摯友死敵", hero:"曹操", effect:"同時上陣，萬箭隨機增加 1~3 次亂射"}, {name:"得力悍將", hero:"顏良", effect:"兵力 +15%"}, {name:"河間庭柱", hero:"文醜", effect:"基礎兵力 +100"}, {name:"志同道合", hero:"劉備", effect:"智力 +2，魅力 +2，統御 +2，武力 +2"}], skin:[], initSkills:[{name:"萬箭", lv:10}, {name:"增員", lv:7}, {name:"擴編", lv:7}] },
+{ id:"chenshou", name:"神·陳壽", type:"文官", rarity:"傳奇", force:66, intel:93, charm:83, command:80, talent:"生於三國後期，蜀晉兩朝為官，歷經十年艱辛，完成史學巨著《三國志》，享譽古今中外。", skillName:"一代良史", skills:["可擔當任意英雄的任意兵種副將", "作為後軍副將時，副將主動技能鎖定為【史策丹心】：己方兵力低於一半時發動，以己方主將的前後軍防禦總和作為攻擊，對敵方全體造成大量傷害"], legendary:"主公麾下所有英雄，後軍格擋率 +?", awakens:["作為後軍副將時，我方主將智力 +3，前後軍基礎防禦各 +100", "作為後軍副將時，陳壽不會被敵方斬落，且從開戰回合起，【史策丹心】每晚 1 回合發動，其威力 +70%"], reincarn:[], destiny:[], skin:[], initSkills:[{name:"反擊", lv:8}, {name:"裂甲", lv:11}, {name:"回射", lv:5}] },
+{ id:"zixushangren", name:"神·紫虛上人", type:"全才", rarity:"傳奇", force:85, intel:96, charm:76, command:82, talent:"居於錦屏山中的異人，能知人生死貴賤。曾道出臥龍雛鳳之未來，天命索然，定數難逃。", skillName:"三露天機", skills:["可擔當任意英雄的任意兵種副將", "作為副將時，戰鬥開始時額外發動【問卦】，吉卦概率為 50%，否則為凶卦。若為吉卦，敵方按我方當前總兵力的 10% 損失前軍兵力；若為凶卦，我方按我方當前總兵力的 5% 損失前軍兵力", "若主將戰力高於對手，吉卦概率 +25%", "若主將四維總數高於對手，吉卦概率 +25%", "自身作為主將時，也可發動【問卦】，且損兵效果提升至 3 倍"], legendary:"主公麾下所有英雄，英雄技能傷害 +?", awakens:["作為主將時，【問卦】結果必定為吉卦，且可在遠戰第二回合額外發動 1 次", "遠戰回合，敵方每次發動英雄技前，我方有 70% 機率發動【逢凶化吉】，使我方全軍獲得【吉星】狀態，各免疫 1 次損傷（吉星不可疊加）"], reincarn:["魅力 +5，統御 +10。己方每次攻擊時，剩餘兵力的比例每比對手高 1%，則傷害 +2%（最多 50%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"未卜先知", hero:"諸葛亮", effect:"受到男性英雄傷害 -30%"}, {name:"不信也靈", hero:"龐統", effect:"對男性英雄傷害 +30%"}, {name:"醫聖上仙", hero:"華佗", effect:"後軍基礎兵力 +200"}, {name:"出神入化", hero:"童淵", effect:"前軍基礎兵力 +200"}], skin:[], initSkills:[{name:"剛毅", lv:8}, {name:"天命", lv:11}, {name:"尋礦", lv:5}] },
+{ id:"wutugu", name:"神·兀突骨", type:"武將", rarity:"傳奇", force:95, intel:77, charm:79, command:91, talent:"烏戈國國主，據傳身高 2 米 77，不食五穀，以生蛇惡獸為飯。擅長驅象和煉製藤甲。", skillName:"陣中巨獸", skills:["遠戰回合，受到敵方英雄技和副將技傷害 -75%", "【巨象】可連發 2 次，且可追加 30% 的額外傷害（受我方最大兵力加成）", "己方部隊無不良狀態時，兵種傷害 +30%，但每存在 1 個不良狀態，受到傷害 +10%（前後軍各自計算）"], legendary:"主公麾下所有英雄，前軍最終兵力 +?", awakens:["戰鬥中，步兵額外獲得 20 級【合圍】技能，方士額外獲得 20 級【金汁】技能", "若敵方兵力不足 50%，我方免疫按比例損失兵力"], reincarn:["【巨象】傷害強度 +15%。遠戰第二回合發動【獸魂霸體】，驅散己方前後軍所有不良狀態，並獲得【霸體】狀態 2 回合，期間免傷 +40%，並免疫不良狀態", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"南蠻之威", hero:"孟獲", effect:"前軍基礎兵力 +200"}, {name:"蛇獸為宴", hero:"祝融", effect:"對全才傷害 +25%"}, {name:"大勝而歸", hero:"魏延", effect:"受到全才傷害 -25%"}, {name:"火煉真金", hero:"諸葛亮", effect:"受到傷害 -20%"}], skin:[], initSkills:[{name:"巨象", lv:11}, {name:"暴烈", lv:8}, {name:"行軍", lv:5}] },
+{ id:"mazhong", name:"神·馬忠", type:"武將", rarity:"傳奇", force:87, intel:66, charm:72, command:83, talent:"低調的吳國將領，擅長放冷箭。先後狙落關羽、黃忠，輕描淡寫間，深藏功與名。", skillName:"箭可誅神", skills:["作為弓兵副將時，副將主動技鎖定為【暗箭難防】：當敵方兵力低於一半時可發動，對敵方後軍造成無視防禦的傷害，並有 30% 的機率斬落敵方英雄", "作為弓兵副將時，可依照馬忠品質，為主將提供額外加成：紫色以上：弓兵基礎攻擊 +30，弓兵基礎防禦 +10；金色以上：對武將傷害 +10%；紅色：敵方的治療、增援兵力類效果 -20%", "自身作為主將時，可依照品質解鎖以上 4 倍的加成效果，並可聯合弓兵發動【暗箭難防】，斬落機率提升為 100%"], legendary:"主公麾下所有英雄，後軍最終攻擊 +?", awakens:["斬落敵方英雄後，弓兵可立即發動一次【輪射】", "對戰武將時，弓兵傷害 +25%，免傷 +25%"], reincarn:["對全才傷害 +20%，受到武將傷害 -20%。當敵方兵力高於一半時，我方弓兵攻擊時可穿透敵方 80% 的防禦，受到傷害時提升 50% 免傷", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "弓兵傷害 +25%", "英雄可自由分配四維 +4"], destiny:[{name:"擒獲雙關", hero:"關羽", effect:"受到男性英雄傷害 -10%"}, {name:"一擊必中", hero:"黃忠", effect:"對全才傷害 +15%"}, {name:"東吳虎臣", hero:"呂蒙", effect:"受到武將傷害 -15%"}, {name:"絕世射手", hero:"太史慈", effect:"對騎兵傷害 +20%"}], skin:[], initSkills:[{name:"衝鋒", lv:5}, {name:"火箭", lv:8}, {name:"金汁", lv:10}] },
+	{ id:"huangchengyan", name:"神·黃承彥", type:"全才", rarity:"傳奇", force:68, intel:92, charm:94, command:100, talent:"黃月英之父，諸葛亮岳父，通吃襄陽名士圈。擅長陣法軍略，興趣是遛彎救人破八陣圖。", skillName:"陣法宗師", skills:["作為方士副將時，副將主動技鎖定為【洪荒八陣】：近戰首回合發動，對敵方全軍造成傷害，並有 20% 的機率使之【混亂】 1 回合；命中後若敵方任意部隊處於不良狀態，可再額外發動 1 次【洪荒八陣】", "若主將四維高於對手，【洪荒八陣】有 50% 的機率額外導致目標【火災】 1 回合", "黃承彥自身作為主將時，遠戰第二回合和近戰首回合都可聯合我方方士發動【洪荒八陣】，且每提升 1 級任意陣法，【洪荒八陣】傷害 +2%"], legendary:"主公麾下所有英雄，前軍格擋率 +?", awakens:["作為副將時，若敵方啟動的陣法與我方相同，造成的傷害 +20%", "作為副將時，主將四維各 +1"], reincarn:[], destiny:[{name:"鼎力相助", hero:"陸遜", effect:"對女性英雄傷害 +10%"}, {name:"父愛如山", hero:"黃月英", effect:"對文官傷害 +15%"}, {name:"翁婿之情", hero:"諸葛亮", effect:"受到文官傷害 -15%"}, {name:"莫逆之交", hero:"司馬徽", effect:"對步兵傷害 +20%"}], skin:[], initSkills:[{name:"不屈", lv:8}, {name:"軍略", lv:10}, {name:"農耕", lv:5}] },
+	{ id:"sunjian", name:"神·孫堅", type:"武將", rarity:"傳奇", force:98, intel:80, charm:90, command:97, talent:"容貌不凡，性闊達，好奇節。年少時計破海盜，成年後斬華雄、破董卓，悍勇非常。", skillName:"威震涵洛", skills:["遠戰每回合結束時，治療我方前軍 50% 的傷兵", "我方前軍受到敵方部隊的近身攻擊時，可觸發【刺甲】效果，將所受的傷害 100% 反震給敵方", "每提升 1 級【蓄勢】，前後軍基礎兵力 +14，近戰回合傷害 +2%"], legendary:"主公麾下所有英雄，英雄技免傷 +?", awakens:["智力 +7，統御 +3，我方的護盾、治療、增援兵力類效果 +50%", "【刺甲】進化為【怒盾】，可將所受的近身傷害 200% 反震給敵方，並且每觸發一次【怒盾】，前軍攻擊 +5%（最多提升 30%）"], reincarn:["我方前軍受到敵方部隊的近身攻擊後，有 50% 的機率額外觸發【鐵衣】，為我方前軍召喚自身最大兵力 10% 的護盾（最多觸發 3 次）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍免傷 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"威震涵洛", hero:"孫權", effect:"英雄技免傷 +15%，受到英雄技能傷害 -15%"}, {name:"父子連心", hero:"孫策", effect:"對全才傷害 +25%"}, {name:"血脈相連", hero:"孫尚香", effect:"對文官傷害 +15%"}, {name:"吳中脊樑", hero:"吳國太", effect:"前軍基礎兵力 +200"}], skin:[], initSkills:[{name:"金剛", lv:10}, {name:"行軍", lv:5}, {name:"蓄勢", lv:7}] },
+	{ id:"zhangliang", name:"神·張良", type:"文官", rarity:"傳奇", force:73, intel:100, charm:97, command:95, talent:"張良，字子房，漢初三傑之一。在楚漢戰爭中「長計謀平天下」，都為劉邦所採納。", skillName:"遠見卓識", skills:["遠戰第二回合發動【謀聖無疆】，驅散對方所有護盾，並對敵方全軍造成 150% 傷害。【謀聖無疆】發動前，敵方每發動 1 次英雄技，【謀聖無疆】的傷害強度提升 50", "若四維總數高於對手，【謀聖無疆】可在近戰首回合額外發動 1 次", "每提升 1 級【乾坤】，全軍傷害 +1%，免傷 +1%"], legendary:"主公麾下所有英雄，英雄攻擊時忽視目標 ?% 的防禦", awakens:["對陣文官時，可吸取敵方英雄 30 點智力，且【謀聖無疆】可在遠戰首回合額外發動一次", "發動【謀聖無疆】時，有 30% 機率導致目標【挫志】，持續 1 回合，期間部隊無法行動，並降低 40% 臨場防禦"], reincarn:["我方每次主動發動英雄、兵種或天賦技，全軍攻擊 +2%（最多提升 30%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "全軍傷害 +8%", "英雄可自由分配四維 +4"], destiny:[{name:"遠見卓識", hero:"張角", effect:"英雄技能傷害 +20%"}, {name:"運籌帷幄", hero:"諸葛亮", effect:"對武將傷害 +20%"}, {name:"人中龍鳳", hero:"韓信", effect:"受到文官傷害 -20%"}, {name:"相見恨晚", hero:"劉邦", effect:"基礎攻擊 +100，基礎防禦 +50"}], skin:[], initSkills:[{name:"地刺", lv:7}, {name:"乾坤", lv:10}, {name:"集智", lv:5}] },
+	{ id:"xiangyu", name:"神·項羽", type:"武將", rarity:"傳奇", force:100, intel:76, charm:93, command:98, talent:"曾領軍滅亡秦國。自稱西楚霸王，大封滅秦功臣將領，擁立六國貴族後代為王。", skillName:"西楚霸王", skills:["若敵方僅剩單軍，則立即發動【楚霸天威】，對敵方剩餘部隊進行一次毀滅性打擊，造成 900% 傷害", "對敵方前軍造成的所有傷害提高 60%", "若武力高於對手，我方全軍的不良狀態抗性 +50%", "每提升 1 點武力，前後軍基礎攻擊 +2，【沖陣】的傷害強度 +2%"], legendary:"主公麾下所有英雄，對敵方前軍傷害 +?", awakens:["每提升 3 點非武力四維，武力 +1", "【沖陣】可無視敵方 30% 防禦，並忽略敵方被動技能，且可額外連發一次"], reincarn:["武力每比對手高 1，所有與武力相關的英雄技，對敵方前軍傷害 +2%（最多 100%）", "英雄可自由分配四維 +2", "英雄主動技能位 +1", "英雄技傷害 +20%", "英雄可自由分配四維 +4"], destiny:[{name:"西楚霸王", hero:"呂布", effect:"【沖陣】可攻擊敵方全體"}, {name:"勇冠三軍", hero:"趙雲", effect:"對全才傷害 +25%"}, {name:"楚漢相爭", hero:"劉邦", effect:"對步兵傷害 +30%"}, {name:"心頭之患", hero:"韓信", effect:"敵方全軍免傷 -15%"}], skin:[], initSkills:[{name:"衝陣", lv:10}, {name:"暴烈", lv:5}, {name:"切割", lv:7}] },
 	{ id:"yuji", name:"神·虞姬", type:"全才", rarity:"傳奇", force:76, intel:94, charm:100, command:92, talent:"楚漢之爭時期西楚霸王項羽的美人，曾在四面楚歌的困境下一直陪伴在項羽身邊。最終在楚營內自刎，流傳了一段「霸王別姬」的傳說。", skillName:"霸王別姬", skills:["每次發動英雄技後，翩翩起舞擾亂敵軍，使敵方前軍或後軍進入【魅惑】特殊效果，攻擊 -30%。若同一部隊再次被【魅惑】，則解除【魅惑】，並將此部隊 30% 的當前兵力引誘到我方陣中","兵力高於對手時，造成的所有傷害 +25%","每提升 1 級【退避】，前後軍基礎防禦 +5"], awakens:["魅力 +5，我方魅力每比對手高 1，全軍攻擊 +1%（最多 50%）","若我方任意技能被敵方阻止，我方發動【紅顏一笑】禮尚往來，使敵方全軍進入【魅惑】特殊效果"], destiny:[{name:"霸王別姬",hero:"項羽",effect:"遠戰回合免傷 +20%"},{name:"嬌豔欲滴",hero:"貂蟬",effect:"對文官傷害 +25%"},{name:"美人花開",hero:"呂布",effect:"受到男性英雄傷害 -20%"},{name:"心亂神迷",hero:"劉邦",effect:"後軍兵力 +2,000"}] , initSkills:[{name:"金汁", lv:7}, {name:"勾魂", lv:10}, {name:"退避", lv:5}]},
 
 { id:"liubang", name:"神·劉邦", type:"文官", rarity:"傳奇", force:77, intel:95, charm:90, command:95, talent:"漢朝開國皇帝，楚漢戰爭時期，聯合各地反對項羽的力量反敗為勝，擊敗項羽後統一天下。", skillName:"天命真龍", skills:["作為副將，且敵方主將為男性時，可額外發動【急脫鴻門】：我方受到傷害後若兵力低於 25% 立即發動，增援我方全軍 5% 的最大兵力，並驅散全部不良狀態（每場對決限一次）","若我方戰力低於對手，發動【急脫鴻門】時可額外增援我方全軍 10% 的最大兵力"], awakens:["作為副將時，主將前後軍的攻擊，可無視目標 10% 防禦","【急脫鴻門】發動時，我方全軍每存在 1 種不良狀態，【急脫鴻門】的增援效果 +20%"], destiny:[{name:"天命真龍",hero:"劉備",effect:"傷害 +15%"},{name:"南征北討",hero:"關羽",effect:"受到武將傷害 -25%"},{name:"亦敵亦友",hero:"項羽",effect:"對武將傷害 +25%"},{name:"共謀天下",hero:"張良",effect:"攻擊 +10%、防禦 +10%"}] , initSkills:[{name:"冰河", lv:10}, {name:"尋礦", lv:5}, {name:"輪射", lv:7}]},
 
-{ id:"hanxin", name:"神·韓信", type:"全才", rarity:"傳奇", force:83, intel:97, charm:89, command:100, talent:"韓信熟諳兵法，作為戰術家為後世留下了大量的戰術典故，如明修棧道，暗渡陳倉等。被後人奉為「兵仙」、「神帥」。", skillName:"兵仙神帥", skills:["敵方全軍發動任意與武力相關的主動技時，有 50% 機率發動【兵無常勢】，阻止敵方發動此技能（此效果不消耗無懈次數）","每觸發一次【兵無常勢】，我方全軍傷害提高 10%（最多提升 50%）","每提升 3 點非統禦的四維，統禦 +1，且【兵無常勢】的發動機率 +1%"], awakens:["若統御高於對手，敵方發動任意戰計時也可發動【兵無常勢】，禁止敵方發動此戰計","【兵無常勢】累計發動 5 次後，額外發動【水無常形】，消滅敵方全軍 35% 最大兵力"], destiny:[{name:"兵仙神帥",hero:"曹操",effect:"對男性英雄傷害 +15%"},{name:"百戰百勝",hero:"陸遜",effect:"受到全才傷害 -25%"},{name:"大材小用",hero:"項羽",effect:"對騎兵傷害 +30%"},{name:"漢初三傑",hero:"張良",effect:"受到傷害 -15%"}] , initSkills:[{name:"裂甲", lv:7}, {name:"攻心", lv:10}, {name:"擴編", lv:5}]},
+{ id:"hanxin", name:"神·韓信", type:"全才", rarity:"傳奇", force:83, intel:97, charm:89, command:100, talent:"韓信熟諳兵法，作為戰術家為後世留下了大量的戰術典故，如明修棧道，暗渡陳倉等。被後人奉為「兵仙」、「神帥」。", skillName:"兵仙神帥", skills:["敵方全軍發動任意與武力相關的主動技時，有 50% 機率發動【兵無常勢】，阻止敵方發動此技能（此效果不消耗無懈次數）","每觸發一次【兵無常勢】，我方全軍傷害提高 10%（最多提升 50%）","每提升 3 點非統御的四維，統御 +1，且【兵無常勢】的發動機率 +1%"], awakens:["若統御高於對手，敵方發動任意戰計時也可發動【兵無常勢】，禁止敵方發動此戰計","【兵無常勢】累計發動 5 次後，額外發動【水無常形】，消滅敵方全軍 35% 最大兵力"], destiny:[{name:"兵仙神帥",hero:"曹操",effect:"對男性英雄傷害 +15%"},{name:"百戰百勝",hero:"陸遜",effect:"受到全才傷害 -25%"},{name:"大材小用",hero:"項羽",effect:"對騎兵傷害 +30%"},{name:"漢初三傑",hero:"張良",effect:"受到傷害 -15%"}] , initSkills:[{name:"裂甲", lv:7}, {name:"攻心", lv:10}, {name:"擴編", lv:5}]},
 
 { id:"gongsunzan", name:"神·公孫瓚", type:"全才", rarity:"傳奇", force:96, intel:90, charm:88, command:94, talent:"大儒盧植弟子，劉備的師兄。長年虎踞北塞，擁有數千名為白馬義從的精銳騎兵，是三國早期實力最為雄厚的諸侯之一。", skillName:"白馬將軍", skills:["我方所有兵種主動技，都可提前一回合釋放，最早提前到戰鬥開始，且威力 +20%","我方部隊行動前，若自身不存在不良狀態，原本在本回合的兵種主動技也可照常發動","每提升 1 級【焱雨】，前後軍基礎攻防 +6，不良狀態抗性 +1%"], awakens:["戰鬥中，騎兵額外獲得 20 級【衝鋒】技能，弓兵額外獲得 20 級【地刺】技能","戰鬥中，每發動一次兵種主動技，被動提升全軍 4% 攻擊（最多 60%）"], destiny:[{name:"白馬義從",hero:"趙雲",effect:"前後軍的不良狀態抗性 +5%"},{name:"北地爭雄",hero:"袁紹",effect:"對文官傷害 +25%"},{name:"猿臂善射",hero:"呂布",effect:"受到文官傷害 -25%"},{name:"師出同門",hero:"劉備",effect:"前後軍傷害各 +5%、前軍傷害 +5%、後軍傷害 +5%"}] , initSkills:[{name:"合圍", lv:10}, {name:"火箭", lv:5}, {name:"暴烈", lv:7}]},
 
@@ -2703,9 +2838,9 @@
 
 { id:"zhangzhongjing", name:"神·張仲景", type:"文官", rarity:"傳奇", force:80, intel:96, charm:99, command:74, talent:"東漢末年醫學家，他廣泛收集醫方並寫出了傳世巨著《傷寒雜病論》，為中醫的發展做出卓越貢獻，被後人尊稱為「醫聖」。", skillName:"醫聖在世", skills:["可擔當任意英雄的任意兵種副將","作為前軍副將時，前軍全滅前可立即額外發動【醫聖在世】，治療前軍 20% 傷兵","作為前軍副將時，可依照張仲景品質，為主將提供額外加成：紫色以上品質：智力 +1；金色以上品質：魅力 +1；紅色品質：【醫聖在世】可額外治療目標 10% 傷兵"], awakens:["作為前軍副將時，主將傷害 +5%","作為前軍副將時，我方的治療、增援兵力類效果 +20%"], destiny:[{name:"千古醫聖",hero:"華佗",effect:"敵方的治療、增援兵力類效果 -30%"},{name:"普世救人",hero:"南華老仙",effect:"受到武將傷害 -25%"},{name:"樂善好施",hero:"黃承彥",effect:"對武將傷害 +25%"},{name:"著書傳世",hero:"陳壽",effect:"統御 +5、武力 +5"}] , initSkills:[{name:"咒印", lv:7}, {name:"福佑", lv:10}, {name:"急救", lv:5}]},
 
-{ id:"mulvdawang", name:"神·木鹿大王", type:"武將", rarity:"傳奇", force:90, intel:84, charm:76, command:89, talent:"八納洞主，孟獲盟友。擅驅獸法，能行風雨，控制猛獸並指揮它們作戰。", skillName:"南蠻洞主", skills:["奇數回合時，我方騎兵每回合首次受到敵方部隊的近身攻擊後，可回擊【野蠻踩踏】，消滅敵方前軍 10% 的最大兵力","我方騎兵的奇士為【象兵】時，【巨象】不會自損騎兵當前兵力，並無視敵方護盾和豁免全滅效果，且每經過 1 回合，【巨象】的傷害強度 +25%","每有 5 級【凶煞】，武力 +2，統禦 +3，騎兵免傷 +7%"], awakens:["戰鬥中，我方騎兵每回合攻擊累計提升 8%（最多 56%）","若武力高於對手，我方騎兵免疫【混亂】、【內訌】、【潰逃】、【寒顫】狀態"], destiny:[{name:"巨象之主",hero:"孟獲",effect:"騎兵基礎防禦 +200"},{name:"刀法如神",hero:"祝融",effect:"騎兵基礎攻擊 +200"},{name:"呼風喚雨",hero:"諸葛亮",effect:"騎兵傷害 +20%"},{name:"南蠻戰將",hero:"兀突骨",effect:"騎兵受到傷害 -20%"}] , initSkills:[{name:"巨象", lv:10}, {name:"凶煞", lv:7}, {name:"捨身", lv:5}]},
+{ id:"mulvdawang", name:"神·木鹿大王", type:"武將", rarity:"傳奇", force:90, intel:84, charm:76, command:89, talent:"八納洞主，孟獲盟友。擅驅獸法，能行風雨，控制猛獸並指揮它們作戰。", skillName:"南蠻洞主", skills:["奇數回合時，我方騎兵每回合首次受到敵方部隊的近身攻擊後，可回擊【野蠻踩踏】，消滅敵方前軍 10% 的最大兵力","我方騎兵的奇士為【象兵】時，【巨象】不會自損騎兵當前兵力，並無視敵方護盾和豁免全滅效果，且每經過 1 回合，【巨象】的傷害強度 +25%","每有 5 級【凶煞】，武力 +2，統御 +3，騎兵免傷 +7%"], awakens:["戰鬥中，我方騎兵每回合攻擊累計提升 8%（最多 56%）","若武力高於對手，我方騎兵免疫【混亂】、【內訌】、【潰逃】、【寒顫】狀態"], destiny:[{name:"巨象之主",hero:"孟獲",effect:"騎兵基礎防禦 +200"},{name:"刀法如神",hero:"祝融",effect:"騎兵基礎攻擊 +200"},{name:"呼風喚雨",hero:"諸葛亮",effect:"騎兵傷害 +20%"},{name:"南蠻戰將",hero:"兀突骨",effect:"騎兵受到傷害 -20%"}] , initSkills:[{name:"巨象", lv:10}, {name:"凶煞", lv:7}, {name:"捨身", lv:5}]},
 
-{ id:"hejin", name:"神·何進", type:"全才", rarity:"傳奇", force:86, intel:87, charm:91, command:93, talent:"東漢時期大將軍，因猶豫不決，沒能狠心誅除宦官，最後反而被宦官所殺。", skillName:"強權亂政", skills:["我方每次發動相關魅力或統禦的英雄技後，有 50% 的機率追加發動【屠龍斷骨】，指定敵方隨機部隊，按其已損失兵力的 25%，消滅剩餘兵力，並導致【斷骨】特殊效果，本回合無法行動並降低 20% 免傷","若魅力和統禦都高於對手，【屠龍斷骨】可同時攻擊敵方全軍","每解鎖 1 條騎兵技高級效果，統禦 +3，騎兵傷害 +5%","每解鎖 1 條方士技高級效果，魅力 +3，方士免傷 +5%"], awakens:["英雄主動技能位 +1，我方每次發動相關魅力或統禦的英雄技後，追加發動【屠龍斷骨】的機率 +20%","若【霸君】達到 15 級，魅力 +10，統禦 +10"], destiny:[{name:"千軍萬馬",hero:"董卓",effect:"對女性英雄傷害 +20%"},{name:"執掌內外",hero:"何皇后",effect:"受到女性英雄傷害 -20%"},{name:"謀誅宦官",hero:"袁紹",effect:"騎兵受到傷害 -20%"},{name:"漢末紛爭",hero:"漢獻帝",effect:"方士傷害 +20%"}] , initSkills:[{name:"兵法", lv:3}, {name:"騎胄", lv:7}, {name:"霸君", lv:7}]},
+{ id:"hejin", name:"神·何進", type:"全才", rarity:"傳奇", force:86, intel:87, charm:91, command:93, talent:"東漢時期大將軍，因猶豫不決，沒能狠心誅除宦官，最後反而被宦官所殺。", skillName:"強權亂政", skills:["我方每次發動相關魅力或統御的英雄技後，有 50% 的機率追加發動【屠龍斷骨】，指定敵方隨機部隊，按其已損失兵力的 25%，消滅剩餘兵力，並導致【斷骨】特殊效果，本回合無法行動並降低 20% 免傷","若魅力和統御都高於對手，【屠龍斷骨】可同時攻擊敵方全軍","每解鎖 1 條騎兵技高級效果，統御 +3，騎兵傷害 +5%","每解鎖 1 條方士技高級效果，魅力 +3，方士免傷 +5%"], awakens:["英雄主動技能位 +1，我方每次發動相關魅力或統御的英雄技後，追加發動【屠龍斷骨】的機率 +20%","若【霸君】達到 15 級，魅力 +10，統御 +10"], destiny:[{name:"千軍萬馬",hero:"董卓",effect:"對女性英雄傷害 +20%"},{name:"執掌內外",hero:"何皇后",effect:"受到女性英雄傷害 -20%"},{name:"謀誅宦官",hero:"袁紹",effect:"騎兵受到傷害 -20%"},{name:"漢末紛爭",hero:"漢獻帝",effect:"方士傷害 +20%"}] , initSkills:[{name:"兵法", lv:3}, {name:"騎胄", lv:7}, {name:"霸君", lv:7}]},
 
 { id:"liru", name:"神·李儒", type:"文官", rarity:"傳奇", force:69, intel:93, charm:88, command:92, talent:"被稱為十大謀士之一，董卓專政時，奉董卓之命，入宮毒死劉辯。", skillName:"助卓為虐", skills:["開戰回合及遠戰第 2 回合起始時發動【宴安鴆毒】，對敵方全軍造成 180% 傷害，並導致【鴆毒】狀態 2 回合（無視狀態抗性），期間目標獲得的增援、治療類效果均反轉為等量傷害","【障毒】的目標改為敵我全軍，且我方受到【障毒】的陣亡效果時，改為恢復 50% 陣亡量的兵力","每提升 3 點智力，前後軍防禦 +45，兵力 +90，全軍免傷 +0.5%"], awakens:["智力 +5，若智力高於對手，【障毒】可額外使敵我全軍陣亡 3% 的最大兵力","【障毒】提前至戰鬥開始回合發動，且不會觸發敵方的【無懈】"], destiny:[{name:"肝腸寸斷",hero:"何皇后",effect:"前後軍免傷各 +10%、前軍受到傷害 -10%、後軍受到傷害 -10%"},{name:"太師心腹",hero:"董卓",effect:"對武將傷害 +25%"},{name:"說降飛將",hero:"呂布",effect:"受到武將傷害 -25%"},{name:"勘破譎計",hero:"貂蟬",effect:"智力 +3、統御 +3"}] , initSkills:[{name:"剛毅", lv:7}, {name:"地刺", lv:7}, {name:"障毒", lv:7}]},
 
@@ -2713,9 +2848,9 @@
 
 { id:"dengai", name:"神·鄧艾", type:"文官", rarity:"傳奇", force:71, intel:93, charm:95, command:91, talent:"文武全才，深諳兵法。在曹魏西線與姜維常年拉鋸攻伐，最終率先攻入成都，功垂千古。", skillName:"文成武德", skills:["可擔當任意英雄的任意兵種副將","作為副將時，可根據鄧艾品質，為主將提供額外加成：【屯田蓄資】：近戰首回合開始時發動，治療我方剩餘兵力較少的部隊 33% 傷兵，並提升此部隊 15% 傷害和免傷，保持於本次對決且無法被驅散；紫色以上品質：我方治療兵力類效果 +5%；金色以上品質：智力 +2，魅力 +2；紅色品質：兵種技傷害 +12%","鄧艾自身作為主將時，【屯田蓄資】的目標改為我方全軍，並可依照品質，解鎖以上全部 3 倍的加成效果"], awakens:["作為副將時，主將近戰回合前免傷 +15%","作為主將時，可免疫所有遠戰回合英雄技傷害，且首次【四象】可直接消滅目標部隊"], destiny:[{name:"師從名將",hero:"姜維",effect:"對文官傷害 +25%"},{name:"滅蜀之戰",hero:"鐘會",effect:"步兵受到傷害 -25%"},{name:"出其不意",hero:"劉禪",effect:"方士受到傷害 -25%"},{name:"領兵暗度",hero:"劉邦",effect:"受到全才傷害 -25%"}] , initSkills:[{name:"靈敏", lv:5}, {name:"神光", lv:7}, {name:"四象", lv:10}]},
 
-{ id:"zhonghui", name:"神·鐘會", type:"全才", rarity:"傳奇", force:79, intel:95, charm:90, command:87, talent:"軍事、書法大家，亦被司馬師評為真王佐之材。與鄧艾協同滅蜀後，又與姜維密謀搞掉了鄧艾。", skillName:"權計傲世", skills:["敵方每次發動英雄技後，我方發動英雄技時，可無視敵方防禦，且不會被敵方所阻止","每提升 5 級【遁甲】，四維各 +1，英雄技傷害 +15%，前後軍攻擊 +240"], awakens:["【精練策數】的發動機率提升至 50%，且每次發動【精練策數】後可增援我方兵力較少部隊 5% 的最大兵力","若四維總數高於對手，戰鬥中我方發起的武力、智力、魅力、統禦比拼均算勝出"], destiny:[{name:"興兵伐蜀",hero:"鄧艾",effect:"英雄技能傷害 +20%"},{name:"博學多聞",hero:"曹操",effect:"對文官傷害 +25%"},{name:"成都之圍",hero:"劉禪",effect:"受到武將傷害 -25%"},{name:"擁兵自重",hero:"姜維",effect:"【遁甲】威力 +15%"}] , initSkills:[{name:"冰河", lv:7}, {name:"博聞", lv:7}, {name:"遁甲", lv:7}]},
+{ id:"zhonghui", name:"神·鐘會", type:"全才", rarity:"傳奇", force:79, intel:95, charm:90, command:87, talent:"軍事、書法大家，亦被司馬師評為真王佐之材。與鄧艾協同滅蜀後，又與姜維密謀搞掉了鄧艾。", skillName:"權計傲世", skills:["敵方每次發動英雄技後，我方發動英雄技時，可無視敵方防禦，且不會被敵方所阻止","每提升 5 級【遁甲】，四維各 +1，英雄技傷害 +15%，前後軍攻擊 +240"], awakens:["【精練策數】的發動機率提升至 50%，且每次發動【精練策數】後可增援我方兵力較少部隊 5% 的最大兵力","若四維總數高於對手，戰鬥中我方發起的武力、智力、魅力、統御比拼均算勝出"], destiny:[{name:"興兵伐蜀",hero:"鄧艾",effect:"英雄技能傷害 +20%"},{name:"博學多聞",hero:"曹操",effect:"對文官傷害 +25%"},{name:"成都之圍",hero:"劉禪",effect:"受到武將傷害 -25%"},{name:"擁兵自重",hero:"姜維",effect:"【遁甲】威力 +15%"}] , initSkills:[{name:"冰河", lv:7}, {name:"博聞", lv:7}, {name:"遁甲", lv:7}]},
 
-{ id:"tianfeng", name:"神·田豐", type:"文官", rarity:"傳奇", force:76, intel:93, charm:90, command:85, talent:"東漢末年袁紹部下謀臣，為人剛直，曾多次向袁紹進言而不被採納。官渡之戰後，田豐被袁紹殺害。", skillName:"天姿朅杰", skills:["可擔當任意英雄的任意兵種副將","作為後軍副將時，副將主動技鎖定為【進諫忠言】：我方後軍兵力低於一半時發動，向主將進諫良策，隨後主將有 60% 機率回應【納諫】，立即驅散後軍 2 個不良狀態，並獲得【明君】護盾，護盾將承擔全部傷害直至破碎","作為副將時，可依照田豐品質，為主將提供額外加成：紫色以上品質：智力 +2；金色以上品質：對武將傷害 +10%；紅色品質：我方後軍的【明君】護盾存在期間，速度 +30，攻擊 +20%"], awakens:["作為後軍副將時，若我方主將為文官或全才，則必定回應【納諫】，且【明君】額外增加固定護盾量，值為戰鬥開始時我方後軍兵力的 30%","作為後軍副將時，主將智力 +1，統禦 +3，文官類英雄技傷害強度 +10%"], destiny:[{name:"自刎獄中",hero:"袁紹",effect:"前後軍免傷各 +20%、前軍最終免傷 +20%、後軍最終免傷 +20%"},{name:"平定河北",hero:"公孫瓚",effect:"對武將傷害 +25%"},{name:"獻計攻曹",hero:"曹操",effect:"受到武將傷害 -25%"},{name:"天縱奇才",hero:"劉備",effect:"智力 +5"}] , initSkills:[{name:"豪傑", lv:3}, {name:"切割", lv:7}, {name:"騎胄", lv:7}]},
+{ id:"tianfeng", name:"神·田豐", type:"文官", rarity:"傳奇", force:76, intel:93, charm:90, command:85, talent:"東漢末年袁紹部下謀臣，為人剛直，曾多次向袁紹進言而不被採納。官渡之戰後，田豐被袁紹殺害。", skillName:"天姿朅杰", skills:["可擔當任意英雄的任意兵種副將","作為後軍副將時，副將主動技鎖定為【進諫忠言】：我方後軍兵力低於一半時發動，向主將進諫良策，隨後主將有 60% 機率回應【納諫】，立即驅散後軍 2 個不良狀態，並獲得【明君】護盾，護盾將承擔全部傷害直至破碎","作為副將時，可依照田豐品質，為主將提供額外加成：紫色以上品質：智力 +2；金色以上品質：對武將傷害 +10%；紅色品質：我方後軍的【明君】護盾存在期間，速度 +30，攻擊 +20%"], awakens:["作為後軍副將時，若我方主將為文官或全才，則必定回應【納諫】，且【明君】額外增加固定護盾量，值為戰鬥開始時我方後軍兵力的 30%","作為後軍副將時，主將智力 +1，統御 +3，文官類英雄技傷害強度 +10%"], destiny:[{name:"自刎獄中",hero:"袁紹",effect:"前後軍免傷各 +20%、前軍最終免傷 +20%、後軍最終免傷 +20%"},{name:"平定河北",hero:"公孫瓚",effect:"對武將傷害 +25%"},{name:"獻計攻曹",hero:"曹操",effect:"受到武將傷害 -25%"},{name:"天縱奇才",hero:"劉備",effect:"智力 +5"}] , initSkills:[{name:"豪傑", lv:3}, {name:"切割", lv:7}, {name:"騎胄", lv:7}]},
 
 { id:"xishi", name:"神·西施", type:"文官", rarity:"傳奇", force:74, intel:95, charm:100, command:90, talent:"春秋末期美女，與王昭君、貂蟬、楊玉環並稱為中國古代「四大美女」，其中西施居首。", skillName:"美艷之首", skills:["作為男性英雄的副將時，可額外發動【沉魚之貌】：主將每次發動英雄技後，西施都有 10% 的機率跟隨發動【沉魚之貌】，極大激發主將鬥志，使其額外連發 1 次本英雄技（單場對決限 3 次）","作為副將時，可依照西施品質，為主將提供額外加成：紫色以上品質：對男性英雄傷害 +8%；金色以上品質：魅力 +2，遠戰第二回合，【沉魚之貌】的發動機率額外 +30%；紅色品質：魅力 +2，智力 +2，近戰首回合，【沉魚之貌】的發動機率額外 +60%"], awakens:["作為男性副將時，每次發動【沉魚之貌】後，使敵方全軍獲得【沉淪】的特殊效果 1 回合，期間防禦 -40%","作為男性副將時，主將所有英雄技傷害 +15%"], destiny:[{name:"沉魚之容",hero:"王昭君",effect:"受到男性英雄傷害 -25%"},{name:"絕代佳人",hero:"大喬",effect:"對男性英雄傷害 +25%"},{name:"西施捧心",hero:"小喬",effect:"受到英雄技能傷害 -25%"},{name:"冰肌玉骨",hero:"貂蟬",effect:"受到兵種技能傷害 -25%"}] , initSkills:[{name:"忘憂", lv:7}, {name:"捨身", lv:7}, {name:"仙音", lv:7}]},
 
@@ -2768,7 +2903,7 @@ const heroTroopType = {
   weiyan:          { front: "步兵", back: "弓兵" }, // 魏延
   fafa:            { front: "步兵", back: "方士" }, // 法正
   xushu:           { front: "步兵", back: "弓兵" }, // 徐庶
-  xiahoudun2:      { front: "騎兵", back: "弓兵" }, // 夏侯淵
+  xiahouyuan:      { front: "騎兵", back: "弓兵" }, // 夏侯淵
   zhanghe:         { front: "騎兵", back: "弓兵" }, // 張郃
   dianwei:         { front: "步兵", back: "方士" }, // 典韋
   zhoutai:         { front: "步兵", back: "弓兵" }, // 周泰
@@ -5934,13 +6069,9 @@ function renderLoadoutGroupTabs() {
   if (!wrap) return;
   const member = loadoutTeam[loadoutState.activeMember];
   wrap.innerHTML = loadoutSlotGroups.map(g => {
-    const hasGear = g.rows.some((row, ri) =>
-      row.some((cat, si) => {
-        if (!cat) return false;
-        const key = loadoutGroupSlotKey(g.key, ri, si);
-        return !!member.gear[key] || !!(member.deputy && member.deputy[key]);
-      })
-    );
+    const prefix = `slot-${g.key}-`;
+    const hasGear = Object.keys(member.gear).some(key => key.startsWith(prefix))
+      || !!(member.deputy && Object.keys(member.deputy).some(key => key.startsWith(prefix)));
     return `<button type="button" class="loadout-group-tab ${g.key === loadoutState.activeGroup ? "active" : ""} ${hasGear ? "has-gear" : ""}"
       onclick="switchLoadoutGroup('${g.key}')">${escapeHtml(g.label)}</button>`;
   }).join("");
@@ -6096,13 +6227,15 @@ const LOADOUT_EMPTY_PLACEHOLDER_RE = /^[（(]?\s*無\s*[）)]?$/;
 function isLoadoutRealTalentList(list) {
   return Array.isArray(list) && list.some(t => t && !LOADOUT_EMPTY_PLACEHOLDER_RE.test(String(t).trim()));
 }
+// 所有英雄的輪迴資料欄位統一叫 reincarn，這裡保留一個小函式方便日後統一存取
+function getHeroReincarnList(hero) {
+  return (hero && Array.isArray(hero.reincarn)) ? hero.reincarn : [];
+}
 function heroHasAwakenData(hero) {
   return isLoadoutRealTalentList(hero?.awakens);
 }
 function heroHasReincarnData(hero) {
-  if (!hero) return false;
-  const list = Array.isArray(hero.reincarn) ? hero.reincarn : (Array.isArray(hero.reincarnation) ? hero.reincarnation : []);
-  return isLoadoutRealTalentList(list);
+  return isLoadoutRealTalentList(getHeroReincarnList(hero));
 }
 // 依目前英雄是否有覺醒/輪迴資料，同步「已覺醒」「已輪迴」勾選框的可用狀態；沒有資料時強制取消勾選並鎖住
 function updateLoadoutAwakenReincarnControls(member, hero) {
@@ -6163,6 +6296,7 @@ function onLoadoutHeroChange() {
   const member = loadoutTeam[loadoutState.activeMember];
   member.hero = document.getElementById("loadoutHeroSelect").value;
   member.chosen = true;
+  member.freeAlloc = { force: 0, intel: 0, charm: 0, command: 0 };
   const hero = heroes.find(h => h.id === member.hero);
   applyHeroInitSkills(member, hero);
   updateLoadoutAwakenReincarnControls(member, hero);
@@ -6186,11 +6320,56 @@ function onLoadoutAwakenChange() {
 function onLoadoutReincarnChange() {
   const member = loadoutTeam[loadoutState.activeMember];
   member.reincarnated = document.getElementById("loadoutReincarn").checked;
+  renderLoadoutSlots();
   renderLoadoutSummary();
 }
 const heroGradeOrder = ["藍", "紫", "金", "紅"];
 function heroGradeMeets(current, threshold) {
   return heroGradeOrder.indexOf(current) >= heroGradeOrder.indexOf(threshold);
+}
+// 英雄技能格的解鎖門檻（前 5 格，依品質開放）：第1格基礎開放；第2格需英雄品質達紫；第3格達金；第4、5格達紅
+const HERO_SKILL_SLOT_REQUIREMENTS = [null, "紫", "金", "紅", "紅"];
+// 少數英雄的門檻不同於預設值，在這裡覆寫（沒列出的英雄一律用上面的預設）
+// 諸葛亮比較特別：藍色品質時就已經開放第2格了（等於藍、紫兩個品質都對應2格），所以第2格不用等紫色
+const HERO_SKILL_SLOT_REQUIREMENTS_OVERRIDE = {
+  zhugeliang: [null, null, "金", "紅", "紅"]
+};
+// 第 6 格（含）以後的額外技能格，來自覺醒／輪迴天賦文字中「英雄主動技能位 +N」的加成，
+// 兩者各自獨立疊加（例如班育雙姝覺醒 +1、輪迴又 +1，全開會有 7 格）。
+// 沒有輪迴資料的英雄（如何進）就沒有「輪迴」這個來源，只能靠覺醒拿到額外格。
+const HERO_SKILL_SLOT_BONUS_RE = /英雄主動技能位\s*[+＋]\s*(\d+)/g;
+function countHeroSkillSlotBonus(list) {
+  if (!isLoadoutRealTalentList(list)) return 0;
+  let total = 0;
+  for (const t of list) {
+    const s = String(t || "");
+    let m;
+    HERO_SKILL_SLOT_BONUS_RE.lastIndex = 0;
+    while ((m = HERO_SKILL_SLOT_BONUS_RE.exec(s))) total += Number(m[1]) || 0;
+  }
+  return total;
+}
+// 回傳此英雄「全部解鎖」時的技能格總數（前 5 格 + 輪迴加成上限 + 覺醒加成上限），用來畫出完整格數（含鎖住的）
+function getHeroSkillSlotTotal(hero) {
+  const reincarnBonus = countHeroSkillSlotBonus(getHeroReincarnList(hero));
+  const awakenBonus = countHeroSkillSlotBonus(hero?.awakens);
+  return HERO_SKILL_SLOT_REQUIREMENTS.length + reincarnBonus + awakenBonus;
+}
+function getHeroSkillSlotLockInfo(member, hero, slotIndex) {
+  const reqs = HERO_SKILL_SLOT_REQUIREMENTS_OVERRIDE[member.hero] || HERO_SKILL_SLOT_REQUIREMENTS;
+  if (slotIndex < reqs.length) {
+    const req = reqs[slotIndex];
+    if (!req) return { locked: false };
+    const grade = member.heroGrade || "藍";
+    return { locked: !heroGradeMeets(grade, req), label: `${req}色品質解鎖` };
+  }
+  // 第 6 格起：先分配給輪迴加成的格子，再分配給覺醒加成的格子
+  const reincarnBonus = countHeroSkillSlotBonus(getHeroReincarnList(hero));
+  const offsetInBonus = slotIndex - reqs.length;
+  if (offsetInBonus < reincarnBonus) {
+    return { locked: !member.reincarnated, label: "輪迴解鎖" };
+  }
+  return { locked: !member.awakened, label: "覺醒解鎖" };
 }
 function onLoadoutHeroLevelChange() {
   const member = loadoutTeam[loadoutState.activeMember];
@@ -6201,6 +6380,7 @@ function onLoadoutHeroLevelChange() {
 function onLoadoutHeroGradeChange() {
   const member = loadoutTeam[loadoutState.activeMember];
   member.heroGrade = document.getElementById("loadoutHeroGrade").value;
+  renderLoadoutSlots();
   renderLoadoutSummary();
 }
 // ---- 重複裝備檢查（跨全部 9 隻，也排除同格自己） ----
@@ -6290,14 +6470,33 @@ function renderLoadoutSlots() {
   if (!member.deputy) member.deputy = {};
 
   const group = loadoutSlotGroups.find(g => g.key === loadoutState.activeGroup) || loadoutSlotGroups[0];
+  const activeHero = heroes.find(h => h.id === member.hero);
+  // 英雄技能格數會依英雄的覺醒／輪迴天賦（英雄主動技能位 +N）動態變化，不是固定 6 格
+  const rows = group.key === "heroSkill"
+    ? [Array(getHeroSkillSlotTotal(activeHero)).fill(L.heroSkill)]
+    : group.rows;
 
-  board.innerHTML = group.rows.map((row, rowIndex) => `
+  board.innerHTML = rows.map((row, rowIndex) => `
     <div class="loadout-slot-row loadout-slot-row-${group.key}">
       ${row.map((cat, slotIndex) => {
 if (!cat) {
     return `<div class="loadout-slot-wrap"></div>`; // 純佔位，不畫格子
   }
         const slotKey = loadoutGroupSlotKey(group.key, rowIndex, slotIndex);
+
+        // ---- 英雄技能格：依英雄品質／是否覺醒／是否輪迴，鎖定尚未解鎖的格子 ----
+        if (group.key === "heroSkill") {
+          const lockInfo = getHeroSkillSlotLockInfo(member, activeHero, slotIndex);
+          if (lockInfo.locked) {
+            return `<div class="loadout-slot-wrap">
+              <div class="loadout-slot-label">${escapeHtml(cat)}</div>
+              <button type="button" class="loadout-slot locked-req" onclick="alert('需${escapeHtml(lockInfo.label)}才能開啟這個技能格')" aria-label="尚未解鎖：需${escapeHtml(lockInfo.label)}">
+                <div class="loadout-slot-lock-icon">&#128274;</div>
+                <div class="loadout-slot-lock-text">${escapeHtml(lockInfo.label)}</div>
+              </button>
+            </div>`;
+          }
+        }
 
         // ---- 前軍副將 / 後軍副將 ----
         if (cat === L.frontDeputy || cat === L.backDeputy) {
@@ -7027,7 +7226,7 @@ function parseDerivedStatRules(text) {
     const targetStat = STAT_KEY_BY_NAME[m[3]];
     const amount = Number(m[4]);
     if (sourceStat && targetStat && sourceStat !== targetStat && perPoint > 0) {
-      rules.push({ sourceStat, targetStat, perPoint, amount });
+      rules.push({ full: m[0], sourceStat, targetStat, perPoint, amount });
     }
   }
   return rules;
@@ -7039,7 +7238,7 @@ function parseTroopStatRules(text) {
   const rules = [];
   if (!text) return rules;
   const re = new RegExp(
-    `每(?:提升|增加)\\s*(\\d+)?\\s*點(${STAT_NAMES.join("|")})[，,、\\s]*(前軍|後軍|步兵|騎兵|弓兵|方士)(基礎)?(攻防|攻擊|防禦|兵力)\\s*\\+(\\d+)`,
+    `每(?:提升|增加)\\s*(\\d+)?\\s*點(${STAT_NAMES.join("|")})[，,、\\s]*(前軍|後軍|前後軍|步兵|騎兵|弓兵|方士)(基礎)?(攻防|攻擊|防禦|兵力)\\s*\\+(\\d+)`,
     "g"
   );
   let m;
@@ -7051,6 +7250,21 @@ function parseTroopStatRules(text) {
       isBase: !!m[4],
       statType: m[5],
       amount: Number(m[6])
+    });
+  }
+  // 替代句型：「每點X為(兵種)額外提供N點兵力/攻擊/防禦」（例：寶物「每點統御為前後軍額外提供4點兵力」）
+  const re2 = new RegExp(
+    `每點(${STAT_NAMES.join("|")})為(前軍|後軍|前後軍|步兵|騎兵|弓兵|方士)(基礎)?額外提供\\s*(\\d+)\\s*點(攻防|攻擊|防禦|兵力)`,
+    "g"
+  );
+  while ((m = re2.exec(text))) {
+    rules.push({
+      perPoint: 1,
+      sourceStat: STAT_KEY_BY_NAME[m[1]],
+      troop: m[2],
+      isBase: !!m[3],
+      statType: m[5],
+      amount: Number(m[4])
     });
   }
   return rules;
@@ -7122,7 +7336,7 @@ function parseSkillLevelStatRules(text) {
       const cm = text.slice(cursor).match(statClauseRe);
       if (!cm) break;
       rules.push({
-        full: tm[0] + cm[0],
+        full: cm[0],
         perLevel,
         skillName,
         target: cm[1] === "四維各" ? "all" : STAT_KEY_BY_NAME[cm[1]],
@@ -7218,7 +7432,7 @@ function parseSkillCountThresholdStatRules(text) {
       const cm = text.slice(cursor).match(statClauseRe);
       if (!cm) break;
       rules.push({
-        full: tm[0] + cm[0],
+        full: cm[0],
         perCount,
         levelThreshold,
         cat,
@@ -7272,7 +7486,94 @@ function renderLearnedSkillCountBar(member) {
     const count = countEquippedSkillsForStat(member, s.char);
     return `<span class="loadout-skill-count-item"><span class="loadout-skill-count-name">${s.label}</span><strong>${count}</strong></span>`;
   }).join("");
-  return `<div class="loadout-skill-count-bar"><span class="loadout-skill-count-label">已學習相關技能</span>${items}</div>`;
+  const hero = heroes.find(h => h.id === member.hero);
+  const freeTotal = member.reincarnated ? getFreeStatPoints(hero) : 0;
+  const allocBtn = freeTotal > 0
+    ? `<div class="loadout-free-alloc-row"><span class="loadout-free-alloc-label">自由分配四維</span><button type="button" class="loadout-free-alloc-btn" title="輪迴：自由分配四維" onclick="openFreeAllocModal()">＋</button></div>`
+    : "";
+  return `<div class="loadout-skill-count-bar"><span class="loadout-skill-count-label">已學習相關技能</span>${items}</div>${allocBtn}`;
+}
+// 輪迴「英雄可自由分配四維」總點數：掃描 reincarn 文字裡的「英雄可自由分配四維 +N」，全部加總
+function getFreeStatPoints(hero) {
+  if (!hero) return 0;
+  const list = getHeroReincarnList(hero);
+  let total = 0;
+  list.forEach(t => {
+    if (typeof t !== "string") return;
+    const re = /英雄可自由分配四維\s*\+(\d+)/g;
+    let m;
+    while ((m = re.exec(t))) total += Number(m[1]);
+  });
+  return total;
+}
+// 取得（並視需要初始化/校正）該成員目前的自由分配結果
+function getMemberFreeAlloc(member, freeTotal) {
+  if (!member.freeAlloc) member.freeAlloc = { force: 0, intel: 0, charm: 0, command: 0 };
+  const alloc = member.freeAlloc;
+  const used = (alloc.force || 0) + (alloc.intel || 0) + (alloc.charm || 0) + (alloc.command || 0);
+  if (used > freeTotal) { alloc.force = 0; alloc.intel = 0; alloc.charm = 0; alloc.command = 0; } // 點數上限變小時（例如換英雄），直接重置避免溢出
+  return alloc;
+}
+function openFreeAllocModal() {
+  const member = loadoutTeam[loadoutState.activeMember];
+  const hero = heroes.find(h => h.id === member.hero);
+  if (!hero || !member.reincarnated) return;
+  if (getFreeStatPoints(hero) <= 0) return;
+  document.getElementById("freeAllocOverlay")?.classList.add("show");
+  renderFreeAllocModalBody();
+}
+function closeFreeAllocModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById("freeAllocOverlay")?.classList.remove("show");
+}
+function adjustFreeAlloc(stat, delta) {
+  const member = loadoutTeam[loadoutState.activeMember];
+  const hero = heroes.find(h => h.id === member.hero);
+  const freeTotal = getFreeStatPoints(hero);
+  const alloc = getMemberFreeAlloc(member, freeTotal);
+  const used = (alloc.force || 0) + (alloc.intel || 0) + (alloc.charm || 0) + (alloc.command || 0);
+  if (delta > 0) {
+    if (used >= freeTotal) return;
+    alloc[stat] = (alloc[stat] || 0) + 1;
+  } else {
+    if ((alloc[stat] || 0) <= 0) return;
+    alloc[stat] = alloc[stat] - 1;
+  }
+  renderFreeAllocModalBody();
+  renderLoadoutSummary();
+}
+function renderFreeAllocModalBody() {
+  const body = document.getElementById("freeAllocBody");
+  if (!body) return;
+  const member = loadoutTeam[loadoutState.activeMember];
+  const hero = heroes.find(h => h.id === member.hero);
+  const freeTotal = getFreeStatPoints(hero);
+  const alloc = getMemberFreeAlloc(member, freeTotal);
+  const used = (alloc.force || 0) + (alloc.intel || 0) + (alloc.charm || 0) + (alloc.command || 0);
+  const remaining = freeTotal - used;
+  const { totals } = computeStatBonus(member, hero);
+  const stats = [
+    { key: "force", label: "武力" },
+    { key: "intel", label: "智力" },
+    { key: "charm", label: "魅力" },
+    { key: "command", label: "統御" }
+  ];
+  body.innerHTML = `
+    <div style="font-size:13px;color:var(--text-dim);margin:14px 0 12px;">剩餘可分配點數：<strong style="color:var(--gold-bright);font-size:16px;">${remaining}</strong> / ${freeTotal}</div>
+    ${stats.map(s => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <span>${s.label}</span>
+          <span style="font-size:12px;color:var(--text-dim);">目前四維：<strong style="color:var(--gold-bright);">${totals[s.key] || 0}</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button type="button" class="loadout-btn" style="width:30px;height:30px;padding:0;" onclick="adjustFreeAlloc('${s.key}',-1)">－</button>
+          <span style="min-width:22px;text-align:center;font-weight:800;">${alloc[s.key] || 0}</span>
+          <button type="button" class="loadout-btn" style="width:30px;height:30px;padding:0;" onclick="adjustFreeAlloc('${s.key}',1)">＋</button>
+        </div>
+      </div>
+    `).join("")}
+  `;
 }
 // 統一計算四維增量：裝備加成 + 天賦覺醒輪迴連動加成，回傳 bonus（純增量，不含基礎值）
 function computeStatBonus(member, hero) {
@@ -7301,7 +7602,7 @@ function computeStatBonus(member, hero) {
   const awaken = !!member.awakened;
   const reincarn = !!member.reincarnated;
   const awakenList = Array.isArray(hero.awakens) ? hero.awakens : [];
-  const reincarnList = Array.isArray(hero.reincarn) ? hero.reincarn : (Array.isArray(hero.reincarnation) ? hero.reincarnation : []);
+  const reincarnList = getHeroReincarnList(hero);
 
   const derivedTexts = [
     ...(hero.talent ? [hero.talent] : []),
@@ -7332,7 +7633,79 @@ function computeStatBonus(member, hero) {
     if (times > 0) applyStatRuleAmount(totals, bonus, rule.target, times * rule.amount);
   });
 
-  return { totals, bonus, derivedBonus };
+  // 「若【技能】達到N級」「英雄等級/品質達到...」這類條件文字，先依目前配裝狀態篩選過，
+  // 只留下條件成立的片段，避免未達成條件的效果也被誤算（例：諸葛亮覺醒「若【口才】達到20級，智力+1...」）
+  const resolvedDerivedTexts = resolveConditionalTexts(derivedTexts, hero, member);
+
+  // 天賦/技能/覺醒/輪迴文字中，單純「四維+N」的固定加成（不像上面幾種是比例或技能等級連動）
+  // 原本完全沒有被計算，這裡補上；但要先把上面幾種規則解析器已經處理過的片段從文字中移除，
+  // 避免同一句「統御 +N」被重複計算（例如韓信「每提升3點非統御的四維，統御 +1」的「統御 +1」
+  // 已經是比例連動加成的一部分，不能再被當成固定加成疊加一次）
+  resolvedDerivedTexts.forEach(text => {
+    let flatText = text;
+    parseDerivedStatRules(flatText).forEach(rule => { flatText = flatText.replace(rule.full, ""); });
+    parseSkillLevelStatRules(flatText).forEach(rule => { flatText = flatText.replace(rule.full, ""); });
+    parseSkillCountThresholdStatRules(flatText).forEach(rule => { flatText = flatText.replace(rule.full, ""); });
+    parseSkillCountStatRules(flatText).forEach(rule => { flatText = flatText.replace(rule.full, ""); });
+    // 保護措施：文字裡若還殘留「每...，(四維)+N」這種帶觸發詞、代表應按次數/等級縮放的片段，
+    // 但目前沒有對應的專用解析器支援，寧可先不計算（維持原本行為），也不要誤當成無條件固定加成而虛增數值
+    flatText = flatText.replace(/每[^，,、；;]*[，,、][^，,、；;]*?(武力|智力|魅力|統御)(?:額外)?\s*\+\s*\d+/g, "");
+    // 保護措施二：「每提升/增加/學習N點(四維)」本身是比例觸發詞（意思是「每當該四維多N點」），
+    // 不是「裝備／效果直接送出N點該四維」，必須整段移除，否則會被 parseStatBonus 內建的
+    // 「提升英雄N點X」反向比對規則誤判（例：「每提升1點智力，所有傷害+1%」原意是效果隨智力連動，
+    // 不是真的送出1點智力，這條保護只套用在天賦/技能/覺醒/輪迴文字，裝備文字的原有行為不受影響）
+    flatText = flatText.replace(/每(?:提升|增加|學習)\s*\d*\s*點(?:武力|智力|魅力|統御)/g, "");
+    const parsed = parseStatBonus(flatText);
+    Object.keys(totals).forEach(key => { totals[key] += parsed[key] || 0; bonus[key] += parsed[key] || 0; });
+  });
+
+  // 輪迴「英雄可自由分配四維」：把玩家自己分配好的點數加進總計（需已輪迴才生效）
+  if (reincarn) {
+    const freeTotal = getFreeStatPoints(hero);
+    if (freeTotal > 0) {
+      const alloc = getMemberFreeAlloc(member, freeTotal);
+      Object.keys(totals).forEach(key => {
+        const amt = alloc[key] || 0;
+        totals[key] += amt;
+        bonus[key] += amt;
+      });
+    }
+  }
+
+  // 宿命：只有第一條需要指定英雄同時上陣（正將或自己的副將都算）才會生效；
+  // 後面三條是被動的，不需要同時上陣，只要英雄擁有這條宿命資料就一直生效。
+  // hero 欄位為「合擊技」的第一條代表條件是兵種/性別等分類（例如「與任意文官同時上陣」），
+  // 判斷條件較複雜，先不計入數值，只在畫面上顯示文字。
+  const destinyBonus = { force: 0, intel: 0, charm: 0, command: 0 };
+  const destinyList = Array.isArray(hero.destiny) ? hero.destiny : [];
+  const destinyStates = destinyList.map((entry, idx) => {
+    const active = idx === 0 ? isLoadoutDestinyPartnerPresent(entry, member, hero) : true;
+    if (active) {
+      const parsed = parseStatBonus(entry.effect || "");
+      Object.keys(totals).forEach(key => {
+        totals[key] += parsed[key] || 0;
+        bonus[key] += parsed[key] || 0;
+        destinyBonus[key] += parsed[key] || 0;
+      });
+    }
+    return { entry, active };
+  });
+
+  return { totals, bonus, derivedBonus, destinyBonus, destinyStates };
+}
+// 判斷宿命的搭檔條件是否成立：destinyEntry.hero 是特定英雄名字時，
+// 檢查隊上其他成員的正將，或「自己」的副將，是不是這位英雄（別的成員的副將不算）
+// （「合擊技」代表分類條件，如「與任意文官同時上陣」，暫不判斷，回傳 false）
+function isLoadoutDestinyPartnerPresent(destinyEntry, member, hero) {
+  if (!destinyEntry || !destinyEntry.hero || destinyEntry.hero === "合擊技") return false;
+  const isTargetHero = (heroId) => {
+    if (!heroId) return false;
+    const h = heroes.find(x => x.id === heroId);
+    return !!h && stripShenPrefix(h.name) === destinyEntry.hero;
+  };
+  const otherMainHeroMatch = loadoutTeam.some(other => other !== member && other.chosen && isTargetHero(other.hero));
+  const ownDeputyMatch = !!(member.deputy && Object.values(member.deputy).some(isTargetHero));
+  return otherMainHeroMatch || ownDeputyMatch;
 }
 // ---- 面板：目前選中英雄的統計 ----
 let loadoutSummaryTab = "effects";
@@ -7406,6 +7779,12 @@ function heroCarriesTroop(hero, troop) {
   return t.front === troop || t.back === troop;
 }
 
+// 寶物「品項 + 品階」對應的限定兵種加成表
+// 用途：有些寶物效果文字本身沒有寫出兵種條件（例如「步兵速度 +10」），
+// 但實際上只對帶該兵種的英雄有意義。為了不動到寶物資料庫顯示的原始文字，
+// 這裡另外用一份對照表，只在「配裝模擬」計算/顯示時套用兵種限定判斷
+// （不符合條件時比照其他條件式加成，顯示刪除線、且不列入數值計算）。
+// 格式：{ 寶物id: { 品階: 需求兵種 } }
 // 掃描目前英雄所有已裝備寶物效果文字，解析成分類數值
 // 各類條件式加成的判斷規則
 const CLASS_CONDITIONS = [
@@ -7421,6 +7800,14 @@ const CLASS_CONDITIONS = [
   { key: "女性英雄", match: hero => isFemaleHero(hero) },
   { key: "男性英雄", match: hero => !isFemaleHero(hero) }
 ];
+
+// 兵種限定加成：只要一句效果文字（或其中一個子句）是以「兵種名稱＋屬性關鍵字」開頭
+// （例如「步兵速度+10」「騎兵基礎攻擊+40」），就自動視為「只對攜帶該兵種的英雄生效」，
+// 不需要在資料裡額外手動標記條件文字——任何寶物/技能/覺醒/輪迴只要這樣寫，都會自動同步判斷。
+const TROOP_STAT_KEYWORDS = "(?:基礎)?(?:速度|攻擊|防禦|兵力|格擋率|暴擊率|免傷|傷害|命中率|閃避率)";
+function buildTroopStatRe() {
+  return new RegExp(`(步兵|騎兵|弓兵|方士)(?=${TROOP_STAT_KEYWORDS})`, "g");
+}
 
 // 建立比對 CLASS_CONDITIONS 用的正規式。
 // 「男性英雄」「女性英雄」這兩個 key 必須排除「對戰男性英雄時／對戰女性英雄時」這種句型——
@@ -7465,6 +7852,8 @@ function splitTextByConditions(text, hero, member) {
   const matches = [];
   let m;
   while ((m = classRe.exec(text))) matches.push({ index: m.index, kind: "class", key: m[1] });
+  const troopRe = buildTroopStatRe();
+  while ((m = troopRe.exec(text))) matches.push({ index: m.index, kind: "troop", troop: m[1] });
   findNamedConditionSpans(text).forEach(span => {
     matches.push({ index: span.index, kind: "named" });
   });
@@ -7477,6 +7866,10 @@ function splitTextByConditions(text, hero, member) {
 
   const setPiecePrefixRe = /同時裝備\s*(\d+)\s*件([^\s，,、（）()]+?)套(?:裝)?[，,、]?/g;
   while ((m = setPiecePrefixRe.exec(text))) matches.push({ index: m.index, kind: "setpiece", length: m[0].length, count: Number(m[1]), setName: m[2] + "套裝" });
+
+  // 「若【技能】達到N級」：依目前已裝備該技能的等級判斷條件是否成立（例：「若【衝鋒】達到12級，武力+1，前軍基礎攻擊+15」）
+  const skillLevelRe = /若【([^】]+)】達到\s*(\d+)\s*級[，,、]?/g;
+  while ((m = skillLevelRe.exec(text))) matches.push({ index: m.index, kind: "skilllevel", length: m[0].length, skillName: m[1], value: Number(m[2]) });
 
   if (!matches.length) return [text];
   matches.sort((a, b) => a.index - b.index);
@@ -7495,6 +7888,9 @@ function splitTextByConditions(text, hero, member) {
       const cond = CLASS_CONDITIONS.find(c => clauseText.startsWith(c.key));
       met = cond ? cond.match(hero) : true;
       prefixLen = cond ? cond.key.length : 0;
+    } else if (match.kind === "troop") {
+      met = heroCarriesTroop(hero, match.troop);
+      prefixLen = 0;
     } else if (match.kind === "named") {
       const heroPlainName = hero ? stripShenPrefix(hero.name) : "";
       const m1 = clauseText.match(/^([\u4e00-\u9fa5]{2,6})裝備時[，,、]?/);
@@ -7509,6 +7905,9 @@ function splitTextByConditions(text, hero, member) {
       prefixLen = match.length;
     } else if (match.kind === "setpiece") {
       met = countEquippedSetPieces(member, match.setName, null) >= match.count;
+      prefixLen = match.length;
+    } else if (match.kind === "skilllevel") {
+      met = getEquippedSkillLevel(member, match.skillName) >= match.value;
       prefixLen = match.length;
     } else { // grade
       met = heroGradeMeets(member?.heroGrade || "藍", match.value);
@@ -7555,6 +7954,8 @@ function renderConditionalEffectHtml(text, hero, member) {
   const matches = [];
   let m;
   while ((m = classRe.exec(text))) matches.push({ index: m.index, kind: "class", key: m[1] });
+  const troopRe2 = buildTroopStatRe();
+  while ((m = troopRe2.exec(text))) matches.push({ index: m.index, kind: "troop", troop: m[1] });
 
   findNamedConditionSpans(text).forEach(span => {
     matches.push({ index: span.index, kind: "named", name: span.name });
@@ -7562,6 +7963,17 @@ function renderConditionalEffectHtml(text, hero, member) {
 
   const setPiecePrefixRe = /同時裝備\s*(\d+)\s*件([^\s，,、（）()]+?)套(?:裝)?[，,、]?/g;
   while ((m = setPiecePrefixRe.exec(text))) matches.push({ index: m.index, kind: "setpiece", length: m[0].length, count: Number(m[1]), setName: m[2] + "套裝" });
+
+  // 以下三種條件原本誤寫在下方 matches.forEach 迴圈「內部」，導致收集到的比對結果在排序後永遠不會被使用到，
+  // 「英雄等級達到」「英雄品質達到」「若【技能】達到N級」這三種條件因此從未真的被判斷、劃刪除線——修正為與
+  // splitTextByConditions 相同的寫法，統一在排序前先收集好
+  const levelRe = /若?英雄等級達到\s*(\d+)\s*級以上/g;
+  while ((m = levelRe.exec(text))) matches.push({ index: m.index, kind: "level", value: Number(m[1]) });
+  const gradeRe = /若?英雄品質達到\s*(紅|金|紫|藍)\s*色以上/g;
+  while ((m = gradeRe.exec(text))) matches.push({ index: m.index, kind: "grade", value: m[1] });
+  // 「若【技能】達到N級」：依目前已裝備該技能的等級判斷條件是否成立
+  const skillLevelRe = /若【([^】]+)】達到\s*(\d+)\s*級[，,、]?/g;
+  while ((m = skillLevelRe.exec(text))) matches.push({ index: m.index, kind: "skilllevel", skillName: m[1], value: Number(m[2]) });
 
   if (!matches.length) return escapeHtml(text);
 
@@ -7575,22 +7987,22 @@ function renderConditionalEffectHtml(text, hero, member) {
     const clauseStart = match.index;
     const clauseEnd = nextIndex;
     const clauseText = text.slice(clauseStart, clauseEnd);
-const levelRe = /若?英雄等級達到\s*(\d+)\s*級以上/g;
-while ((m = levelRe.exec(text))) matches.push({ index: m.index, kind: "level", value: Number(m[1]) });
-const gradeRe = /若?英雄品質達到\s*(紅|金|紫|藍)\s*色以上/g;
-while ((m = gradeRe.exec(text))) matches.push({ index: m.index, kind: "grade", value: m[1] });
     if (cursor < clauseStart) parts.push(escapeHtml(text.slice(cursor, clauseStart)));
 
     let met;
    if (match.kind === "class") {
   const cond = CLASS_CONDITIONS.find(c => c.key === match.key);
   met = cond ? cond.match(hero) : true;
+} else if (match.kind === "troop") {
+  met = heroCarriesTroop(hero, match.troop);
 } else if (match.kind === "level") {
   met = (member?.heroLevel || 1) >= match.value;
 } else if (match.kind === "grade") {
   met = heroGradeMeets(member?.heroGrade || "白", match.value);
 } else if (match.kind === "setpiece") {
   met = countEquippedSetPieces(member, match.setName, null) >= match.count;
+} else if (match.kind === "skilllevel") {
+  met = getEquippedSkillLevel(member, match.skillName) >= match.value;
 } else {
   met = checkNamedCondition(clauseText, hero, equippedNames, member);
 }
@@ -7622,27 +8034,82 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
 
   texts.forEach(text => {
     let m;
+    let lastTroopMentioned = null; // 追蹤本句目前為止最近提到的兵種，供省略兵種前綴的延續片語使用
+
+    // 「每裝備N件XX套，兵種(基礎)?攻防/兵力+M」：依目前已裝備該套裝的件數（不分品階）計算倍數加成
+    // 與「裝備N件套後生效」（門檻式、達標才生效）不同，這種是逐件線性疊加（例：饕餮套每件+480，多裝一件多一份加成）
+    // 實際文字順序是「前後軍兵力各 +20」（「各」接在數值類型後面，不是接在「前後軍」後面），
+    // 也可能是單指「前軍兵力+N」或「後軍兵力+N」（不帶「各」），故「各」統一設為選用字
+    // 必須先於下方的通用 flatTroopRe 處理並從文字中移除，否則「前軍兵力+20」會被通用規則誤當成固定加成重複計算一次
+    const setPieceScaleRe = /每裝備\s*(\d+)\s*件([^\s，,、（）()]+?)套(?:裝)?[，,、]?(前軍|後軍|前後軍|步兵|騎兵|弓兵|方士)?(基礎)?(攻擊|防禦|兵力)(?:上限)?各?\s*(?:提升|提高|\+)?\s*(\d[\d,]*)/g;
+    let workingText = text.replace(setPieceScaleRe, (full, perCountStr, setBaseName, troop, isBaseStr, statType, amountStr) => {
+      const perCount = Number(perCountStr);
+      const setName = setBaseName + "套裝";
+      const isBase = !!isBaseStr;
+      const amount = Number(amountStr.replace(/,/g, ""));
+      if (perCount > 0) {
+        const equippedCount = countEquippedSetPieces(member, setName, null);
+        const times = Math.floor(equippedCount / perCount);
+        if (times > 0) {
+          const totalAmount = times * amount;
+          if (!troop || troop === "前後軍") {
+            add("front", `前軍${isBase ? "基礎" : ""}${statType}`, totalAmount);
+            add("back", `後軍${isBase ? "基礎" : ""}${statType}`, totalAmount);
+          } else {
+            const group = TROOP_GROUP_BY_NAME[troop];
+            if (group) add(group, `${troop}${isBase ? "基礎" : ""}${statType}`, totalAmount);
+          }
+        }
+      }
+      return ""; // 移除已處理的片語，避免被後續通用正規式重複比對到
+    });
+    text = workingText;
 
     // 攻擊/防禦/兵力：需區分「直接加成」與「基礎攻擊/防禦/兵力」是兩種不同數值，分開記錄（支援「+」與「提升／提高」兩種寫法）
-    const flatTroopRe = /(前軍|後軍|步兵|騎兵|弓兵|方士)(?:各)?(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
+    // 數值部分支援千分位逗號寫法（例如「後軍兵力 +2,000」），比對到後需先去除逗號再轉數字
+    const flatTroopRe = /(前軍|後軍|步兵|騎兵|弓兵|方士)(?:各)?(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:額外)?\s*(?:提升|提高|\+)\s*(\d[\d,]*)/g;
     while ((m = flatTroopRe.exec(text))) {
       const troop = m[1];
+      // 「前後軍各兵力+N」這種寫法會被 bothTroopRe 正確處理；但 flatTroopRe 掃描時可能從「前」的下一個字元
+      // 開始誤比對到子字串「後軍各兵力+N」，若不排除會讓後軍被重複加總一次，故在此跳過這種情況
+      if (troop === "後軍" && text[m.index - 1] === "前") continue;
       const isBase = !!m[2];
       const statType = m[3];
-      const amount = Number(m[4]);
+      const amount = Number(m[4].replace(/,/g, ""));
       const group = TROOP_GROUP_BY_NAME[troop];
       if (group) add(group, `${troop}${isBase ? "基礎" : ""}${statType}`, amount);
+      lastTroopMentioned = troop;
     }
 
-    // 前後軍各(基礎)X +N（同時套用到前軍和後軍兩邊，同樣區分直接加成與基礎值）
-    const bothTroopRe = /前後軍各(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:提升|提高|\+)\s*(\d+)/g;
+    // 前後軍各(基礎)X +N（同時套用到前軍和後軍兩邊，同樣區分直接加成與基礎值；同樣支援千分位逗號）
+    const bothTroopRe = /前後軍(?:各)?(基礎)?(攻擊|防禦|兵力)(?:上限)?(?:額外)?\s*(?:提升|提高|\+)\s*(\d[\d,]*)/g;
     while ((m = bothTroopRe.exec(text))) {
       const isBase = !!m[1];
       const statType = m[2];
-      const amount = Number(m[3]);
+      const amount = Number(m[3].replace(/,/g, ""));
       add("front", `前軍${isBase ? "基礎" : ""}${statType}`, amount);
       add("back", `後軍${isBase ? "基礎" : ""}${statType}`, amount);
+      lastTroopMentioned = null; // 已同時套用前後軍，後續無前綴的兵力片語不應再沿用單一兵種
     }
+
+    // 同句中「XX兵力+N」之後接續「，兵力+M」這種省略兵種前綴、沿用前一個兵種的寫法
+    // （例如寶物「步兵攻擊 +40，兵力 +50」，逗號後的「兵力 +50」其實仍是指步兵）
+    // 用拆分子句逐一檢查，只在子句「開頭」就是裸的「(基礎)?兵力/攻擊/防禦+N」時才套用，避免誤吃到其他句型
+    splitClauses(text).forEach(clause => {
+      const bareRe = /^(基礎)?(攻擊|防禦|兵力)(?:上限)?\s*(?:提升|提高|\+)\s*(\d[\d,]*)/;
+      const bm = clause.match(bareRe);
+      if (bm && lastTroopMentioned) {
+        const isBase = !!bm[1];
+        const statType = bm[2];
+        const amount = Number(bm[3].replace(/,/g, ""));
+        const group = TROOP_GROUP_BY_NAME[lastTroopMentioned];
+        if (group) add(group, `${lastTroopMentioned}${isBase ? "基礎" : ""}${statType}`, amount);
+      } else if (/^(前軍|後軍|步兵|騎兵|弓兵|方士)/.test(clause)) {
+        lastTroopMentioned = clause.match(/^(前軍|後軍|步兵|騎兵|弓兵|方士)/)[1];
+      } else if (!bm) {
+        lastTroopMentioned = null; // 遇到不相關的子句就清空，避免跨無關子句誤套用
+      }
+    });
 
     const groupSpeedRe = /(前軍|後軍|前後軍)速度(?:額外)?\s*([+\-]\d+)/g;
     while ((m = groupSpeedRe.exec(text))) {
@@ -7719,10 +8186,12 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
     ...(hero.talent ? [hero.talent] : []),
     ...(Array.isArray(hero.skills) ? hero.skills : []),
     ...(member.awakened && Array.isArray(hero.awakens) ? hero.awakens : []),
-    ...(member.reincarnated ? (Array.isArray(hero.reincarn) ? hero.reincarn : (Array.isArray(hero.reincarnation) ? hero.reincarnation : [])) : [])
+    ...(member.reincarnated ? getHeroReincarnList(hero) : [])
   ];
   const resolvedTalentTexts = resolveConditionalTexts(talentTexts, hero, member);
-  const troopRules = resolvedTalentTexts.flatMap(t => parseTroopStatRules(t));
+  // 「每提升N點X，兵種+M」這類隨四維連動的加成，寶物效果文字偶爾也會用同樣句型撰寫（例如統御連動兵力），
+  // 所以連同已解析好條件的裝備文字（texts）一起納入解析，不只天賦/技能/覺醒/輪迴
+  const troopRules = [...resolvedTalentTexts, ...texts].flatMap(t => parseTroopStatRules(t));
   const { bonus: statBonus } = computeStatBonus(member, hero);
 
   troopRules.forEach(rule => {
@@ -7730,18 +8199,27 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
     const times = Math.floor(sourceVal / rule.perPoint);
     if (times <= 0) return;
     const totalAmount = times * rule.amount;
-    const group = TROOP_GROUP_BY_NAME[rule.troop];
     const basePrefix = rule.isBase ? "基礎" : "";
-    if (rule.statType === "攻防") {
-      add(group, `${rule.troop}${basePrefix}攻擊`, totalAmount);
-      add(group, `${rule.troop}${basePrefix}防禦`, totalAmount);
+    const applyToGroup = (group, troopLabel) => {
+      if (rule.statType === "攻防") {
+        add(group, `${troopLabel}${basePrefix}攻擊`, totalAmount);
+        add(group, `${troopLabel}${basePrefix}防禦`, totalAmount);
+      } else {
+        add(group, `${troopLabel}${basePrefix}${rule.statType}`, totalAmount);
+      }
+    };
+    if (rule.troop === "前後軍") {
+      applyToGroup("front", "前軍");
+      applyToGroup("back", "後軍");
     } else {
-      add(group, `${rule.troop}${basePrefix}${rule.statType}`, totalAmount);
+      const group = TROOP_GROUP_BY_NAME[rule.troop];
+      if (group) applyToGroup(group, rule.troop);
     }
   });
 
   // 「每提升/有 N 級【技能】，兵種(基礎)?攻防/攻擊/防禦/兵力 +M」：依已裝備該技能的目前等級計算（例：陸遜「每提升1級【誘敵】，弓兵基礎攻擊+11，兵力+50」）
-  const skillLevelTroopRules = resolvedTalentTexts.flatMap(t => parseSkillLevelTroopRules(t));
+  // 同樣一併涵蓋裝備效果文字，避免寶物若寫出同樣句型時被漏算
+  const skillLevelTroopRules = [...resolvedTalentTexts, ...texts].flatMap(t => parseSkillLevelTroopRules(t));
   skillLevelTroopRules.forEach(rule => {
     const level = getEquippedSkillLevel(member, rule.skillName);
     const times = Math.floor(level / rule.perLevel);
@@ -7797,8 +8275,28 @@ function renderPhaseList(list) {
   return list.map(t => `<div class="loadout-calc-row" style="display:block;line-height:1.6;">${escapeHtml(t)}</div>`).join("");
 }
 
+// 把「兵種限定」的數值（例如騎兵速度）併入「通用」數值（速度）同一行顯示。
+// 因為每個英雄的前軍/後軍固定只會是單一兵種，兩者本來就是算在同一批部隊上，
+// 分開列反而讓人誤以為是兩筆不同加成，合併顯示比較符合直覺。
+const MERGEABLE_TROOP_STAT_SUFFIXES = ["速度", "攻擊", "防禦", "兵力", "基礎攻擊", "基礎防禦", "基礎兵力", "格擋率", "暴擊率"];
+function mergeTroopStatIntoGeneric(groupObj, troop) {
+  if (!troop || !groupObj) return;
+  MERGEABLE_TROOP_STAT_SUFFIXES.forEach(suffix => {
+    const troopKey = `${troop}${suffix}`;
+    if (groupObj[troopKey] === undefined) return;
+    groupObj[suffix] = (groupObj[suffix] || 0) + groupObj[troopKey];
+    delete groupObj[troopKey];
+  });
+}
+
 function renderLoadoutStatsView(member) {
   const { groups, phase } = computeLoadoutCalc(member);
+  const hero = heroes.find(h => h.id === member.hero);
+  const troopInfo = hero ? heroTroopType[hero.id] : null;
+  if (troopInfo) {
+    mergeTroopStatIntoGeneric(groups.front, troopInfo.front);
+    mergeTroopStatIntoGeneric(groups.back, troopInfo.back);
+  }
   return `
     <div class="loadout-calc-grid">
       <div class="loadout-calc-col">
@@ -7837,18 +8335,19 @@ function renderLoadoutSummary() {
 
   // ↓ 原本「裝備詞綴」的邏輯維持不動，接續原本的 totals / bonus / effects 計算 ...
 
-  const { totals, bonus, derivedBonus } = computeStatBonus(member, hero);
+  const { totals, bonus, derivedBonus, destinyBonus, destinyStates } = computeStatBonus(member, hero);
   const effects = [];
 
   Object.values(member.gear).forEach(gear => {
     loadoutGearEffectiveGrades(gear).forEach(gr => {
-      effects.push(`<div><span style="color:${gradeColor[gr.grade] || "#d4a84b"}">【${escapeHtml(gear.cat)}・${escapeHtml(gear.item.name)}・${escapeHtml(gr.grade)}】</span>${renderConditionalEffectHtml(gr.effect || "", hero, member)}</div>`);
+      const effectHtml = renderConditionalEffectHtml(gr.effect || "", hero, member);
+      effects.push(`<div><span style="color:${gradeColor[gr.grade] || "#d4a84b"}">【${escapeHtml(gear.cat)}・${escapeHtml(gear.item.name)}・${escapeHtml(gr.grade)}】</span>${effectHtml}</div>`);
     });
 });
   const awaken = !!member.awakened;
   const reincarn = !!member.reincarnated;
   const awakenList = Array.isArray(hero.awakens) ? hero.awakens : [];
-  const reincarnList = Array.isArray(hero.reincarn) ? hero.reincarn : (Array.isArray(hero.reincarnation) ? hero.reincarnation : []);
+  const reincarnList = getHeroReincarnList(hero);
   const derivedTotal = sumStats(derivedBonus);
 
   const chosen = Object.values(member.gear);
@@ -7904,6 +8403,20 @@ function renderLoadoutSummary() {
     </div>
   ` : "";
 
+  const destinyBlock = destinyStates.length ? `
+    <div class="loadout-stat-card" style="border-bottom:none;">
+      <div class="loadout-stat-name" style="color:#e69a3c;">宿命</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${destinyStates.map(({ entry, active }) => `
+          <div style="font-size:12px;color:${active ? "#cfd3d4" : "#8a9086"};line-height:1.6;border-left:2px solid ${active ? "#e69a3c" : "#5a5f56"};padding:4px 10px;background:rgba(230,154,60,${active ? "0.05" : "0.02"});border-radius:0 6px 6px 0;">
+            <strong>${escapeHtml(entry.name)}</strong>（${escapeHtml(entry.hero)}）${escapeHtml(entry.effect)}
+            <span style="margin-left:6px;color:${active ? "#7bd88f" : "#8a9086"};font-weight:700;">${active ? "已生效" : (entry.hero === "合擊技" ? "分類條件，未計入數值" : "未同時上陣")}</span>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  ` : "";
+
   const summaryLine = `
     <div class="loadout-summary-list">
       <div class="loadout-summary-line"><span>英雄</span><strong>${escapeHtml(getDisplayHeroName(hero, member.awakened))}</strong></div>
@@ -7912,7 +8425,7 @@ function renderLoadoutSummary() {
     </div>
   `;
 
-  target.innerHTML = skillCountBar + statsHtml + talentBlock + awakenBlock + reincarnBlock + derivedBlock + summaryLine +
+  target.innerHTML = skillCountBar + statsHtml + talentBlock + awakenBlock + reincarnBlock + derivedBlock + destinyBlock + summaryLine +
     (effects.length ? `<div class="loadout-effects">${effects.join("")}</div>` : "");
 }
 
@@ -7935,6 +8448,7 @@ function serializeLoadoutTeam(team) {
       hg: member.heroGrade || "藍",
       aw: member.awakened ? 1 : 0,
       re: member.reincarnated ? 1 : 0,
+      fa: member.freeAlloc || undefined,
       g: gear,
       sg: member.slotGrade || {},
       dp: member.deputy || {}
@@ -7978,6 +8492,7 @@ function deserializeLoadoutTeam(data) {
       heroGrade: d.hg || "藍",
       awakened: !!d.aw,
       reincarnated: !!d.re,
+      freeAlloc: d.fa || { force: 0, intel: 0, charm: 0, command: 0 },
       gear,
       chosen: !!d.h,
       slotGrade: d.sg || {},
