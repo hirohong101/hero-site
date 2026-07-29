@@ -2881,6 +2881,10 @@
     let currentRarity = "all";
     let currentJob    = "all";
     let currentTroop  = "all";
+    let currentOwnedOnly = false;
+    let ownedHeroIds = new Set();
+    let ownedHeroesLoaded = false;
+    let ownedHeroesSaveTimer = null;
 
     document.getElementById('heroBadge').textContent = heroes.length;
 //----------------------英雄兵種資料---------------------
@@ -5536,7 +5540,6 @@ function renderHeroes(list) {
       renderHeroes(list);
     }
 
-    let currentOwnedOnly = false;
     function toggleOwnedOnlyFilter(btn) {
       if (!currentOwnedOnly && !currentAuthUser) { openAuthModal('signin'); return; }
       currentOwnedOnly = !currentOwnedOnly;
@@ -8719,10 +8722,6 @@ function getCurrentNickname() {
 }
 
 // ---- 我擁有的英雄（需登入，跨裝置同步）----
-let ownedHeroIds = new Set();
-let ownedHeroesLoaded = false;
-let ownedHeroesSaveTimer = null;
-
 async function loadOwnedHeroes() {
   ownedHeroIds = new Set();
   ownedHeroesLoaded = false;
