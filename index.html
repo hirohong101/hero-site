@@ -908,6 +908,18 @@
     .hero-card[data-rarity="良才"] { --rarity-color: #6daa6d; }
     .hero-card[data-rarity="巾幗"] { --rarity-color: #d4789a; }
     .hero-card[data-rarity="傳奇"] { --rarity-color: #ff6b35; }
+    .hero-card { position: relative; }
+    .hero-card.hero-owned { box-shadow: 0 0 0 2px #4caf7d inset; }
+    .hero-owned-badge {
+      position: absolute; top: 6px; right: 6px; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.25); cursor: pointer; z-index: 3;
+    }
+    .hero-owned-badge input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .hero-owned-badge span { width: 10px; height: 10px; border-radius: 50%; background: transparent; transition: background 0.15s; }
+    .hero-owned-badge input:checked + span { background: #4caf7d; }
+    .hero-owned-badge:hover { border-color: #4caf7d; }
 
     .rarity-dot {
       display: inline-block;
@@ -2331,6 +2343,10 @@
             <button class="filter-btn" data-troop="弓兵" onclick="filterByTroop(this)">弓兵</button>
             <button class="filter-btn" data-troop="方士" onclick="filterByTroop(this)">方士</button>
           </div>
+          <div class="filter-sep"></div>
+          <div class="filter-group">
+            <button class="filter-btn" id="ownedOnlyBtn" data-active="false" onclick="toggleOwnedOnlyFilter(this)">✅ 只看擁有的</button>
+          </div>
           <div class="search-wrap">
             <span class="icon">🔍</span>
             <input type="text" id="search" placeholder="搜尋英雄..." onkeyup="filterHeroes()" autocomplete="off" name="hero-search-nofill">
@@ -2851,11 +2867,11 @@
 
 { id:"tianfeng", name:"神·田豐", type:"文官", rarity:"傳奇", force:76, intel:93, charm:90, command:85, talent:"東漢末年袁紹部下謀臣，為人剛直，曾多次向袁紹進言而不被採納。官渡之戰後，田豐被袁紹殺害。", skillName:"天姿朅杰", skills:["可擔當任意英雄的任意兵種副將","作為後軍副將時，副將主動技鎖定為【進諫忠言】：我方後軍兵力低於一半時發動，向主將進諫良策，隨後主將有 60% 機率回應【納諫】，立即驅散後軍 2 個不良狀態，並獲得【明君】護盾，護盾將承擔全部傷害直至破碎","作為副將時，可依照田豐品質，為主將提供額外加成：紫色以上品質：智力 +2；金色以上品質：對武將傷害 +10%；紅色品質：我方後軍的【明君】護盾存在期間，速度 +30，攻擊 +20%"], awakens:["作為後軍副將時，若我方主將為文官或全才，則必定回應【納諫】，且【明君】額外增加固定護盾量，值為戰鬥開始時我方後軍兵力的 30%","作為後軍副將時，主將智力 +1，統御 +3，文官類英雄技傷害強度 +10%"], destiny:[{name:"自刎獄中",hero:"袁紹",effect:"前後軍免傷各 +20%、前軍最終免傷 +20%、後軍最終免傷 +20%"},{name:"平定河北",hero:"公孫瓚",effect:"對武將傷害 +25%"},{name:"獻計攻曹",hero:"曹操",effect:"受到武將傷害 -25%"},{name:"天縱奇才",hero:"劉備",effect:"智力 +5"}] , initSkills:[{name:"豪傑", lv:3}, {name:"切割", lv:7}, {name:"騎胄", lv:7}]},
 
-{ id:"xishi", name:"神·西施", type:"文官", rarity:"傳奇", force:74, intel:95, charm:100, command:90, talent:"春秋末期美女，與王昭君、貂蟬、楊玉環並稱為中國古代「四大美女」，其中西施居首。", skillName:"美艷之首", skills:["作為男性英雄的副將時，可額外發動【沉魚之貌】：主將每次發動英雄技後，西施都有 10% 的機率跟隨發動【沉魚之貌】，極大激發主將鬥志，使其額外連發 1 次本英雄技（單場對決限 3 次）","作為副將時，可依照西施品質，為主將提供額外加成：紫色以上品質：對男性英雄傷害 +8%；金色以上品質：魅力 +2，遠戰第二回合，【沉魚之貌】的發動機率額外 +30%；紅色品質：魅力 +2，智力 +2，近戰首回合，【沉魚之貌】的發動機率額外 +60%"], awakens:["作為男性副將時，每次發動【沉魚之貌】後，使敵方全軍獲得【沉淪】的特殊效果 1 回合，期間防禦 -40%","作為男性副將時，主將所有英雄技傷害 +15%"], destiny:[{name:"沉魚之容",hero:"王昭君",effect:"受到男性英雄傷害 -25%"},{name:"絕代佳人",hero:"大喬",effect:"對男性英雄傷害 +25%"},{name:"西施捧心",hero:"小喬",effect:"受到英雄技能傷害 -25%"},{name:"冰肌玉骨",hero:"貂蟬",effect:"受到兵種技能傷害 -25%"}] , initSkills:[{name:"忘憂", lv:7}, {name:"捨身", lv:7}, {name:"仙音", lv:7}]},
+{ id:"xishi", name:"神·西施", type:"文官", rarity:"傳奇", force:74, intel:95, charm:100, command:90, talent:"春秋末期美女，與王昭君、貂蟬、楊玉環並稱為中國古代「四大美女」，其中西施居首。", skillName:"美艷之首", skills:["作為男性英雄的副將時，可額外發動【沉魚之貌】：主將每次發動英雄技後，西施都有 10% 的機率跟隨發動【沉魚之貌】，極大激發主將鬥志，使其額外連發 1 次本英雄技（單場對決限 3 次）","作為副將時，可依照西施品質，為主將提供額外加成：紫色以上品質：對男性英雄傷害 +8%；金色以上品質：魅力 +2，遠戰第二回合，【沉魚之貌】的發動機率額外 +30%；紅色品質：魅力 +2，智力 +2，近戰首回合，【沉魚之貌】的發動機率額外 +60%"], awakens:["作為男性副將時，每次發動【沉魚之貌】後，使敵方全軍獲得【沉淪】的特殊效果 1 回合，期間防禦 -40%","作為男性副將時，主將所有英雄技傷害 +15%"], reincarn:["(待補充)"], destiny:[{name:"沉魚之容",hero:"王昭君",effect:"受到男性英雄傷害 -25%"},{name:"絕代佳人",hero:"大喬",effect:"對男性英雄傷害 +25%"},{name:"西施捧心",hero:"小喬",effect:"受到英雄技能傷害 -25%"},{name:"冰肌玉骨",hero:"貂蟬",effect:"受到兵種技能傷害 -25%"}] , initSkills:[{name:"忘憂", lv:7}, {name:"捨身", lv:7}, {name:"仙音", lv:7}]},
 
-{ id:"zhoucang", name:"神·周倉", type:"武將", rarity:"傳奇", force:96, intel:78, charm:85, command:90, talent:"周倉臂有千斤之力，忠烈勇猛，對關羽忠心不二，矢志不移，跟隨其南征北戰，屢立戰功。", skillName:"忠義勇公", skills:["可擔當任意英雄的任意兵種副將","作為前軍副將時，周倉可額外發動【忠勇相隨】：我方前軍缺損 10,000 兵力時發動，從山野借來 3,000 固定兵力補充我方前軍（戰鬥結束時自動歸還）；作為前軍副將時，可依照周倉品質，為主將提供額外加成：紫色以上品質：武力 +2，前軍兵力 +1,500；金色以上品質：【忠勇相隨】可額外借來 1,000 固定兵力；紅色品質：【忠勇相隨】可再額外借來 2,000 固定兵力","周倉自身作為主將時，單場戰鬥最多發動 3 次【忠勇相隨】（每回合限 1 次），每次【忠勇相隨】能額外借來前軍 30% 的最大兵力，並且戰鬥結束時無需歸還兵力"], awakens:["作為前軍副將時，【忠勇相隨】可額外借來 4,000 固定兵力，且主將發動的武將類英雄技傷害強度 +20%","作為主將時，若與關羽同時上陣，每回合結束時發動合擊技【協刀躍馬】，按我方前軍當前兵力的 40%，消滅敵方後軍兵力。武力高於對手時，【協刀躍馬】可斬落敵方後軍副將"], destiny:[{name:"扛刀隨侍",hero:"關羽",effect:"對全才傷害 +30%"},{name:"重振漢室",hero:"劉備",effect:"受到全才傷害 -30%"},{name:"忠烈之士",hero:"張飛",effect:"前後軍攻擊各 +20%"},{name:"身先士卒",hero:"趙雲",effect:"前後軍防禦各 +20%"}] , initSkills:[{name:"行軍", lv:3}, {name:"神光", lv:7}, {name:"警覺", lv:7}]},
+{ id:"zhoucang", name:"神·周倉", type:"武將", rarity:"傳奇", force:96, intel:78, charm:85, command:90, talent:"周倉臂有千斤之力，忠烈勇猛，對關羽忠心不二，矢志不移，跟隨其南征北戰，屢立戰功。", skillName:"忠義勇公", skills:["可擔當任意英雄的任意兵種副將","作為前軍副將時，周倉可額外發動【忠勇相隨】：我方前軍缺損 10,000 兵力時發動，從山野借來 3,000 固定兵力補充我方前軍（戰鬥結束時自動歸還）；作為前軍副將時，可依照周倉品質，為主將提供額外加成：紫色以上品質：武力 +2，前軍兵力 +1,500；金色以上品質：【忠勇相隨】可額外借來 1,000 固定兵力；紅色品質：【忠勇相隨】可再額外借來 2,000 固定兵力","周倉自身作為主將時，單場戰鬥最多發動 3 次【忠勇相隨】（每回合限 1 次），每次【忠勇相隨】能額外借來前軍 30% 的最大兵力，並且戰鬥結束時無需歸還兵力"], awakens:["作為前軍副將時，【忠勇相隨】可額外借來 4,000 固定兵力，且主將發動的武將類英雄技傷害強度 +20%","作為主將時，若與關羽同時上陣，每回合結束時發動合擊技【協刀躍馬】，按我方前軍當前兵力的 40%，消滅敵方後軍兵力。武力高於對手時，【協刀躍馬】可斬落敵方後軍副將"], reincarn:["(待補充)"], destiny:[{name:"扛刀隨侍",hero:"關羽",effect:"對全才傷害 +30%"},{name:"重振漢室",hero:"劉備",effect:"受到全才傷害 -30%"},{name:"忠烈之士",hero:"張飛",effect:"前後軍攻擊各 +20%"},{name:"身先士卒",hero:"趙雲",effect:"前後軍防禦各 +20%"}] , initSkills:[{name:"行軍", lv:3}, {name:"神光", lv:7}, {name:"警覺", lv:7}]},
 
-{ id:"lukang", name:"神·陸抗", type:"全才", rarity:"傳奇", force:90, intel:93, charm:93, command:90, talent:"西陵之戰，陸抗憑藉出色的決斷力及領軍才能，大破晉軍，維護了吳國穩定，陸遜之後吳國再無名將。", skillName:"肱骨之臣", skills:["遠戰首回合起，弓兵每回合起始時發動【決霸西陵】，對敵方前軍造成 400% 傷害，對戰男性英雄時，【決霸西陵】可額外造成 600% × 回合數的傷害","每個奇數回合我方部隊受到敵方任意攻擊時，都有 40% 機率觸發【鎮守】，完全免疫此次損傷","若我方的四維最低項，高於對手的四維最低項，則弓兵每次攻擊都可觸發【破空】"], awakens:["弓兵觸發 4 次【鎮守】後，可為全軍召喚相當於各自最大兵力 35% 的【安營】屏障（算作特殊效果，不算作護盾）","每有 5 級【築城】，四維各 +2，前後軍兵力各 +500"], destiny:[{name:"領軍才能",hero:"陸遜",effect:"戰鬥開始時，若兵力比例不低於對手，我方奇數回合觸發【鎮守】的機率額外 +20%"},{name:"護吳名將",hero:"周瑜",effect:"對戰男性時奇數回合觸發【鎮守】的機率 +10%"},{name:"精英將領",hero:"呂蒙",effect:"對戰男性時奇數回合觸發【鎮守】的機率 +10%"},{name:"君臣之禮",hero:"吳國太",effect:"對男性英雄傷害 +25%"}] , initSkills:[{name:"築城", lv:7}, {name:"破空", lv:7}, {name:"重生", lv:7}]},
+{ id:"lukang", name:"神·陸抗", type:"全才", rarity:"傳奇", force:90, intel:93, charm:93, command:90, talent:"西陵之戰，陸抗憑藉出色的決斷力及領軍才能，大破晉軍，維護了吳國穩定，陸遜之後吳國再無名將。", skillName:"肱骨之臣", skills:["遠戰首回合起，弓兵每回合起始時發動【決霸西陵】，對敵方前軍造成 400% 傷害，對戰男性英雄時，【決霸西陵】可額外造成 600% × 回合數的傷害","每個奇數回合我方部隊受到敵方任意攻擊時，都有 40% 機率觸發【鎮守】，完全免疫此次損傷","若我方的四維最低項，高於對手的四維最低項，則弓兵每次攻擊都可觸發【破空】"], awakens:["弓兵觸發 4 次【鎮守】後，可為全軍召喚相當於各自最大兵力 35% 的【安營】屏障（算作特殊效果，不算作護盾）","每有 5 級【築城】，四維各 +2，前後軍兵力各 +500"], reincarn:["(待補充)"], destiny:[{name:"領軍才能",hero:"陸遜",effect:"戰鬥開始時，若兵力比例不低於對手，我方奇數回合觸發【鎮守】的機率額外 +20%"},{name:"護吳名將",hero:"周瑜",effect:"對戰男性時奇數回合觸發【鎮守】的機率 +10%"},{name:"精英將領",hero:"呂蒙",effect:"對戰男性時奇數回合觸發【鎮守】的機率 +10%"},{name:"君臣之禮",hero:"吳國太",effect:"對男性英雄傷害 +25%"}] , initSkills:[{name:"築城", lv:7}, {name:"破空", lv:7}, {name:"重生", lv:7}]},
 
     ];
     const rarityColor = { "國士": "#d4a84b", "名將": "#7b9bd4", "良才": "#6daa6d", "巾幗": "#d4789a", "傳奇": "#ff6b35" };
@@ -5482,7 +5498,13 @@ function renderHeroes(list) {
         card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
         card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
         card.setAttribute('data-rarity', h.rarity);
+        card.setAttribute('data-hero-id', h.id);
+        if (ownedHeroIds.has(h.id)) card.classList.add('hero-owned');
         card.innerHTML = `
+          <label class="hero-owned-badge" title="標記為已擁有" onclick="toggleHeroOwned('${h.id}', event)">
+            <input type="checkbox" class="hero-owned-check" ${ownedHeroIds.has(h.id) ? 'checked' : ''}>
+            <span></span>
+          </label>
           <div class="hero-name">${h.name}</div>
           <div class="hero-meta">
             <span class="rarity-dot"></span>${h.rarity}・${h.type}
@@ -5509,8 +5531,17 @@ function renderHeroes(list) {
         const t = heroTroopType[h.id];
         return t && (t.front === currentTroop || t.back === currentTroop);
       });
+      if (currentOwnedOnly) list = list.filter(h => ownedHeroIds.has(h.id));
       list = list.filter(h => h.name.toLowerCase().includes(kw));
       renderHeroes(list);
+    }
+
+    let currentOwnedOnly = false;
+    function toggleOwnedOnlyFilter(btn) {
+      if (!currentOwnedOnly && !currentAuthUser) { openAuthModal('signin'); return; }
+      currentOwnedOnly = !currentOwnedOnly;
+      btn.classList.toggle('active', currentOwnedOnly);
+      filterHeroes();
     }
 
     function filterByTroop(btn) {
@@ -8622,6 +8653,17 @@ tryLoadSharedLoadout();
 // 5. 登入/註冊功能（Email + 密碼）預設就是開啟的，不用額外設定。
 //    如果不想讓新用戶收驗證信、註冊後要馬上能登入，可以到左側選單「Authentication」→「Providers」→「Email」，
 //    把「Confirm email」關掉（小專案自己玩可以關，正式對外營運建議保留開啟比較安全）。
+// 6. 「我擁有的英雄」功能：在 SQL Editor 再貼上並執行一次：
+//
+//    create table owned_heroes (
+//      user_id uuid primary key references auth.users(id),
+//      heroes jsonb not null default '[]'::jsonb,
+//      updated_at timestamptz not null default now()
+//    );
+//    alter table owned_heroes enable row level security;
+//    create policy "Users read own" on owned_heroes for select to authenticated using (auth.uid() = user_id);
+//    create policy "Users upsert own" on owned_heroes for insert to authenticated with check (auth.uid() = user_id);
+//    create policy "Users update own" on owned_heroes for update to authenticated using (auth.uid() = user_id);
 const SUPABASE_URL = "https://ohjruabyssjkndpwylyc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oanJ1YWJ5c3Nqa25kcHd5bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NjU4NzIsImV4cCI6MjEwMDQ0MTg3Mn0.tripdIs6AOKEHOUtJchzw50Pgv4q18dY0mfYoxcABK8";
 
@@ -8663,15 +8705,75 @@ async function initAuthState() {
   // 已經有登入狀態（例如上次登入過，瀏覽器還記得），就不用再選一次，直接進去
   if (currentAuthUser) enterApp();
   updateAuthUI();
+  loadOwnedHeroes();
   db.auth.onAuthStateChange((event, session) => {
     currentAuthUser = session?.user || null;
     updateAuthUI();
+    loadOwnedHeroes();
   });
 }
 
 function getCurrentNickname() {
   if (!currentAuthUser) return "";
   return currentAuthUser.user_metadata?.nickname || currentAuthUser.email?.split("@")[0] || "玩家";
+}
+
+// ---- 我擁有的英雄（需登入，跨裝置同步）----
+let ownedHeroIds = new Set();
+let ownedHeroesLoaded = false;
+let ownedHeroesSaveTimer = null;
+
+async function loadOwnedHeroes() {
+  ownedHeroIds = new Set();
+  ownedHeroesLoaded = false;
+  if (!currentAuthUser) { renderHeroOwnedUI(); return; }
+  const db = initWallSupabase();
+  if (!db) return;
+  try {
+    const { data, error } = await db.from('owned_heroes').select('heroes').eq('user_id', currentAuthUser.id).maybeSingle();
+    if (!error && data && Array.isArray(data.heroes)) {
+      ownedHeroIds = new Set(data.heroes);
+    }
+  } catch (e) {
+    console.error('讀取擁有英雄失敗', e);
+  }
+  ownedHeroesLoaded = true;
+  renderHeroOwnedUI();
+}
+
+function saveOwnedHeroesNow() {
+  if (!currentAuthUser) return;
+  const db = initWallSupabase();
+  if (!db) return;
+  db.from('owned_heroes').upsert({
+    user_id: currentAuthUser.id,
+    heroes: Array.from(ownedHeroIds),
+    updated_at: new Date().toISOString()
+  }).then(({ error }) => { if (error) console.error('儲存擁有英雄失敗', error); });
+}
+
+function saveOwnedHeroesDebounced() {
+  clearTimeout(ownedHeroesSaveTimer);
+  ownedHeroesSaveTimer = setTimeout(saveOwnedHeroesNow, 500);
+}
+
+function toggleHeroOwned(heroId, e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  if (!currentAuthUser) { openAuthModal('signin'); return; }
+  if (ownedHeroIds.has(heroId)) ownedHeroIds.delete(heroId);
+  else ownedHeroIds.add(heroId);
+  renderHeroOwnedUI();
+  saveOwnedHeroesDebounced();
+}
+
+// 依目前的 ownedHeroIds，更新畫面上所有英雄卡片的勾選狀態（不用整個重新渲染）
+function renderHeroOwnedUI() {
+  document.querySelectorAll('.hero-card[data-hero-id]').forEach(card => {
+    const owned = ownedHeroIds.has(card.getAttribute('data-hero-id'));
+    card.classList.toggle('hero-owned', owned);
+    const box = card.querySelector('.hero-owned-check');
+    if (box) box.checked = owned;
+  });
 }
 
 // 訪客模式：直接關掉歡迎畫面進入 app，不需要登入
