@@ -910,16 +910,6 @@
     .hero-card[data-rarity="傳奇"] { --rarity-color: #ff6b35; }
     .hero-card { position: relative; }
     .hero-card.hero-owned { box-shadow: 0 0 0 2px #4caf7d inset; }
-    .hero-owned-badge {
-      position: absolute; top: 6px; right: 6px; width: 20px; height: 20px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.35);
-      background: rgba(0,0,0,0.25); cursor: pointer; z-index: 3;
-    }
-    .hero-owned-badge input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .hero-owned-badge span { width: 10px; height: 10px; border-radius: 50%; background: transparent; transition: background 0.15s; }
-    .hero-owned-badge input:checked + span { background: #4caf7d; }
-    .hero-owned-badge:hover { border-color: #4caf7d; }
 
     .rarity-dot {
       display: inline-block;
@@ -1412,6 +1402,47 @@
       letter-spacing: .5px;
     }
     .wall-box { width: min(560px, 92vw); }
+    .owned-heroes-box { width: min(560px, 92vw); max-height: 82vh; display: flex; flex-direction: column; }
+    .owned-heroes-list { overflow-y: auto; flex: 1; margin-top: 4px; }
+    .owned-heroes-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .owned-heroes-row:last-child { border-bottom: none; }
+    .owned-heroes-row .owned-heroes-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .owned-heroes-row.is-owned .owned-heroes-name { color: var(--gold-bright); }
+    .owned-heroes-row select {
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 12px;
+      padding: 0 6px;
+    }
+    .owned-heroes-row input[type="number"] {
+      width: 56px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      font-size: 12px;
+      padding: 0 6px;
+    }
+    .owned-heroes-row select:disabled, .owned-heroes-row input:disabled { opacity: .4; }
+    .owned-heroes-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4caf7d; }
     .wall-publish-row {
       display: flex;
       gap: 8px;
@@ -2307,6 +2338,7 @@
     <div class="user-avatar-menu" id="userAvatarMenu">
       <div class="user-avatar-menu-status" id="avatarMenuStatus">訪客模式</div>
       <button type="button" class="user-avatar-menu-btn" id="avatarSettingsBtn" style="display:none;" onclick="openAccountSettingsModal()">帳號設定</button>
+      <button type="button" class="user-avatar-menu-btn" id="avatarOwnedHeroesBtn" style="display:none;margin-top:6px;" onclick="openOwnedHeroesModal()">我的英雄</button>
       <button type="button" class="user-avatar-menu-btn" style="margin-top:6px;" onclick="openAvatarFrameModal()">更換頭像相框</button>
       <button type="button" class="user-avatar-menu-btn" id="avatarMenuBtn" style="margin-top:6px;" onclick="handleAvatarMenuAction()">登入 / 註冊</button>
     </div>
@@ -2575,6 +2607,7 @@
   <option value="金">金</option>
   <option value="紅">紅</option>
 </select>
+<button type="button" class="loadout-btn" id="loadoutImportOwnedBtn" style="margin-left:8px;" onclick="applyOwnedHeroToLoadout()">📥 帶入我的英雄</button>
           <div class="loadout-checks">
             <div class="loadout-checkgroup">
               <label><input type="checkbox" id="loadoutAwaken" onchange="onLoadoutAwakenChange()"> 已覺醒</label>
@@ -2715,6 +2748,19 @@
       <button type="button" class="loadout-btn primary" style="width:100%;" onclick="confirmAvatarFrame()">套用</button>
     </div>
     <div id="avatarFrameNote" style="margin-top:10px;font-size:12px;color:var(--text-dim);"></div>
+  </div>
+</div>
+
+<!-- 我的英雄（擁有／品質／等級）彈窗 -->
+<div id="ownedHeroesOverlay" class="share-link-overlay" onclick="closeOwnedHeroesModal(event)">
+  <div class="share-link-box owned-heroes-box" onclick="event.stopPropagation()">
+    <button type="button" class="close-btn" style="position:absolute;top:10px;right:12px;" onclick="closeOwnedHeroesModal()">&times;</button>
+    <div class="share-link-title">我的英雄</div>
+    <div class="share-link-sub">勾選你擁有的英雄，並設定品質和等級，資料會自動同步到雲端。</div>
+    <div class="share-link-row" style="margin-bottom:10px;">
+      <input id="ownedHeroesSearch" type="text" placeholder="搜尋英雄..." oninput="renderOwnedHeroesModalList()" autocomplete="off">
+    </div>
+    <div class="owned-heroes-list" id="ownedHeroesList"></div>
   </div>
 </div>
 
@@ -2882,7 +2928,7 @@
     let currentJob    = "all";
     let currentTroop  = "all";
     let currentOwnedOnly = false;
-    let ownedHeroIds = new Set();
+    let heroOwnership = {}; // { heroId: { owned: bool, grade: "藍", level: 1 } }
     let ownedHeroesLoaded = false;
     let ownedHeroesSaveTimer = null;
 
@@ -5503,12 +5549,8 @@ function renderHeroes(list) {
         card.style.animationDelay = Math.min(idx * 0.04, 0.4) + 's';
         card.setAttribute('data-rarity', h.rarity);
         card.setAttribute('data-hero-id', h.id);
-        if (ownedHeroIds.has(h.id)) card.classList.add('hero-owned');
+        if (heroOwnership[h.id]?.owned) card.classList.add('hero-owned');
         card.innerHTML = `
-          <label class="hero-owned-badge" title="標記為已擁有" onclick="toggleHeroOwned('${h.id}', event)">
-            <input type="checkbox" class="hero-owned-check" ${ownedHeroIds.has(h.id) ? 'checked' : ''}>
-            <span></span>
-          </label>
           <div class="hero-name">${h.name}</div>
           <div class="hero-meta">
             <span class="rarity-dot"></span>${h.rarity}・${h.type}
@@ -5535,7 +5577,7 @@ function renderHeroes(list) {
         const t = heroTroopType[h.id];
         return t && (t.front === currentTroop || t.back === currentTroop);
       });
-      if (currentOwnedOnly) list = list.filter(h => ownedHeroIds.has(h.id));
+      if (currentOwnedOnly) list = list.filter(h => heroOwnership[h.id]?.owned);
       list = list.filter(h => h.name.toLowerCase().includes(kw));
       renderHeroes(list);
     }
@@ -6413,6 +6455,24 @@ function onLoadoutHeroLevelChange() {
 function onLoadoutHeroGradeChange() {
   const member = loadoutTeam[loadoutState.activeMember];
   member.heroGrade = document.getElementById("loadoutHeroGrade").value;
+  renderLoadoutSlots();
+  renderLoadoutSummary();
+}
+// 從「我的英雄」帶入目前選的英雄品質、等級（需登入且該英雄已在我的英雄標記擁有）
+function applyOwnedHeroToLoadout() {
+  const member = loadoutTeam[loadoutState.activeMember];
+  if (!member || !member.hero) { alert("請先選擇英雄。"); return; }
+  if (!currentAuthUser) { openAuthModal('signin'); return; }
+  const owned = heroOwnership[member.hero];
+  if (!owned || !owned.owned) {
+    const hero = heroes.find(h => h.id === member.hero);
+    alert(`你還沒有在「我的英雄」標記${escapeHtml(stripShenPrefix(hero?.name || ""))}為擁有，請先到右上角頭像選單 → 我的英雄 設定。`);
+    return;
+  }
+  member.heroGrade = owned.grade || "藍";
+  member.heroLevel = owned.level || 1;
+  document.getElementById("loadoutHeroGrade").value = member.heroGrade;
+  document.getElementById("loadoutHeroLevel").value = member.heroLevel;
   renderLoadoutSlots();
   renderLoadoutSummary();
 }
@@ -8667,6 +8727,8 @@ tryLoadSharedLoadout();
 //    create policy "Users read own" on owned_heroes for select to authenticated using (auth.uid() = user_id);
 //    create policy "Users upsert own" on owned_heroes for insert to authenticated with check (auth.uid() = user_id);
 //    create policy "Users update own" on owned_heroes for update to authenticated using (auth.uid() = user_id);
+//    ※ heroes 欄位是 jsonb，不限制形狀，所以不用重建表；程式會自動把資料存成
+//      { 英雄id: { owned:布林, grade:"藍/紫/金/紅", level:數字 } } 這種物件格式。
 const SUPABASE_URL = "https://ohjruabyssjkndpwylyc.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oanJ1YWJ5c3Nqa25kcHd5bHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NjU4NzIsImV4cCI6MjEwMDQ0MTg3Mn0.tripdIs6AOKEHOUtJchzw50Pgv4q18dY0mfYoxcABK8";
 
@@ -8722,22 +8784,29 @@ function getCurrentNickname() {
 }
 
 // ---- 我擁有的英雄（需登入，跨裝置同步）----
+// heroOwnership 結構：{ heroId: { owned: bool, grade: "藍"|"紫"|"金"|"紅", level: number } }
 async function loadOwnedHeroes() {
-  ownedHeroIds = new Set();
+  heroOwnership = {};
   ownedHeroesLoaded = false;
   if (!currentAuthUser) { renderHeroOwnedUI(); return; }
   const db = initWallSupabase();
   if (!db) return;
   try {
     const { data, error } = await db.from('owned_heroes').select('heroes').eq('user_id', currentAuthUser.id).maybeSingle();
-    if (!error && data && Array.isArray(data.heroes)) {
-      ownedHeroIds = new Set(data.heroes);
+    if (!error && data && data.heroes) {
+      if (Array.isArray(data.heroes)) {
+        // 相容舊格式（純英雄 id 陣列）：轉成新的物件結構，品質預設藍、等級預設 1
+        data.heroes.forEach(id => { heroOwnership[id] = { owned: true, grade: "藍", level: 1 }; });
+      } else if (typeof data.heroes === 'object') {
+        heroOwnership = data.heroes;
+      }
     }
   } catch (e) {
     console.error('讀取擁有英雄失敗', e);
   }
   ownedHeroesLoaded = true;
   renderHeroOwnedUI();
+  renderOwnedHeroesModalList();
 }
 
 function saveOwnedHeroesNow() {
@@ -8746,7 +8815,7 @@ function saveOwnedHeroesNow() {
   if (!db) return;
   db.from('owned_heroes').upsert({
     user_id: currentAuthUser.id,
-    heroes: Array.from(ownedHeroIds),
+    heroes: heroOwnership,
     updated_at: new Date().toISOString()
   }).then(({ error }) => { if (error) console.error('儲存擁有英雄失敗', error); });
 }
@@ -8756,23 +8825,80 @@ function saveOwnedHeroesDebounced() {
   ownedHeroesSaveTimer = setTimeout(saveOwnedHeroesNow, 500);
 }
 
-function toggleHeroOwned(heroId, e) {
-  if (e) { e.stopPropagation(); e.preventDefault(); }
-  if (!currentAuthUser) { openAuthModal('signin'); return; }
-  if (ownedHeroIds.has(heroId)) ownedHeroIds.delete(heroId);
-  else ownedHeroIds.add(heroId);
+function getHeroOwnership(heroId) {
+  return heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+}
+
+function setHeroOwned(heroId, owned) {
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  cur.owned = owned;
+  heroOwnership[heroId] = cur;
   renderHeroOwnedUI();
+  renderOwnedHeroesModalList();
   saveOwnedHeroesDebounced();
 }
 
-// 依目前的 ownedHeroIds，更新畫面上所有英雄卡片的勾選狀態（不用整個重新渲染）
+function setHeroGrade(heroId, grade) {
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  cur.grade = grade;
+  heroOwnership[heroId] = cur;
+  saveOwnedHeroesDebounced();
+}
+
+function setHeroLevel(heroId, level) {
+  level = Math.max(1, Math.min(144, parseInt(level, 10) || 1));
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  cur.level = level;
+  heroOwnership[heroId] = cur;
+  saveOwnedHeroesDebounced();
+}
+
+// 依目前的 heroOwnership，更新畫面上所有英雄卡片的擁有樣式（不用整個重新渲染）
 function renderHeroOwnedUI() {
   document.querySelectorAll('.hero-card[data-hero-id]').forEach(card => {
-    const owned = ownedHeroIds.has(card.getAttribute('data-hero-id'));
+    const owned = !!heroOwnership[card.getAttribute('data-hero-id')]?.owned;
     card.classList.toggle('hero-owned', owned);
-    const box = card.querySelector('.hero-owned-check');
-    if (box) box.checked = owned;
   });
+}
+
+// ---- 「我的英雄」彈窗（擁有／品質／等級）----
+function openOwnedHeroesModal() {
+  if (!currentAuthUser) { openAuthModal('signin'); return; }
+  document.getElementById("userAvatarMenu")?.classList.remove("show");
+  renderOwnedHeroesModalList();
+  document.getElementById("ownedHeroesOverlay")?.classList.add("show");
+}
+function closeOwnedHeroesModal(e) {
+  if (e && e.target && e.target.id !== "ownedHeroesOverlay") return;
+  document.getElementById("ownedHeroesOverlay")?.classList.remove("show");
+}
+
+function renderOwnedHeroesModalList() {
+  const listEl = document.getElementById("ownedHeroesList");
+  if (!listEl) return;
+  const kw = (document.getElementById("ownedHeroesSearch")?.value || "").toLowerCase();
+  const list = heroes.filter(h => h.name.toLowerCase().includes(kw));
+  listEl.innerHTML = list.map(h => {
+    const o = getHeroOwnership(h.id);
+    return `
+      <div class="owned-heroes-row ${o.owned ? 'is-owned' : ''}" data-hero-id="${h.id}">
+        <input type="checkbox" ${o.owned ? 'checked' : ''} onchange="onOwnedHeroesRowOwnedChange('${h.id}', this.checked)">
+        <div class="owned-heroes-name">${h.name}</div>
+        <select ${o.owned ? '' : 'disabled'} onchange="setHeroGrade('${h.id}', this.value)">
+          <option value="藍" ${o.grade === '藍' ? 'selected' : ''}>藍</option>
+          <option value="紫" ${o.grade === '紫' ? 'selected' : ''}>紫</option>
+          <option value="金" ${o.grade === '金' ? 'selected' : ''}>金</option>
+          <option value="紅" ${o.grade === '紅' ? 'selected' : ''}>紅</option>
+        </select>
+        <input type="number" min="1" max="144" value="${o.level || 1}" ${o.owned ? '' : 'disabled'} onchange="setHeroLevel('${h.id}', this.value)">
+      </div>
+    `;
+  }).join('') || `<div class="no-result">— 沒有符合條件的英雄 —</div>`;
+}
+
+// 勾選/取消「擁有」時，順便讓該列的品質、等級欄位立刻可編輯/鎖起來
+function onOwnedHeroesRowOwnedChange(heroId, checked) {
+  setHeroOwned(heroId, checked);
 }
 
 // 訪客模式：直接關掉歡迎畫面進入 app，不需要登入
@@ -8806,6 +8932,7 @@ function updateAuthUI() {
   const statusEl = document.getElementById("avatarMenuStatus");
   const actionBtn = document.getElementById("avatarMenuBtn");
   const settingsBtn = document.getElementById("avatarSettingsBtn");
+  const ownedBtn = document.getElementById("avatarOwnedHeroesBtn");
   const lockBadge = document.getElementById("wallLockBadge");
   if (avatarBtn && statusEl && actionBtn) {
     if (currentAuthUser) {
@@ -8815,12 +8942,14 @@ function updateAuthUI() {
       statusEl.textContent = `已登入：${nickname}`;
       actionBtn.textContent = "登出";
       if (settingsBtn) settingsBtn.style.display = "block";
+      if (ownedBtn) ownedBtn.style.display = "block";
     } else {
       avatarBtn.textContent = "👤";
       avatarBtn.classList.remove("logged-in");
       statusEl.textContent = "訪客模式";
       actionBtn.textContent = "登入 / 註冊";
       if (settingsBtn) settingsBtn.style.display = "none";
+      if (ownedBtn) ownedBtn.style.display = "none";
     }
   }
   if (lockBadge) lockBadge.style.display = currentAuthUser ? "none" : "inline-block";
