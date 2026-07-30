@@ -1443,6 +1443,35 @@
     }
     .owned-heroes-row select:disabled, .owned-heroes-row input:disabled { opacity: .4; }
     .owned-heroes-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4caf7d; }
+    .owned-heroes-row .owned-heroes-awaken-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .owned-heroes-row .owned-heroes-awaken-label.is-disabled { opacity: .35; }
+    .owned-heroes-row .owned-heroes-loadout-badge {
+      font-size: 14px;
+      flex: 0 0 auto;
+      cursor: default;
+    }
+    .owned-heroes-row .owned-heroes-clear-loadout {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      line-height: 18px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .owned-heroes-row .owned-heroes-clear-loadout:hover { color: #e08b8b; border-color: #e08b8b; }
     .wall-publish-row {
       display: flex;
       gap: 8px;
@@ -2608,6 +2637,7 @@
   <option value="紅">紅</option>
 </select>
 <button type="button" class="loadout-btn" id="loadoutImportOwnedBtn" style="margin-left:8px;" onclick="applyOwnedHeroToLoadout()">📥 帶入我的英雄</button>
+<button type="button" class="loadout-btn" id="loadoutSaveOwnedBtn" style="margin-left:4px;" onclick="saveCurrentLoadoutToOwnedHero()">💾 儲存配裝到我的英雄</button>
           <div class="loadout-checks">
             <div class="loadout-checkgroup">
               <label><input type="checkbox" id="loadoutAwaken" onchange="onLoadoutAwakenChange()"> 已覺醒</label>
@@ -6471,10 +6501,76 @@ function applyOwnedHeroToLoadout() {
   }
   member.heroGrade = owned.grade || "藍";
   member.heroLevel = owned.level || 1;
+  const hero = heroes.find(h => h.id === member.hero);
+  member.awakened = !!owned.awakened && heroHasAwakenData(hero);
+  member.reincarnated = !!owned.reincarnated && heroHasReincarnData(hero);
+  if (owned.loadout) applyLoadoutSnapshotToMember(member, owned.loadout);
   document.getElementById("loadoutHeroGrade").value = member.heroGrade;
   document.getElementById("loadoutHeroLevel").value = member.heroLevel;
+  document.getElementById("loadoutAwaken").checked = member.awakened;
+  document.getElementById("loadoutReincarn").checked = member.reincarnated;
+  updateLoadoutAwakenReincarnControls(member, hero);
+  renderLoadoutMemberTabs();
   renderLoadoutSlots();
   renderLoadoutSummary();
+}
+
+// 把「目前這位英雄」配好的寶物／技能／神靈／獸靈／副將等裝備資料，整理成可存檔的精簡格式
+// （跟 serializeLoadoutTeam 用同一套邏輯，但只針對單一成員，供「我的英雄」存檔使用）
+function buildLoadoutSnapshotFromMember(member) {
+  const gear = {};
+  Object.entries(member.gear || {}).forEach(([slotKey, g]) => {
+    if (!g || !g.item) return;
+    const entry = { i: g.item.id, g: g.gradeIndex, c: g.cat };
+    if (g.locked) entry.lk = 1;
+    if (g.minLevel != null) entry.ml = g.minLevel;
+    gear[slotKey] = entry;
+  });
+  return {
+    g: gear,
+    sg: member.slotGrade || {},
+    dp: member.deputy || {},
+    fa: member.freeAlloc || undefined
+  };
+}
+
+// 把存檔格式的配裝快照還原回配裝頁的成員資料（裝備／技能格品質／副將／輪迴自由分配點數）
+function applyLoadoutSnapshotToMember(member, snap) {
+  if (!snap) return;
+  const gear = {};
+  Object.entries(snap.g || {}).forEach(([slotKey, entry]) => {
+    const item = findLoadoutItemById(entry.i, entry.c);
+    if (!item) return;
+    const g = { item, gradeIndex: entry.g, cat: entry.c };
+    if (entry.lk) g.locked = true;
+    if (entry.ml != null) g.minLevel = entry.ml;
+    gear[slotKey] = g;
+  });
+  member.gear = gear;
+  member.slotGrade = snap.sg || {};
+  member.deputy = snap.dp || {};
+  member.freeAlloc = snap.fa || { force: 0, intel: 0, charm: 0, command: 0 };
+}
+
+// 把「目前這位英雄」配好的寶物、技能、神靈、獸靈、副將等，連同品質／等級／覺醒／輪迴狀態，
+// 一併存到「我的英雄」，同步到雲端帳號，下次登入或帶入時可以直接還原
+function saveCurrentLoadoutToOwnedHero() {
+  const member = loadoutTeam[loadoutState.activeMember];
+  if (!member || !member.hero) { alert("請先選擇英雄。"); return; }
+  if (!currentAuthUser) { openAuthModal('signin'); return; }
+  const hero = heroes.find(h => h.id === member.hero);
+  const cur = heroOwnership[member.hero] || { owned: false, grade: "藍", level: 1, awakened: false };
+  cur.owned = true;
+  cur.grade = member.heroGrade || cur.grade || "藍";
+  cur.level = member.heroLevel || cur.level || 1;
+  cur.awakened = !!member.awakened && heroHasAwakenData(hero);
+  cur.reincarnated = !!member.reincarnated && heroHasReincarnData(hero);
+  cur.loadout = buildLoadoutSnapshotFromMember(member);
+  heroOwnership[member.hero] = cur;
+  renderHeroOwnedUI();
+  renderOwnedHeroesModalList();
+  saveOwnedHeroesNow();
+  alert(`已將${stripShenPrefix(hero?.name || "")}目前的配裝（寶物、技能、神靈、獸靈、副將）儲存到「我的英雄」。`);
 }
 // ---- 重複裝備檢查（跨全部 9 隻，也排除同格自己） ----
 function isItemUsedElsewhere(itemId, memberIndex, excludeSlotKey) {
@@ -8826,12 +8922,13 @@ function saveOwnedHeroesDebounced() {
 }
 
 function getHeroOwnership(heroId) {
-  return heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  return heroOwnership[heroId] || { owned: false, grade: "藍", level: 1, awakened: false };
 }
 
 function setHeroOwned(heroId, owned) {
-  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1, awakened: false };
   cur.owned = owned;
+  if (!owned) cur.awakened = false; // 取消擁有時，覺醒狀態一併重置
   heroOwnership[heroId] = cur;
   renderHeroOwnedUI();
   renderOwnedHeroesModalList();
@@ -8839,7 +8936,7 @@ function setHeroOwned(heroId, owned) {
 }
 
 function setHeroGrade(heroId, grade) {
-  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1, awakened: false };
   cur.grade = grade;
   heroOwnership[heroId] = cur;
   saveOwnedHeroesDebounced();
@@ -8847,10 +8944,30 @@ function setHeroGrade(heroId, grade) {
 
 function setHeroLevel(heroId, level) {
   level = Math.max(1, Math.min(144, parseInt(level, 10) || 1));
-  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1 };
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1, awakened: false };
   cur.level = level;
   heroOwnership[heroId] = cur;
   saveOwnedHeroesDebounced();
+}
+
+// 設定「我的英雄」中某英雄是否已覺醒；沒有神天賦資料的英雄不允許勾選
+function setHeroAwakened(heroId, awakened) {
+  const hero = heroes.find(h => h.id === heroId);
+  if (awakened && !heroHasAwakenData(hero)) return;
+  const cur = heroOwnership[heroId] || { owned: false, grade: "藍", level: 1, awakened: false };
+  cur.awakened = !!awakened;
+  heroOwnership[heroId] = cur;
+  saveOwnedHeroesDebounced();
+}
+
+// 清除某英雄已儲存的配裝快照（寶物／技能／神靈／獸靈／副將），不影響擁有／品質／等級／覺醒設定
+function clearOwnedHeroLoadout(heroId) {
+  const cur = heroOwnership[heroId];
+  if (!cur || !cur.loadout) return;
+  if (!confirm("確定要清除這位英雄已儲存的配裝資料嗎？此動作無法復原。")) return;
+  delete cur.loadout;
+  renderOwnedHeroesModalList();
+  saveOwnedHeroesNow();
 }
 
 // 依目前的 heroOwnership，更新畫面上所有英雄卡片的擁有樣式（不用整個重新渲染）
@@ -8880,6 +8997,10 @@ function renderOwnedHeroesModalList() {
   const list = heroes.filter(h => h.name.toLowerCase().includes(kw));
   listEl.innerHTML = list.map(h => {
     const o = getHeroOwnership(h.id);
+    const hasAwaken = heroHasAwakenData(h);
+    const awakenDisabled = !o.owned || !hasAwaken;
+    const awakenTitle = !hasAwaken ? '此英雄沒有神天賦，無法覺醒' : '';
+    const hasLoadout = !!(o.loadout && Object.keys(o.loadout.g || {}).length);
     return `
       <div class="owned-heroes-row ${o.owned ? 'is-owned' : ''}" data-hero-id="${h.id}">
         <input type="checkbox" ${o.owned ? 'checked' : ''} onchange="onOwnedHeroesRowOwnedChange('${h.id}', this.checked)">
@@ -8891,6 +9012,12 @@ function renderOwnedHeroesModalList() {
           <option value="紅" ${o.grade === '紅' ? 'selected' : ''}>紅</option>
         </select>
         <input type="number" min="1" max="144" value="${o.level || 1}" ${o.owned ? '' : 'disabled'} onchange="setHeroLevel('${h.id}', this.value)">
+        <label class="owned-heroes-awaken-label ${awakenDisabled ? 'is-disabled' : ''}" title="${awakenTitle}">
+          <input type="checkbox" ${o.awakened ? 'checked' : ''} ${awakenDisabled ? 'disabled' : ''} onchange="setHeroAwakened('${h.id}', this.checked)">
+          覺醒
+        </label>
+        ${hasLoadout ? `<span class="owned-heroes-loadout-badge" title="已儲存配裝（寶物／技能／神靈／獸靈／副將）">📦</span>
+        <button type="button" class="owned-heroes-clear-loadout" title="清除已儲存的配裝" onclick="clearOwnedHeroLoadout('${h.id}')">✕</button>` : ''}
       </div>
     `;
   }).join('') || `<div class="no-result">— 沒有符合條件的英雄 —</div>`;
