@@ -9004,7 +9004,7 @@ function renderOwnedHeroesModalList() {
     return `
       <div class="owned-heroes-row ${o.owned ? 'is-owned' : ''}" data-hero-id="${h.id}">
         <input type="checkbox" ${o.owned ? 'checked' : ''} onchange="onOwnedHeroesRowOwnedChange('${h.id}', this.checked)">
-        <div class="owned-heroes-name">${h.name}</div>
+        <div class="owned-heroes-name">${getDisplayHeroName(h, o.awakened)}</div>
         <select ${o.owned ? '' : 'disabled'} onchange="setHeroGrade('${h.id}', this.value)">
           <option value="藍" ${o.grade === '藍' ? 'selected' : ''}>藍</option>
           <option value="紫" ${o.grade === '紫' ? 'selected' : ''}>紫</option>
