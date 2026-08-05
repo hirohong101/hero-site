@@ -2323,6 +2323,94 @@
 .loadout-calc-row span.val { color: #7bd88f; font-weight: 800; }
 .loadout-calc-row span.val.neg { color: #d05a5a; }
 .loadout-calc-empty { color: rgba(255,255,255,.3); font-size: 12px; padding: 4px 0; }
+
+/* ===== 輪迴條件表 ===== */
+.rc-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+}
+.rc-floor-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.rc-floor-title h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--gold-bright);
+}
+.rc-floor-title span {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.rc-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+  font-size: 13px;
+}
+.rc-table th, .rc-table td {
+  border: 1px solid var(--border);
+  padding: 9px 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+.rc-table thead th {
+  background: var(--bg-panel);
+  color: var(--gold-bright);
+  font-weight: 700;
+  letter-spacing: 1px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.rc-table thead th:first-child {
+  text-align: left;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+.rc-table td:first-child {
+  text-align: left;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.rc-table td:not(:first-child) {
+  color: var(--text);
+  white-space: normal;
+}
+.rc-green  td:first-child { color: #7cc36d; }
+.rc-blue   td:first-child { color: #5aa9e6; }
+.rc-purple td:first-child { color: #b57de0; }
+.rc-gold   td:first-child { color: #e0b23c; }
+.rc-red    td:first-child { color: #e0645a; }
+.rc-green  { background: rgba(124,195,109,.08); }
+.rc-blue   { background: rgba(90,169,230,.08); }
+.rc-purple { background: rgba(181,125,224,.08); }
+.rc-gold   { background: rgba(224,178,60,.08); }
+.rc-red    { background: rgba(224,100,90,.08); }
+.rc-summary td:first-child {
+  font-weight: 900;
+}
+.rc-summary.rc-green  { background: rgba(124,195,109,.22); }
+.rc-summary.rc-blue   { background: rgba(90,169,230,.22); }
+.rc-summary.rc-purple { background: rgba(181,125,224,.22); }
+.rc-summary.rc-gold   { background: rgba(224,178,60,.22); }
+.rc-summary.rc-red    { background: rgba(224,100,90,.22); }
+.rc-summary td:not(:first-child) {
+  font-weight: 700;
+}
+.rc-summary.rc-green  td:not(:first-child) { color: #7cc36d; }
+.rc-summary.rc-blue   td:not(:first-child) { color: #5aa9e6; }
+.rc-summary.rc-purple td:not(:first-child) { color: #b57de0; }
+.rc-summary.rc-gold   td:not(:first-child) { color: #e0b23c; }
+.rc-summary.rc-red    td:not(:first-child) { color: #e0645a; }
   </style>	
 </head>
 <body>
@@ -2599,10 +2687,1157 @@
         <div class="topbar-title">輪迴條件</div>
       </div>
       <div class="content">
-        <div class="empty-state">
-          <div class="empty-icon">♾</div>
-          <div class="empty-title">輪迴條件資料即將上架</div>
-          <div class="empty-sub">敬請期待</div>
+        <div class="rc-wrap">
+          <div class="rc-floor-title">
+            <h3>第一層</h3>
+            <span>王之魂需求等級：0級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>典韋</th>
+                <th>姜維</th>
+                <th>周泰</th>
+                <th>荀彧</th>
+                <th>張飛</th>
+                <th>太史慈</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>待他落單</td><td>棄暗投明</td><td>投降保命</td><td>舉族北遷</td><td>興師問罪</td><td>赴身相助</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>武力115</td><td>戰力100萬</td><td>(周泰+孫策)武222</td><td>智力109</td><td>武力115</td><td>戰力100萬</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>糧草100萬、銀兩200萬</td><td>糧草100萬</td><td>騎兵、步兵文書各20個</td><td>糧草100萬</td><td>佳釀10個</td><td>拜帖10個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>放著我來</td><td>僅奉遺命</td><td>我是書童</td><td>投筆曹魏</td><td>按年齡</td><td>一同前往</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>戰力125萬</td><td>白羽扇（藍）</td><td>戰力125萬</td><td>智力112</td><td>白鵠（藍）</td><td>(太史慈+關羽)武力222</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>寶鞍20個</td><td>八卦戰旗30個、心得3個</td><td>精品盾牌3千件</td><td>修養100片、才學100片</td><td>鑌鐵50個</td><td>糧草100萬</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>欣然接受</td><td>親自斷後</td><td>武力超度</td><td>假意應允</td><td>暫避鋒芒</td><td>擒賊擒王</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>獲得戰功15萬</td><td>諸葛連弩（紫）</td><td>七星刀（金）</td><td>(荀彧+夏侯惇)統御191</td><td>戰力175萬</td><td>戰力150萬</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>天隕金20個</td><td>拜帖10個</td><td>高級經驗書20個</td><td>屯田10個</td><td>糧草100萬</td><td>精良鋼劍、鐵槍各3千件</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>20英勇,100迴響</td><td>20美德,100迴響</td><td>20英勇,100迴響</td><td>20文明,100迴響</td><td>20英勇,100迴響</td><td>20英勇,100迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>避禍還中</td><td>殺入陣中</td><td>勸春天子</td><td>救援子龍</td><td>挑戰孫策</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>武力118</td><td>武力108</td><td>戰力200萬</td><td>戰力200萬</td><td>戰力200萬</td><td>武力111</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>玉龍泉20個、糧草100萬</td><td>金鞋20個</td><td>精良剛劍、騎甲各3千件</td><td>銀兩、糧草各100萬</td><td>金鞋20個</td><td>金鞋20個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>25英勇,100迴響</td><td>25美德,100迴響</td><td>25英勇,100迴響</td><td>25文明,100迴響</td><td>25英勇,100迴響</td><td>25英勇,100迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td>等待時機</td><td>解開上衣</td><td>二虎競食</td><td>親自解鄉</td><td>主動請降</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>(典韋+夏侯惇)武力242</td><td>智力112</td><td>(周泰+孫權)武力225</td><td>智力115</td><td>戰力225萬</td><td>武力117</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>檀紙20個</td><td>龍閣200片</td><td>號角10個</td><td>精良獸甲、長弓各3千件</td><td>糧草200萬</td><td>天隕金、荒獸皮各20個</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>30英勇,100荊棘,100迴響</td><td>30美德,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30文明,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第二層</h3>
+            <span>王之魂需求等級：5級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>許褚</th>
+                <th>馬超</th>
+                <th>甘寧</th>
+                <th>夏侯惇</th>
+                <th>黃忠</th>
+                <th>呂蒙</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>前去取回</td><td>興兵雪恨</td><td>暫投黃祖</td><td>為師報仇</td><td>來者必死</td><td>發憤圖強</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>武111</td><td>(馬超+馬岱)武力209</td><td>戰力125萬</td><td>武力108</td><td>武力108</td><td>將印（紫）</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>木材、生鐵各200萬</td><td>銀兩200萬</td><td>銀兩、木材各200萬</td><td>精良戰馬4千件、金鞋20個</td><td>高級經驗書20個</td><td>染料24個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>主動請纓</td><td>派兵相助</td><td>再造之恩</td><td>欣然接受</td><td>多謝</td><td>奉命讀書</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>戰力150萬</td><td>戰力150萬</td><td>絕影（紫）</td><td>(夏侯惇+夏侯淵)武力217</td><td>爪黃飛電（紫）</td><td>孟德新書（紫）</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>高經書20個、勇武150片</td><td>木材、生鐵各200萬</td><td>金募兵20個</td><td>精良鋼劍、騎甲各4千件</td><td>木材、生鐵各200萬</td><td>才學150片</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>速回大營</td><td>謹慎行事</td><td>黃祖庸弱</td><td>考慮收留</td><td>射其盔纓</td><td>關羽熊虎</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>武力115</td><td>武力115</td><td>武力110</td><td>武力111</td><td>戰力200萬</td><td>智力110</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>盾牆300片</td><td>佳釀10個</td><td>木材、生鐵各200萬</td><td>鑌鐵60個</td><td>茶葉4個</td><td>佳釀10個、紫麵55個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>20英勇,100迴響</td><td>20英勇,100迴響</td><td>20英勇,100迴響</td><td>20英勇,100迴響</td><td>20英勇,100迴響</td><td>20美德,100迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td>主動請纓</td><td>酣戰百合</td><td>小心應對</td><td></td><td>懷然請命</td><td>舉薦陸遜</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>戰力225萬</td><td>戰力225萬</td><td>(甘寧+呂蒙)武力222</td><td>武力115</td><td>武力113</td><td>五禽戲（紫）</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>天隕金、帝皇砂各30</td><td>木材200萬</td><td>象棋200個</td><td>屯田、伐木各10個</td><td>天隕金30個</td><td>象棋200個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>25英勇,100迴響</td><td>25英勇,100迴響</td><td>25英勇,100迴響</td><td>25英勇,100迴響</td><td>25英勇,100迴響</td><td>25美德,100迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td>拍馬入林</td><td>背暗投明</td><td>百騎劫營</td><td></td><td>騎兵之計</td><td>好言相勸</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>武力120</td><td>武力120</td><td>戰力225萬</td><td>戰力225萬</td><td>戰力225萬</td><td>(呂蒙+陸遜)統御233</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>玉龍泉30個</td><td>木材、生鐵各200萬</td><td>天隕金30個</td><td>高經書20個、勇武150片</td><td>馬24個</td><td>糧草200萬</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>30英勇,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30美德,100荊棘,100迴響</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第三層</h3>
+            <span>王之魂需求等級：8級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>呂布</th>
+                <th>貂蟬</th>
+                <th>賈詡</th>
+                <th>馬雲祿</th>
+                <th>甄姬</th>
+                <th>黃月英</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>義父首級</td><td>萬死不辭</td><td>明哲保身</td><td>萌混過關</td><td>拒絕</td><td>另想他法</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>武力118</td><td>魅力118</td><td>智力115</td><td>武111</td><td>孟德新書（紫）</td><td>智力116</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>玉龍泉40個</td><td>瓊漿8個</td><td>金鞋30個</td><td>魚蝦、菜包各60個</td><td>檀紙40個</td><td>口才200片</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>200迴響</td><td>200迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td><td>100迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>風緊扯乎</td><td>盛裝出席</td><td>收斂士兵</td><td>第一高手</td><td>前車之鑑</td><td>尋找弱點</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>戰力175萬</td><td>魅力121</td><td>戰力175萬</td><td>戰力175萬</td><td>智力108</td><td>智力120</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>木材300萬</td><td>馬28個、人參8個</td><td>糧草300萬</td><td>玉龍泉40個</td><td>鎏金箔40個</td><td>生鐵300萬</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td><td>20荊棘,100迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>再弒義父</td><td>獻上一舞</td><td>力勸退兵</td><td>欣然接受</td><td>懷璧為罪</td><td>據理力爭</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>戰力225萬</td><td>魅力125</td><td>智力120</td><td>武力115</td><td>智力113</td><td>爪黃飛電（紫）</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>胭脂8個</td><td>金鞋30個</td><td>荒獸皮40個</td><td>號角20個</td><td>帳本15個</td><td>木材300萬</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>40英勇,200迴響</td><td>40文明,200迴響</td><td>20文明,100迴響</td><td>20英勇,100迴響</td><td>20文明,100迴響</td><td>20文明,100迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>避人耳目</td><td>兵不厭詐</td><td>刺殺曹操</td><td>謹遵父命</td><td>討教一番</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>戰力250萬</td><td>魅力130</td><td>智力125</td><td>戰力250萬</td><td>智力118</td><td>智力125</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>金募兵30個</td><td>離間400片、口才300片</td><td>精良馬鞍、馬鐙各5千件</td><td>玉龍泉40個</td><td>胭脂8個</td><td>口才200片</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>50英勇,200迴響</td><td>50文明,200迴響</td><td>25文明,100迴響</td><td>25英勇,100迴響</td><td>25文明,100迴響</td><td>25文明,100迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td>斷然拒絕</td><td>以言相激</td><td>不違子道</td><td>暫避鋒芒</td><td>回答姓名</td><td>機關術</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>武力126</td><td>智力114</td><td>智力130</td><td>(馬雲祿+趙雲)武力235</td><td>魅力118</td><td>智力130</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>木材、生鐵各300萬</td><td>銀兩300萬</td><td>屯田20個</td><td>佳釀30個</td><td>玉石8個、陶器28個</td><td>木材300萬</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>60英勇,200荊棘,200迴響</td><td>60文明,200荊棘,200迴響</td><td>30文明,100荊棘,100迴響</td><td>30英勇,100荊棘,100迴響</td><td>30文明,100荊棘,100迴響</td><td>30文明,100荊棘,100迴響</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第四層</h3>
+            <span>王之魂需求等級：11級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>郭嘉</th>
+                <th>趙雲</th>
+                <th>孫策</th>
+                <th>張遼</th>
+                <th>關羽</th>
+                <th>孫尚香</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>歸家賦閒</td><td>常山子龍</td><td>隨父出征</td><td>力排眾議</td><td>掛印封金</td><td>家風如此</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>(曹操+郭嘉)智力221</td><td>戰力175萬</td><td>戰力175萬</td><td>統御111</td><td>武力114</td><td>焦尾琴（藍）</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>精良腰帶、騎甲各6千件</td><td>拜帖15個</td><td>拜帖15個</td><td>金鞋30個</td><td>糧草400萬</td><td>茶葉10個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>200迴響</td><td>200迴響</td><td>200迴響</td><td>200迴響</td><td>200迴響</td><td>200迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>十勝十敗</td><td>先尋幼主</td><td>父親遺志</td><td>決一死戰</td><td>先禮後兵</td><td>天賦有限</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>智力125</td><td>戰力225萬</td><td>玉璽（金）</td><td>爪黃飛電（紫）</td><td>戰力200萬</td><td>魅力113</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>銀兩、糧草各400萬</td><td>精良戰馬6千件、金鞋30個</td><td>拜帖15個</td><td>精良布甲、鐵槍各6千件</td><td>金鞋30個</td><td>精良鋼劍、鐵槍各6千件</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>熟視無睹</td><td>撥馬返回</td><td>出戰孫策</td><td>出城擊敵</td><td>告知前事</td><td>姓什名誰</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>智力130</td><td>武力120</td><td>武力120</td><td>戰力225萬</td><td>武力120</td><td>鐵胎弓（綠）</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>精良長弓、箭簇各6千件</td><td>天隕金50個</td><td>高經書30、勇武250片</td><td>金鞋30個</td><td>鎮鐵80個</td><td>精良長弓6千件</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>40文明,200迴響</td><td>40美德,200迴響</td><td>40英勇,200迴響</td><td>40美德,200迴響</td><td>40英勇,200迴響</td><td>40美德,200迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>平安帶回</td><td>推出去</td><td>回身救援</td><td>速速離去</td><td>言之有理</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>智力135</td><td>戰力250萬</td><td>戰力250萬</td><td>戰力250萬</td><td>戰力250萬</td><td>武力118</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>金鞋30個</td><td>金鞋30個</td><td>檀香10個</td><td>精良布甲、鐵槍各6千件</td><td>金鞋30個</td><td>萬箭500片</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>50文明,200迴響</td><td>50美德,200迴響</td><td>50美德,200迴響</td><td>50美德,200迴響</td><td>50英勇,200迴響</td><td>50美德,200迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td>厲聲喝止</td><td>堅持拿人</td><td>再探再報</td><td>借船渡河</td><td>發出挑戰</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>智力145</td><td>戰力275萬</td><td>戰力275萬</td><td>戰力275萬</td><td>武力130</td><td>武力123</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>糧草400萬</td><td>策謀、軍略各500片</td><td>銅鏡32個</td><td>玉龍泉50個</td><td>銀兩400萬</td><td>精良箭筒、箭簇各6千件</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>60文明,200荊棘,200迴響</td><td>60美德,200荊棘,200迴響</td><td>60英勇,200荊棘,200迴響</td><td>60美德,200荊棘,200迴響</td><td>60英勇,200荊棘,200迴響</td><td>60美德,200荊棘,200迴響</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第五層</h3>
+            <span>王之魂需求等級：15級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>龐統</th>
+                <th>周瑜</th>
+                <th>小喬</th>
+                <th>諸葛亮</th>
+                <th>董卓</th>
+                <th>司馬懿</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>鐵索連環</td><td>圍城必闕</td><td>必為後患</td><td>制止劉琦</td><td>拔刀相助</td><td>五路侵攻</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>智力115</td><td>戰力200萬</td><td>智力111</td><td>智力120</td><td>戰力200萬</td><td>智116</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>金鞋40個</td><td>雁形戰旗70個、心得11個</td><td>鎮鐵、寶鞍各90個</td><td>鎏金箔60個</td><td>金鞋40個</td><td>高經書40個、才學300片</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>300迴響</td><td>300迴響</td><td>300迴響</td><td>300迴響</td><td>300迴響</td><td>300迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>獻上偽策</td><td>斬使示威</td><td>請命出使</td><td>調練新兵</td><td></td><td>孟達欲反</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>智力120</td><td>統御115</td><td>智力114</td><td>統御124</td><td>武力116</td><td>戰力225萬</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>生鐵500萬</td><td>木材500萬</td><td>銀兩500萬</td><td>八卦戰旗70個、心得12個</td><td>牛36個、佳釀20個</td><td>金鞋40個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>百里小縣</td><td>設計除之</td><td>遊說</td><td>號令難行</td><td></td><td>親往探察</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>智力125</td><td>智力121</td><td>智力120</td><td>智力125</td><td>智力109</td><td>戰力275萬</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>佳釀20個</td><td>高級經驗書40個</td><td>金鞋40個</td><td>木材500萬、馬36個</td><td>銀兩500萬</td><td>金鞋40個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>60文明,300迴響</td><td>60美德,300迴響</td><td>60美德,300迴響</td><td>60文明,300迴響</td><td>60英勇,300迴響</td><td>60文明,300迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td>密謀定蜀</td><td>拜謝黃蓋</td><td>勸阻</td><td>灰飛煙滅</td><td></td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>智力131</td><td>(周瑜+黃蓋)智力210</td><td>智力125</td><td>智力130</td><td>戰力275萬</td><td>智力127</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>金鞋40個</td><td>人參12個</td><td>銀兩、糧草各500萬</td><td>口才300片</td><td>金鞋40個</td><td>糧草、生鐵各500萬</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>75文明,300迴響</td><td>75美德,300迴響</td><td>75美德,300迴響</td><td>75文明,300迴響</td><td>75英勇,300迴響</td><td>75文明,300迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td>不留禍根</td><td></td><td>弓箭為先</td><td></td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>戰力300萬</td><td>戰力300萬</td><td>智130</td><td>智力140</td><td>戰力300萬</td><td>戰力300萬</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>染料36個</td><td>金鞋40個</td><td>銀兩500萬</td><td>木材、生鐵各500萬</td><td>寶鞍、鎮鐵各90個</td><td>金鞋40個</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>90文明,300荊棘,300迴響</td><td>90美德,300荊棘,300迴響</td><td>90美德,300荊棘,300迴響</td><td>90文明,300荊棘,300迴響</td><td>90英勇,300荊棘,300迴響</td><td>90文明,300荊棘,300迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第六層</h3>
+            <span>王之魂需求等級：19級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>陸遜</th>
+                <th>祝融</th>
+                <th>孟獲</th>
+                <th>曹丕</th>
+                <th>劉禪</th>
+                <th>文鴦</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>謹遵將令</td><td>一拍即合</td><td>提出質疑</td><td>謹遵父命</td><td>勉強答應</td><td>招兵買馬</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>戰力200萬</td><td>祝融飛刀（紫）</td><td>武力115</td><td>鐵胎弓（綠）</td><td>智106</td><td>武力117</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>糧草600萬</td><td>木材、生鐵各600萬</td><td>荒獸皮、帝皇砂各70</td><td>牛40個、柴雞75個</td><td>柴雞75個、牛40個</td><td>精良布甲、鐵槍各8千件</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>300迴響</td><td>300迴響</td><td>200迴響</td><td>200迴響</td><td>200迴響</td><td>200迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>獻上一方</td><td>拒絕步戰</td><td>騎象比武</td><td>謙遜有禮</td><td>勉強答應</td><td>先發制人</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>智力117</td><td>大宛馬（紫）</td><td>武力121</td><td>爪黃飛電（紫）</td><td>武力95</td><td>武力123</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>金鞋40個</td><td>寶鞍100個</td><td>胭脂14個、銅鏡40個</td><td>玉龍泉70個</td><td>菜包125個、羊40個</td><td>金鞋40個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td><td>40荊棘,200迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>難堪重任</td><td>禮貌詢問</td><td>即刻稱王</td><td></td><td>拜師</td><td>挫敵銳氣</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>智力123</td><td>武力120</td><td>南蠻巨象（紫）</td><td>大宛馬（紫）</td><td>智力112</td><td>武力128</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>象棋600個、武聖700片</td><td>勇武350片</td><td>帳本、屯田各20個</td><td>金鞋40個</td><td>才學350片</td><td>鎮鐵、寶鞍各100個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>60美德,300迴響</td><td>60英勇,300迴響</td><td>40英勇,200迴響</td><td>40美德,200迴響</td><td>40文明,200迴響</td><td>40英勇,200迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>頗為心動</td><td>為了寨子</td><td>彰顯文采</td><td>歡呼雀躍</td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>智力130</td><td>(祝融+孟獲)武力255</td><td>戰力275萬</td><td>智力123</td><td>武力100</td><td>武力135</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>木材、生鐵各600萬</td><td>銀兩、木材各600萬</td><td>木材、生鐵各600萬</td><td>鎏金箔70個</td><td>檀香、玉石各14個</td><td>金鞋40個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>75美德,300迴響</td><td>75英勇,300迴響</td><td>50英勇,200迴響</td><td>50美德,200迴響</td><td>50文明,200迴響</td><td>50英勇,200迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td>好言安撫</td><td>恍如昨日</td><td>感到可怕</td><td>滿口答應</td><td></td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>戰力300萬</td><td>魅力135</td><td>(孟獲+祝融)武力260</td><td>武力121</td><td>智力118</td><td>戰力300萬</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>金鞋40個</td><td>金鞋40個</td><td>糧草600萬、柴雞75個</td><td>勇武350片</td><td>金鞋40個</td><td>銀兩、糧草各600萬</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>90美德,300荊棘,300迴響</td><td>90英勇,300荊棘,300迴響</td><td>60英勇,200荊棘,200迴響</td><td>60美德,200荊棘,200迴響</td><td>60文明,200荊棘,200迴響</td><td>60英勇,200荊棘,200迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第七層</h3>
+            <span>王之魂需求等級：22級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>大喬</th>
+                <th>蔡文姬</th>
+                <th>呂玲綺</th>
+                <th>班育雙姝</th>
+                <th>關銀屏</th>
+                <th>步練師</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>學習經營</td><td>躍躍欲試</td><td>伸手觸摸</td><td>家風如此</td><td>表達不滿</td><td>見過哥哥</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>智力108</td><td>智力115</td><td>倚天劍（金）</td><td>雌雄雙股劍（紫）</td><td>武力108</td><td>魅力117</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>帳本25個</td><td>胭脂16個、染料45個</td><td>精品盾牌9千件</td><td>勇武400片</td><td>鎮鐵110個、生鐵700萬</td><td>胭脂16個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>500迴響</td><td>500迴響</td><td>500迴響</td><td>500迴響</td><td>500迴響</td><td>500迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>盡力而為</td><td>奉上琴弦</td><td></td><td></td><td>不當講</td><td>拜見吳侯</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>智力114</td><td>智力118</td><td>武力115</td><td>武力95</td><td>武力114</td><td>魅力123</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>金募兵50</td><td>拜帖25個</td><td>新兵騎甲9千件</td><td>無雙800片</td><td>天隕金80個、生鐵700萬</td><td>銀兩700萬</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>請吩咐</td><td>歡欣鼓舞</td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>焦尾琴（藍）</td><td>焦尾琴（藍）</td><td>武力118</td><td>焦尾琴（藍）</td><td>戰力275萬</td><td>(步練師+孫尚香)智力223</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>酪乳16個</td><td>鎏金箔80個</td><td>菜包130個、銀兩700萬</td><td>檀香16個</td><td>帝皇砂80個</td><td>銀兩700萬</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>100文明,500迴響</td><td>100美德,500迴響</td><td>100英勇,500迴響</td><td>100美德,500迴響</td><td>100英勇,500迴響</td><td>100美德,500迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td>姐妹齊心</td><td>願聞其詳</td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>智力120</td><td>智力126</td><td>武力123</td><td>智力118</td><td>戰力300萬</td><td>智力120</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>檀香、玉石各16個</td><td>金鞋50個</td><td>鎮鐵、寶鞍各110個</td><td>蜂蜜45個</td><td>金鞋50個</td><td>口才400片</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>125文明,500迴響</td><td>125美德,500迴響</td><td>125英勇,500迴響</td><td>125美德,500迴響</td><td>125英勇,500迴響</td><td>125美德,500迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td>好言相慰</td><td>十不存一</td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>智力125</td><td>智力131</td><td>(呂玲綺+張遼)武力255</td><td>智力123</td><td>武力124</td><td>智力125</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>木材700萬</td><td>檀紙80個</td><td>銀兩700萬</td><td>精良鋼劍、鐵槍各9千件</td><td>木材、生鐵700萬</td><td>拜帖25個</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>150文明,500荊棘,500迴響</td><td>150美德,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>150美德,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>150美德,500荊棘,500迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第八層</h3>
+            <span>王之魂需求等級：24級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>張春華</th>
+                <th>張星彩</th>
+                <th>吳國太</th>
+                <th>王越</th>
+                <th>馬忠</th>
+                <th>兀突骨</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>勉強答應</td><td>據理力爭</td><td>輕浮狡詐</td><td>師恩未報</td><td>領命出發</td><td>扔到一邊</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>(張春華+司馬懿)智力233</td><td>武力113</td><td>智力111</td><td>照夜玉獅子（金）</td><td>鐵胎弓（綠）</td><td>貫石斧（金）</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>靈芝18個</td><td>柴雞85個、牛50個</td><td>陶器50個、茶葉18個</td><td>玉龍泉90個、菜包135個</td><td>天隕金90個</td><td>天隕金90個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>500迴響</td><td>500迴響</td><td>500迴響</td><td>300迴響</td><td>300迴響</td><td>300迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td></td><td>羨慕二哥</td><td>壓低聲音</td><td>法治</td><td></td><td></td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>七星刀（金）</td><td>武力120</td><td>典論（金）</td><td>武117</td><td>大宛馬（紫）</td><td>武力113</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>天隕金90個</td><td>鎮鐵120個、生鐵800萬</td><td>金鞋50個</td><td>精良法袍1萬件,檀紙120個</td><td>玉龍泉90個</td><td>佳釀25個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td></td><td></td><td></td><td>樂意之至</td><td>半路埋伏</td><td></td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>武力105</td><td>孟德新書（紫）</td><td>青梅（綠）</td><td>(王越+于吉)戰力550萬</td><td>戰力275萬</td><td>武力119</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>魚蝦、柴雞各85個</td><td>檀紙120個、荒獸皮90個</td><td>木材、生鐵各800萬</td><td>金鞋50個</td><td>玉龍泉90個</td><td>號角25個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>100文明,500迴響</td><td>100英勇,500迴響</td><td>100文明,500迴響</td><td>60英勇,300迴響</td><td>60英勇,300迴響</td><td>60英勇,300迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td></td><td></td><td>分錢</td><td>心領神會</td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>(張春華+司馬懿)智力248</td><td>戰力300萬</td><td>智力117</td><td>武力128</td><td>戰力300萬</td><td>武力130</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>精良鋼劍1萬件,銀兩800萬</td><td>金鞋50個</td><td>茶葉18個</td><td>高經書25個、勇武450片</td><td>火箭、暴烈各900片</td><td>銅鏡50個、檀香18個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>125文明,500迴響</td><td>125英勇,300迴響</td><td>125文明,500迴響</td><td>75英勇,300迴響</td><td>75英勇,300迴響</td><td>75英勇,300迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td></td><td></td><td>婉拒</td><td>收攏殘兵</td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>(張春華+司馬懿)智力260</td><td>魅力123</td><td>智力127</td><td>戰力325萬</td><td>戰力325萬</td><td>戰力325萬</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>人參18個</td><td>胭脂18個</td><td>靈芝、人參各18個</td><td>鋒矢戰旗100個、心得18個</td><td>木材、生鐵各800萬</td><td>胭脂18個</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>150文明,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>150文明,500荊棘,500迴響</td><td>90英勇,300荊棘,300迴響</td><td>90英勇,300荊棘,300迴響</td><td>90英勇,300荊棘,300迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第九層</h3>
+            <span>王之魂需求等級：26級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>華佗</th>
+                <th>童淵</th>
+                <th>司馬徽</th>
+                <th>于吉</th>
+                <th>左慈</th>
+                <th>南華老仙</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>開臚手術</td><td>要事相求</td><td>好·很好</td><td>反客為主</td><td>欣喜若狂</td><td>出手制止</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>麻沸散（綠）</td><td>武力118</td><td>智力108</td><td>武力112</td><td>智力120</td><td>戰力250萬</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>人參、靈芝各20個</td><td>佳釀30個</td><td>才學500片</td><td>900萬糧</td><td>靈芝20個、硝石90個</td><td>絹紙90個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>500迴響</td><td>500迴響</td><td>500迴響</td><td>500迴響</td><td>300迴響</td><td>500迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>五禽戲（金）</td><td>武力121</td><td>智力115</td><td>(于吉+王越)武力237</td><td>太平要術（金）</td><td>太平要術（金）</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>檀紙130個</td><td>天隕金100個</td><td>佳釀30個</td><td>金鞋60個</td><td>精良法杖1.1萬件</td><td>高級經驗書30個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>60荊棘,300迴響</td><td>60荊棘,300迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>爪黃飛電（紫）</td><td>(童淵+趙雲)武力246</td><td>智力120</td><td>戰力300萬</td><td>生死符（金）</td><td>玉璽（金）</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>糧草900萬、豆子230個</td><td>生鐵900萬、鎮鐵130個</td><td>木材、生鐵各900萬</td><td>牛55個</td><td>絹紙55個</td><td>銀兩、木材各900萬</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>100美德,500迴響</td><td>100英勇,500迴響</td><td>100文明,500迴響</td><td>100美德,500迴響</td><td>60文明,300迴響</td><td>60美德,300迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>責無旁貸</td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>戰力325萬</td><td>(童淵+趙雲)武力256</td><td>魅力123</td><td>戰力325萬</td><td>(左慈+南華老仙)武力190</td><td>(南華老仙+華佗)智力250</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>勇武500片、高經書30個</td><td>精良騎甲、馬鞍各1.1萬件</td><td>染料55個</td><td>糧草、木材各900萬</td><td>金鞋60個</td><td>玉石20個、帝皇砂100個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>125美德,500迴響</td><td>125英勇,300迴響</td><td>125文明,500迴響</td><td>125美德,300迴響</td><td>75文明,300迴響</td><td>75美德,300迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>智力126</td><td>武力135</td><td>智力126</td><td>戰力350萬</td><td>戰力350萬</td><td>戰力350萬</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>檀紙130個</td><td>金鞋60個</td><td>柴雞、魚蝦各90個</td><td>精良鋼劍、鐵槍各1.1萬件</td><td>羊90個</td><td>天隕金、荒獸皮各100個</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>150美德,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>150文明,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>90文明,300荊棘,300迴響</td><td>90美德,300荊棘,300迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第十層</h3>
+            <span>王之魂需求等級：28級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>曹操</th>
+                <th>劉備</th>
+                <th>孫權</th>
+                <th>張角</th>
+                <th>袁紹</th>
+                <th>紫虛上人</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>正面迎擊</td><td>上前制止</td><td>為兄分憂</td><td>拜問姓名</td><td>誅殺宦官</td><td>隱居終南</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>戰力250萬</td><td>武力116</td><td>智力116</td><td>智力117</td><td>武106</td><td>戰力250萬</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>木材1000萬</td><td>佳釀30個</td><td>金募兵30個</td><td>豆子230個</td><td>金鞋60</td><td>人參、靈芝各50個</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>600迴響</td><td>600迴響</td><td>600迴響</td><td>500迴響</td><td>500迴響</td><td>600迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>刺殺董卓</td><td>滿口答應</td><td></td><td></td><td>假意推遲</td><td></td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>七星刀（金）</td><td>武力120</td><td>智力120</td><td>武力93</td><td>魅力111</td><td>青梅（綠）</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>豆子230個、玉龍泉110個</td><td>牛、羊各55個</td><td>拜帖30個</td><td>高經書30、靈石2000個</td><td>精良令旗12000,佳釀30</td><td>佳釀30個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>120荊棘,600迴響</td><td>120荊棘,600迴響</td><td>120荊棘,600迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td><td>100荊棘,500迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td>全軍出擊</td><td>請命出戰</td><td></td><td></td><td>多說無益</td><td></td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>戰力275萬</td><td>(劉備+關羽)武力246</td><td>戰力300萬</td><td>智力123</td><td>戰力300萬</td><td>智力122</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>銀兩、木材各1000萬</td><td>精良鋼劍、鐵槍各1.2萬件</td><td>牛、羊各55個</td><td>人參、靈芝各20個</td><td>精良長弓,箭簇各12000</td><td>絹紙50個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>120美德,600迴響</td><td>120英勇,600迴響</td><td>120文明,600迴響</td><td>100文明,500迴響</td><td>100英勇,500迴響</td><td>100美德,500迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td>運籌決定</td><td></td><td></td><td>依計而行</td><td></td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>(曹操+劉備)戰力650萬</td><td>戰力325萬</td><td>戰力325萬</td><td>戰力325萬</td><td>戰力325萬</td><td>武力116</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>糧草1000萬</td><td>拜帖30個</td><td>金募兵30個</td><td>染料55個,精良布甲1.2萬件</td><td>玉龍泉110</td><td>帝皇砂110個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>150美德,600迴響</td><td>150英勇,600迴響</td><td>150文明,600迴響</td><td>125文明,500迴響</td><td>125英勇,500迴響</td><td>125美德,500迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td>好言相勸</td><td></td><td></td><td>力戰敵軍</td><td></td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>戰力350萬</td><td>(劉備+張飛)武力267</td><td>武力126</td><td>戰力350萬</td><td>戰力350萬</td><td>智力132</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>金鞋60個</td><td>金鞋60個</td><td>鎮鐵140個,精良鋼劍1.2萬</td><td>精品盾牌,精良令旗各1.2萬</td><td>精鐵槍1.2萬,校尉披風6千</td><td>木材、生鐵各1000萬</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>180美德,600荊棘,600迴響</td><td>180英勇,600荊棘,600迴響</td><td>180文明,600荊棘,600迴響</td><td>150文明,500荊棘,500迴響</td><td>150英勇,500荊棘,500迴響</td><td>150美德,500荊棘,500迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <div class="rc-floor-title">
+            <h3>第十一層</h3>
+            <span>王之魂需求等級：35級</span>
+          </div>
+          <table class="rc-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>孫堅</th>
+                <th>項羽</th>
+                <th>虞姬</th>
+                <th>張良</th>
+                <th>韓信</th>
+                <th>諸葛果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="rc-green">
+                <td>任務綠1</td>
+                <td>主動出擊</td><td>乖乖就範</td><td>習武</td><td>招攬力士</td><td>請命出戰</td><td>獻計</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠2</td>
+                <td>武力118</td><td>智力95</td><td>倚天劍（金）</td><td>魅力118</td><td>智力119</td><td>智力120</td>
+              </tr>
+              <tr class="rc-green">
+                <td>任務綠3</td>
+                <td>校尉披風、腿甲各6500件</td><td>糧草、生鐵各1100萬</td><td>菜包150個</td><td>銀兩1100萬</td><td>木材、生鐵各1100萬</td><td>木材1100萬</td>
+              </tr>
+              <tr class="rc-summary rc-green">
+                <td>第1次輪迴</td>
+                <td>600迴響</td><td>800迴響</td><td>800迴響</td><td>800迴響</td><td>800迴響</td><td>500迴響</td>
+              </tr>
+
+              <tr class="rc-blue">
+                <td>任務藍1</td>
+                <td>領命出征</td><td></td><td>拜師學藝</td><td></td><td></td><td>書香門第</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍2</td>
+                <td>戰力300萬</td><td>武力123</td><td>(虞姬+項羽)武力216</td><td>長柄鐵錘（綠）</td><td>戰力300萬</td><td>智力125</td>
+              </tr>
+              <tr class="rc-blue">
+                <td>任務藍3</td>
+                <td>酪乳、瓊漿各25個</td><td>佳釀35個</td><td>染料55個、葛布150個</td><td>天隕金120個</td><td>囤田、挖礦各30個</td><td>硝石120個、靈石1萬個</td>
+              </tr>
+              <tr class="rc-summary rc-blue">
+                <td>第2次輪迴</td>
+                <td>120荊棘,800迴響</td><td>160荊棘,800迴響</td><td>160荊棘,800迴響</td><td>160荊棘,800迴響</td><td>160荊棘,800迴響</td><td>100荊棘,500迴響</td>
+              </tr>
+
+              <tr class="rc-purple">
+                <td>任務紫1</td>
+                <td></td><td></td><td></td><td></td><td></td><td>恩師授書</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫2</td>
+                <td>武力124</td><td>統御124</td><td>魅力125</td><td>智力128</td><td>智力125</td><td>智力130</td>
+              </tr>
+              <tr class="rc-purple">
+                <td>任務紫3</td>
+                <td>虎賁長刀6500件</td><td>金募兵20個</td><td>精品玉龍泉、天隕金各65</td><td>金鞋70個</td><td>茶葉、靈芝各25個</td><td>極品玉龍泉48個</td>
+              </tr>
+              <tr class="rc-summary rc-purple">
+                <td>第3次輪迴</td>
+                <td>120英勇,500迴響</td><td>160英勇,800迴響</td><td>160美德,800迴響</td><td>160文明,800迴響</td><td>160美德,800迴響</td><td>100文明,500迴響</td>
+              </tr>
+
+              <tr class="rc-gold">
+                <td>任務金1</td>
+                <td></td><td></td><td></td><td></td><td></td><td>思念家父</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金2</td>
+                <td>戰力350萬</td><td>戰力350萬</td><td>魅力130</td><td>智力133</td><td>智力132</td><td>智力135</td>
+              </tr>
+              <tr class="rc-gold">
+                <td>任務金3</td>
+                <td>金鞋70個</td><td>銀兩、糧草各1100萬</td><td>胭脂25個、銅鏡55個</td><td>銀兩、糧草各1100萬</td><td>銅鏡55個、檀香25個</td><td>極品帝皇砂48個</td>
+              </tr>
+              <tr class="rc-summary rc-gold">
+                <td>第4次輪迴</td>
+                <td>150英勇,600迴響</td><td>200英勇,800迴響</td><td>200美德,800迴響</td><td>200文明,800迴響</td><td>200美德,800迴響</td><td>125文明,500迴響</td>
+              </tr>
+
+              <tr class="rc-red">
+                <td>任務紅1</td>
+                <td></td><td></td><td></td><td></td><td></td><td>師父珍重</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅2</td>
+                <td>智力115</td><td>戰力375萬</td><td>魅力135</td><td>智力138</td><td>戰力375萬</td><td>戰力375萬</td>
+              </tr>
+              <tr class="rc-red">
+                <td>任務紅3</td>
+                <td>鐵桶戰旗130個、心得30個</td><td>木材、生鐵各1100萬</td><td>檀香25個</td><td>精良令旗1.3萬件,染料55個</td><td>虎賁腕、虎賁履各6500件</td><td>木材、生鐵各1100萬</td>
+              </tr>
+              <tr class="rc-summary rc-red">
+                <td>第5次輪迴</td>
+                <td>180英勇,600荊棘,600迴響</td><td>240英勇,800荊棘,800迴響</td><td>240美德,800荊棘,800迴響</td><td>240文明,800荊棘,800迴響</td><td>240美德,800荊棘,800迴響</td><td>150文明,500荊棘,500迴響</td>
+              </tr>
+
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
