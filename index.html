@@ -2398,6 +2398,75 @@
 .rc-summary td:first-child {
   font-weight: 900;
 }
+.rc-wrap2 { display: flex; flex-direction: column; gap: 4px; }
+.rc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+}
+.rc-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  text-align: center;
+}
+.rc-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-dim);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+.rc-card-name {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--gold-bright);
+  letter-spacing: 1px;
+}
+.rc-card-floor {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.rc-card.rc-hidden { display: none; }
+
+/* ===== 輪迴條件 Modal ===== */
+#rcModal .modal-content { width: min(520px, 100%); }
+.rc-modal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rc-modal-table th, .rc-modal-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+  line-height: 1.7;
+}
+.rc-modal-table thead th {
+  background: rgba(255,255,255,0.04);
+  color: var(--gold-bright);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: left;
+}
+.rc-modal-table thead th.rc-modal-req { text-align: center; }
+.rc-modal-table td.rc-modal-req { font-weight: 800; }
+.rc-modal-table tr.rc-green  { background: rgba(124,195,109,.08); }
+.rc-modal-table tr.rc-blue   { background: rgba(90,169,230,.08); }
+.rc-modal-table tr.rc-purple { background: rgba(181,125,224,.08); }
+.rc-modal-table tr.rc-gold   { background: rgba(224,178,60,.08); }
+.rc-modal-table tr.rc-red    { background: rgba(224,100,90,.08); }
+.rc-modal-table tr.rc-green  td.rc-modal-items { border-left: 3px solid #7cc36d; }
+.rc-modal-table tr.rc-blue   td.rc-modal-items { border-left: 3px solid #5aa9e6; }
+.rc-modal-table tr.rc-purple td.rc-modal-items { border-left: 3px solid #b57de0; }
+.rc-modal-table tr.rc-gold   td.rc-modal-items { border-left: 3px solid #e0b23c; }
+.rc-modal-table tr.rc-red    td.rc-modal-items { border-left: 3px solid #e0645a; }
+.rc-modal-table tr.rc-green  td.rc-modal-req { color: #7cc36d; border-left: 3px solid #7cc36d; }
+.rc-modal-table tr.rc-blue   td.rc-modal-req { color: #5aa9e6; border-left: 3px solid #5aa9e6; }
+.rc-modal-table tr.rc-purple td.rc-modal-req { color: #b57de0; border-left: 3px solid #b57de0; }
+.rc-modal-table tr.rc-gold   td.rc-modal-req { color: #e0b23c; border-left: 3px solid #e0b23c; }
+.rc-modal-table tr.rc-red    td.rc-modal-req { color: #e0645a; border-left: 3px solid #e0645a; }
 .rc-summary.rc-green  { background: rgba(124,195,109,.22); }
 .rc-summary.rc-blue   { background: rgba(90,169,230,.22); }
 .rc-summary.rc-purple { background: rgba(181,125,224,.22); }
@@ -2685,9 +2754,15 @@
     <div id="reincarnCondPage" style="display:none;">
       <div class="topbar">
         <div class="topbar-title">輪迴條件</div>
+        <div class="filters">
+          <div class="search-wrap">
+            <span class="icon">🔍</span>
+            <input type="text" id="reincarnCondSearch" placeholder="搜尋英雄名稱..." onkeyup="filterReincarnCondCards()" style="width:260px;" autocomplete="off" name="reincarn-cond-search-nofill">
+          </div>
+        </div>
       </div>
       <div class="content">
-        <div class="rc-wrap">
+        <div class="rc-wrap" style="display:none;">
           <div class="rc-floor-title">
             <h3>第一層</h3>
             <span>王之魂需求等級：0級</span>
@@ -3839,6 +3914,338 @@
             </tbody>
           </table>
         </div>
+        <div class="rc-wrap2">
+          <div class="rc-floor-title">
+            <h3>第一層</h3>
+            <span>王之魂需求等級：0級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="典韋" data-rc='{&quot;name&quot;: &quot;典韋&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;待他落單&quot;, &quot;武力115&quot;, &quot;糧草100萬、銀兩200萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;放著我來&quot;, &quot;戰力125萬&quot;, &quot;寶鞍20個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;欣然接受&quot;, &quot;獲得戰功15萬&quot;, &quot;天隕金20個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力118&quot;, &quot;玉龍泉20個、糧草100萬&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;(典韋+夏侯惇)武力242&quot;, &quot;檀紙20個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">典韋</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+            <div class="rc-card" data-hero-name="姜維" data-rc='{&quot;name&quot;: &quot;姜維&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;棄暗投明&quot;, &quot;戰力100萬&quot;, &quot;糧草100萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;僅奉遺命&quot;, &quot;白羽扇（藍）&quot;, &quot;八卦戰旗30個、心得3個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;親自斷後&quot;, &quot;諸葛連弩（紫）&quot;, &quot;拜帖10個&quot;], &quot;req&quot;: &quot;20美德,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;避禍還中&quot;, &quot;武力108&quot;, &quot;金鞋20個&quot;], &quot;req&quot;: &quot;25美德,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;等待時機&quot;, &quot;智力112&quot;, &quot;龍閣200片&quot;], &quot;req&quot;: &quot;30美德,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">姜維</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+            <div class="rc-card" data-hero-name="周泰" data-rc='{&quot;name&quot;: &quot;周泰&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;投降保命&quot;, &quot;(周泰+孫策)武222&quot;, &quot;騎兵、步兵文書各20個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;我是書童&quot;, &quot;戰力125萬&quot;, &quot;精品盾牌3千件&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;武力超度&quot;, &quot;七星刀（金）&quot;, &quot;高級經驗書20個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;殺入陣中&quot;, &quot;戰力200萬&quot;, &quot;精良剛劍、騎甲各3千件&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;解開上衣&quot;, &quot;(周泰+孫權)武力225&quot;, &quot;號角10個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">周泰</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+            <div class="rc-card" data-hero-name="荀彧" data-rc='{&quot;name&quot;: &quot;荀彧&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;舉族北遷&quot;, &quot;智力109&quot;, &quot;糧草100萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;投筆曹魏&quot;, &quot;智力112&quot;, &quot;修養100片、才學100片&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;假意應允&quot;, &quot;(荀彧+夏侯惇)統御191&quot;, &quot;屯田10個&quot;], &quot;req&quot;: &quot;20文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;勸春天子&quot;, &quot;戰力200萬&quot;, &quot;銀兩、糧草各100萬&quot;], &quot;req&quot;: &quot;25文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;二虎競食&quot;, &quot;智力115&quot;, &quot;精良獸甲、長弓各3千件&quot;], &quot;req&quot;: &quot;30文明,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">荀彧</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+            <div class="rc-card" data-hero-name="張飛" data-rc='{&quot;name&quot;: &quot;張飛&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;興師問罪&quot;, &quot;武力115&quot;, &quot;佳釀10個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;按年齡&quot;, &quot;白鵠（藍）&quot;, &quot;鑌鐵50個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;暫避鋒芒&quot;, &quot;戰力175萬&quot;, &quot;糧草100萬&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;救援子龍&quot;, &quot;戰力200萬&quot;, &quot;金鞋20個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;親自解鄉&quot;, &quot;戰力225萬&quot;, &quot;糧草200萬&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張飛</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+            <div class="rc-card" data-hero-name="太史慈" data-rc='{&quot;name&quot;: &quot;太史慈&quot;, &quot;floor&quot;: &quot;第一層&quot;, &quot;level&quot;: &quot;0級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;赴身相助&quot;, &quot;戰力100萬&quot;, &quot;拜帖10個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;一同前往&quot;, &quot;(太史慈+關羽)武力222&quot;, &quot;糧草100萬&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;擒賊擒王&quot;, &quot;戰力150萬&quot;, &quot;精良鋼劍、鐵槍各3千件&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;挑戰孫策&quot;, &quot;武力111&quot;, &quot;金鞋20個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;主動請降&quot;, &quot;武力117&quot;, &quot;天隕金、荒獸皮各20個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">太史慈</div>
+              <div class="rc-card-floor">第一層・0級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第二層</h3>
+            <span>王之魂需求等級：5級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="許褚" data-rc='{&quot;name&quot;: &quot;許褚&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;前去取回&quot;, &quot;武111&quot;, &quot;木材、生鐵各200萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;主動請纓&quot;, &quot;戰力150萬&quot;, &quot;高經書20個、勇武150片&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;速回大營&quot;, &quot;武力115&quot;, &quot;盾牆300片&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;主動請纓&quot;, &quot;戰力225萬&quot;, &quot;天隕金、帝皇砂各30&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;拍馬入林&quot;, &quot;武力120&quot;, &quot;玉龍泉30個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">許褚</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+            <div class="rc-card" data-hero-name="馬超" data-rc='{&quot;name&quot;: &quot;馬超&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;興兵雪恨&quot;, &quot;(馬超+馬岱)武力209&quot;, &quot;銀兩200萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;派兵相助&quot;, &quot;戰力150萬&quot;, &quot;木材、生鐵各200萬&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;謹慎行事&quot;, &quot;武力115&quot;, &quot;佳釀10個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;酣戰百合&quot;, &quot;戰力225萬&quot;, &quot;木材200萬&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;背暗投明&quot;, &quot;武力120&quot;, &quot;木材、生鐵各200萬&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">馬超</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+            <div class="rc-card" data-hero-name="甘寧" data-rc='{&quot;name&quot;: &quot;甘寧&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;暫投黃祖&quot;, &quot;戰力125萬&quot;, &quot;銀兩、木材各200萬&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;再造之恩&quot;, &quot;絕影（紫）&quot;, &quot;金募兵20個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;黃祖庸弱&quot;, &quot;武力110&quot;, &quot;木材、生鐵各200萬&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;小心應對&quot;, &quot;(甘寧+呂蒙)武力222&quot;, &quot;象棋200個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;百騎劫營&quot;, &quot;戰力225萬&quot;, &quot;天隕金30個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">甘寧</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+            <div class="rc-card" data-hero-name="夏侯惇" data-rc='{&quot;name&quot;: &quot;夏侯惇&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;為師報仇&quot;, &quot;武力108&quot;, &quot;精良戰馬4千件、金鞋20個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;欣然接受&quot;, &quot;(夏侯惇+夏侯淵)武力217&quot;, &quot;精良鋼劍、騎甲各4千件&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;考慮收留&quot;, &quot;武力111&quot;, &quot;鑌鐵60個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力115&quot;, &quot;屯田、伐木各10個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力225萬&quot;, &quot;高經書20個、勇武150片&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">夏侯惇</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+            <div class="rc-card" data-hero-name="黃忠" data-rc='{&quot;name&quot;: &quot;黃忠&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;來者必死&quot;, &quot;武力108&quot;, &quot;高級經驗書20個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;多謝&quot;, &quot;爪黃飛電（紫）&quot;, &quot;木材、生鐵各200萬&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;射其盔纓&quot;, &quot;戰力200萬&quot;, &quot;茶葉4個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;懷然請命&quot;, &quot;武力113&quot;, &quot;天隕金30個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;騎兵之計&quot;, &quot;戰力225萬&quot;, &quot;馬24個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">黃忠</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+            <div class="rc-card" data-hero-name="呂蒙" data-rc='{&quot;name&quot;: &quot;呂蒙&quot;, &quot;floor&quot;: &quot;第二層&quot;, &quot;level&quot;: &quot;5級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;發憤圖強&quot;, &quot;將印（紫）&quot;, &quot;染料24個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;奉命讀書&quot;, &quot;孟德新書（紫）&quot;, &quot;才學150片&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;關羽熊虎&quot;, &quot;智力110&quot;, &quot;佳釀10個、紫麵55個&quot;], &quot;req&quot;: &quot;20美德,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;舉薦陸遜&quot;, &quot;五禽戲（紫）&quot;, &quot;象棋200個&quot;], &quot;req&quot;: &quot;25美德,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;好言相勸&quot;, &quot;(呂蒙+陸遜)統御233&quot;, &quot;糧草200萬&quot;], &quot;req&quot;: &quot;30美德,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">呂蒙</div>
+              <div class="rc-card-floor">第二層・5級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第三層</h3>
+            <span>王之魂需求等級：8級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="呂布" data-rc='{&quot;name&quot;: &quot;呂布&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;義父首級&quot;, &quot;武力118&quot;, &quot;玉龍泉40個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;風緊扯乎&quot;, &quot;戰力175萬&quot;, &quot;木材300萬&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;再弒義父&quot;, &quot;戰力225萬&quot;, &quot;胭脂8個&quot;], &quot;req&quot;: &quot;40英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力250萬&quot;, &quot;金募兵30個&quot;], &quot;req&quot;: &quot;50英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;斷然拒絕&quot;, &quot;武力126&quot;, &quot;木材、生鐵各300萬&quot;], &quot;req&quot;: &quot;60英勇,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">呂布</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+            <div class="rc-card" data-hero-name="貂蟬" data-rc='{&quot;name&quot;: &quot;貂蟬&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;萬死不辭&quot;, &quot;魅力118&quot;, &quot;瓊漿8個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;盛裝出席&quot;, &quot;魅力121&quot;, &quot;馬28個、人參8個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;獻上一舞&quot;, &quot;魅力125&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;40文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;避人耳目&quot;, &quot;魅力130&quot;, &quot;離間400片、口才300片&quot;], &quot;req&quot;: &quot;50文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;以言相激&quot;, &quot;智力114&quot;, &quot;銀兩300萬&quot;], &quot;req&quot;: &quot;60文明,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">貂蟬</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+            <div class="rc-card" data-hero-name="賈詡" data-rc='{&quot;name&quot;: &quot;賈詡&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;明哲保身&quot;, &quot;智力115&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;收斂士兵&quot;, &quot;戰力175萬&quot;, &quot;糧草300萬&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;力勸退兵&quot;, &quot;智力120&quot;, &quot;荒獸皮40個&quot;], &quot;req&quot;: &quot;20文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;兵不厭詐&quot;, &quot;智力125&quot;, &quot;精良馬鞍、馬鐙各5千件&quot;], &quot;req&quot;: &quot;25文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;不違子道&quot;, &quot;智力130&quot;, &quot;屯田20個&quot;], &quot;req&quot;: &quot;30文明,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">賈詡</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+            <div class="rc-card" data-hero-name="馬雲祿" data-rc='{&quot;name&quot;: &quot;馬雲祿&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;萌混過關&quot;, &quot;武111&quot;, &quot;魚蝦、菜包各60個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;第一高手&quot;, &quot;戰力175萬&quot;, &quot;玉龍泉40個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;欣然接受&quot;, &quot;武力115&quot;, &quot;號角20個&quot;], &quot;req&quot;: &quot;20英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;刺殺曹操&quot;, &quot;戰力250萬&quot;, &quot;玉龍泉40個&quot;], &quot;req&quot;: &quot;25英勇,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;暫避鋒芒&quot;, &quot;(馬雲祿+趙雲)武力235&quot;, &quot;佳釀30個&quot;], &quot;req&quot;: &quot;30英勇,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">馬雲祿</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+            <div class="rc-card" data-hero-name="甄姬" data-rc='{&quot;name&quot;: &quot;甄姬&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;拒絕&quot;, &quot;孟德新書（紫）&quot;, &quot;檀紙40個&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;前車之鑑&quot;, &quot;智力108&quot;, &quot;鎏金箔40個&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;懷璧為罪&quot;, &quot;智力113&quot;, &quot;帳本15個&quot;], &quot;req&quot;: &quot;20文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;謹遵父命&quot;, &quot;智力118&quot;, &quot;胭脂8個&quot;], &quot;req&quot;: &quot;25文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;回答姓名&quot;, &quot;魅力118&quot;, &quot;玉石8個、陶器28個&quot;], &quot;req&quot;: &quot;30文明,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">甄姬</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+            <div class="rc-card" data-hero-name="黃月英" data-rc='{&quot;name&quot;: &quot;黃月英&quot;, &quot;floor&quot;: &quot;第三層&quot;, &quot;level&quot;: &quot;8級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;另想他法&quot;, &quot;智力116&quot;, &quot;口才200片&quot;], &quot;req&quot;: &quot;100迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;尋找弱點&quot;, &quot;智力120&quot;, &quot;生鐵300萬&quot;], &quot;req&quot;: &quot;20荊棘,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;據理力爭&quot;, &quot;爪黃飛電（紫）&quot;, &quot;木材300萬&quot;], &quot;req&quot;: &quot;20文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;討教一番&quot;, &quot;智力125&quot;, &quot;口才200片&quot;], &quot;req&quot;: &quot;25文明,100迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;機關術&quot;, &quot;智力130&quot;, &quot;木材300萬&quot;], &quot;req&quot;: &quot;30文明,100荊棘,100迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">黃月英</div>
+              <div class="rc-card-floor">第三層・8級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第四層</h3>
+            <span>王之魂需求等級：11級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="郭嘉" data-rc='{&quot;name&quot;: &quot;郭嘉&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;歸家賦閒&quot;, &quot;(曹操+郭嘉)智力221&quot;, &quot;精良腰帶、騎甲各6千件&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;十勝十敗&quot;, &quot;智力125&quot;, &quot;銀兩、糧草各400萬&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;熟視無睹&quot;, &quot;智力130&quot;, &quot;精良長弓、箭簇各6千件&quot;], &quot;req&quot;: &quot;40文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力135&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;50文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力145&quot;, &quot;糧草400萬&quot;], &quot;req&quot;: &quot;60文明,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">郭嘉</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+            <div class="rc-card" data-hero-name="趙雲" data-rc='{&quot;name&quot;: &quot;趙雲&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;常山子龍&quot;, &quot;戰力175萬&quot;, &quot;拜帖15個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;先尋幼主&quot;, &quot;戰力225萬&quot;, &quot;精良戰馬6千件、金鞋30個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;撥馬返回&quot;, &quot;武力120&quot;, &quot;天隕金50個&quot;], &quot;req&quot;: &quot;40美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;平安帶回&quot;, &quot;戰力250萬&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;50美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;厲聲喝止&quot;, &quot;戰力275萬&quot;, &quot;策謀、軍略各500片&quot;], &quot;req&quot;: &quot;60美德,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">趙雲</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+            <div class="rc-card" data-hero-name="孫策" data-rc='{&quot;name&quot;: &quot;孫策&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;隨父出征&quot;, &quot;戰力175萬&quot;, &quot;拜帖15個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;父親遺志&quot;, &quot;玉璽（金）&quot;, &quot;拜帖15個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;出戰孫策&quot;, &quot;武力120&quot;, &quot;高經書30、勇武250片&quot;], &quot;req&quot;: &quot;40英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;推出去&quot;, &quot;戰力250萬&quot;, &quot;檀香10個&quot;], &quot;req&quot;: &quot;50美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;堅持拿人&quot;, &quot;戰力275萬&quot;, &quot;銅鏡32個&quot;], &quot;req&quot;: &quot;60英勇,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">孫策</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+            <div class="rc-card" data-hero-name="張遼" data-rc='{&quot;name&quot;: &quot;張遼&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;力排眾議&quot;, &quot;統御111&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;決一死戰&quot;, &quot;爪黃飛電（紫）&quot;, &quot;精良布甲、鐵槍各6千件&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;出城擊敵&quot;, &quot;戰力225萬&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;40美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;回身救援&quot;, &quot;戰力250萬&quot;, &quot;精良布甲、鐵槍各6千件&quot;], &quot;req&quot;: &quot;50美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;再探再報&quot;, &quot;戰力275萬&quot;, &quot;玉龍泉50個&quot;], &quot;req&quot;: &quot;60美德,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張遼</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+            <div class="rc-card" data-hero-name="關羽" data-rc='{&quot;name&quot;: &quot;關羽&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;掛印封金&quot;, &quot;武力114&quot;, &quot;糧草400萬&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;先禮後兵&quot;, &quot;戰力200萬&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;告知前事&quot;, &quot;武力120&quot;, &quot;鎮鐵80個&quot;], &quot;req&quot;: &quot;40英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;速速離去&quot;, &quot;戰力250萬&quot;, &quot;金鞋30個&quot;], &quot;req&quot;: &quot;50英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;借船渡河&quot;, &quot;武力130&quot;, &quot;銀兩400萬&quot;], &quot;req&quot;: &quot;60英勇,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">關羽</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+            <div class="rc-card" data-hero-name="孫尚香" data-rc='{&quot;name&quot;: &quot;孫尚香&quot;, &quot;floor&quot;: &quot;第四層&quot;, &quot;level&quot;: &quot;11級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;家風如此&quot;, &quot;焦尾琴（藍）&quot;, &quot;茶葉10個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;天賦有限&quot;, &quot;魅力113&quot;, &quot;精良鋼劍、鐵槍各6千件&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;姓什名誰&quot;, &quot;鐵胎弓（綠）&quot;, &quot;精良長弓6千件&quot;], &quot;req&quot;: &quot;40美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;言之有理&quot;, &quot;武力118&quot;, &quot;萬箭500片&quot;], &quot;req&quot;: &quot;50美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;發出挑戰&quot;, &quot;武力123&quot;, &quot;精良箭筒、箭簇各6千件&quot;], &quot;req&quot;: &quot;60美德,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">孫尚香</div>
+              <div class="rc-card-floor">第四層・11級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第五層</h3>
+            <span>王之魂需求等級：15級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="龐統" data-rc='{&quot;name&quot;: &quot;龐統&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;鐵索連環&quot;, &quot;智力115&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;獻上偽策&quot;, &quot;智力120&quot;, &quot;生鐵500萬&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;百里小縣&quot;, &quot;智力125&quot;, &quot;佳釀20個&quot;], &quot;req&quot;: &quot;60文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;密謀定蜀&quot;, &quot;智力131&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;75文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;染料36個&quot;], &quot;req&quot;: &quot;90文明,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">龐統</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+            <div class="rc-card" data-hero-name="周瑜" data-rc='{&quot;name&quot;: &quot;周瑜&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;圍城必闕&quot;, &quot;戰力200萬&quot;, &quot;雁形戰旗70個、心得11個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;斬使示威&quot;, &quot;統御115&quot;, &quot;木材500萬&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;設計除之&quot;, &quot;智力121&quot;, &quot;高級經驗書40個&quot;], &quot;req&quot;: &quot;60美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;拜謝黃蓋&quot;, &quot;(周瑜+黃蓋)智力210&quot;, &quot;人參12個&quot;], &quot;req&quot;: &quot;75美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;不留禍根&quot;, &quot;戰力300萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;90美德,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">周瑜</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+            <div class="rc-card" data-hero-name="小喬" data-rc='{&quot;name&quot;: &quot;小喬&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;必為後患&quot;, &quot;智力111&quot;, &quot;鎮鐵、寶鞍各90個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;請命出使&quot;, &quot;智力114&quot;, &quot;銀兩500萬&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;遊說&quot;, &quot;智力120&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;60美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;勸阻&quot;, &quot;智力125&quot;, &quot;銀兩、糧草各500萬&quot;], &quot;req&quot;: &quot;75美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智130&quot;, &quot;銀兩500萬&quot;], &quot;req&quot;: &quot;90美德,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">小喬</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+            <div class="rc-card" data-hero-name="諸葛亮" data-rc='{&quot;name&quot;: &quot;諸葛亮&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;制止劉琦&quot;, &quot;智力120&quot;, &quot;鎏金箔60個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;調練新兵&quot;, &quot;統御124&quot;, &quot;八卦戰旗70個、心得12個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;號令難行&quot;, &quot;智力125&quot;, &quot;木材500萬、馬36個&quot;], &quot;req&quot;: &quot;60文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;灰飛煙滅&quot;, &quot;智力130&quot;, &quot;口才300片&quot;], &quot;req&quot;: &quot;75文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;弓箭為先&quot;, &quot;智力140&quot;, &quot;木材、生鐵各500萬&quot;], &quot;req&quot;: &quot;90文明,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">諸葛亮</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+            <div class="rc-card" data-hero-name="董卓" data-rc='{&quot;name&quot;: &quot;董卓&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;拔刀相助&quot;, &quot;戰力200萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力116&quot;, &quot;牛36個、佳釀20個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力109&quot;, &quot;銀兩500萬&quot;], &quot;req&quot;: &quot;60英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力275萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;75英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;寶鞍、鎮鐵各90個&quot;], &quot;req&quot;: &quot;90英勇,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">董卓</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+            <div class="rc-card" data-hero-name="司馬懿" data-rc='{&quot;name&quot;: &quot;司馬懿&quot;, &quot;floor&quot;: &quot;第五層&quot;, &quot;level&quot;: &quot;15級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;五路侵攻&quot;, &quot;智116&quot;, &quot;高經書40個、才學300片&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;孟達欲反&quot;, &quot;戰力225萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;親往探察&quot;, &quot;戰力275萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;60文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力127&quot;, &quot;糧草、生鐵各500萬&quot;], &quot;req&quot;: &quot;75文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;90文明,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">司馬懿</div>
+              <div class="rc-card-floor">第五層・15級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第六層</h3>
+            <span>王之魂需求等級：19級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="陸遜" data-rc='{&quot;name&quot;: &quot;陸遜&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;謹遵將令&quot;, &quot;戰力200萬&quot;, &quot;糧草600萬&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;獻上一方&quot;, &quot;智力117&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;難堪重任&quot;, &quot;智力123&quot;, &quot;象棋600個、武聖700片&quot;], &quot;req&quot;: &quot;60美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力130&quot;, &quot;木材、生鐵各600萬&quot;], &quot;req&quot;: &quot;75美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;好言安撫&quot;, &quot;戰力300萬&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;90美德,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">陸遜</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+            <div class="rc-card" data-hero-name="祝融" data-rc='{&quot;name&quot;: &quot;祝融&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;一拍即合&quot;, &quot;祝融飛刀（紫）&quot;, &quot;木材、生鐵各600萬&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;拒絕步戰&quot;, &quot;大宛馬（紫）&quot;, &quot;寶鞍100個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;禮貌詢問&quot;, &quot;武力120&quot;, &quot;勇武350片&quot;], &quot;req&quot;: &quot;60英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;頗為心動&quot;, &quot;(祝融+孟獲)武力255&quot;, &quot;銀兩、木材各600萬&quot;], &quot;req&quot;: &quot;75英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;恍如昨日&quot;, &quot;魅力135&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;90英勇,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">祝融</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+            <div class="rc-card" data-hero-name="孟獲" data-rc='{&quot;name&quot;: &quot;孟獲&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;提出質疑&quot;, &quot;武力115&quot;, &quot;荒獸皮、帝皇砂各70&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;騎象比武&quot;, &quot;武力121&quot;, &quot;胭脂14個、銅鏡40個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;即刻稱王&quot;, &quot;南蠻巨象（紫）&quot;, &quot;帳本、屯田各20個&quot;], &quot;req&quot;: &quot;40英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;為了寨子&quot;, &quot;戰力275萬&quot;, &quot;木材、生鐵各600萬&quot;], &quot;req&quot;: &quot;50英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;感到可怕&quot;, &quot;(孟獲+祝融)武力260&quot;, &quot;糧草600萬、柴雞75個&quot;], &quot;req&quot;: &quot;60英勇,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">孟獲</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+            <div class="rc-card" data-hero-name="曹丕" data-rc='{&quot;name&quot;: &quot;曹丕&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;謹遵父命&quot;, &quot;鐵胎弓（綠）&quot;, &quot;牛40個、柴雞75個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;謙遜有禮&quot;, &quot;爪黃飛電（紫）&quot;, &quot;玉龍泉70個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;大宛馬（紫）&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;40美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;彰顯文采&quot;, &quot;智力123&quot;, &quot;鎏金箔70個&quot;], &quot;req&quot;: &quot;50美德,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;滿口答應&quot;, &quot;武力121&quot;, &quot;勇武350片&quot;], &quot;req&quot;: &quot;60美德,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">曹丕</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+            <div class="rc-card" data-hero-name="劉禪" data-rc='{&quot;name&quot;: &quot;劉禪&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;勉強答應&quot;, &quot;智106&quot;, &quot;柴雞75個、牛40個&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;勉強答應&quot;, &quot;武力95&quot;, &quot;菜包125個、羊40個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;拜師&quot;, &quot;智力112&quot;, &quot;才學350片&quot;], &quot;req&quot;: &quot;40文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;歡呼雀躍&quot;, &quot;武力100&quot;, &quot;檀香、玉石各14個&quot;], &quot;req&quot;: &quot;50文明,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力118&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;60文明,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">劉禪</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+            <div class="rc-card" data-hero-name="文鴦" data-rc='{&quot;name&quot;: &quot;文鴦&quot;, &quot;floor&quot;: &quot;第六層&quot;, &quot;level&quot;: &quot;19級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;招兵買馬&quot;, &quot;武力117&quot;, &quot;精良布甲、鐵槍各8千件&quot;], &quot;req&quot;: &quot;200迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;先發制人&quot;, &quot;武力123&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;40荊棘,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;挫敵銳氣&quot;, &quot;武力128&quot;, &quot;鎮鐵、寶鞍各100個&quot;], &quot;req&quot;: &quot;40英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力135&quot;, &quot;金鞋40個&quot;], &quot;req&quot;: &quot;50英勇,200迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;銀兩、糧草各600萬&quot;], &quot;req&quot;: &quot;60英勇,200荊棘,200迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">文鴦</div>
+              <div class="rc-card-floor">第六層・19級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第七層</h3>
+            <span>王之魂需求等級：22級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="大喬" data-rc='{&quot;name&quot;: &quot;大喬&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;學習經營&quot;, &quot;智力108&quot;, &quot;帳本25個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;盡力而為&quot;, &quot;智力114&quot;, &quot;金募兵50&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;請吩咐&quot;, &quot;焦尾琴（藍）&quot;, &quot;酪乳16個&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;姐妹齊心&quot;, &quot;智力120&quot;, &quot;檀香、玉石各16個&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;好言相慰&quot;, &quot;智力125&quot;, &quot;木材700萬&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">大喬</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+            <div class="rc-card" data-hero-name="蔡文姬" data-rc='{&quot;name&quot;: &quot;蔡文姬&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;躍躍欲試&quot;, &quot;智力115&quot;, &quot;胭脂16個、染料45個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;奉上琴弦&quot;, &quot;智力118&quot;, &quot;拜帖25個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;歡欣鼓舞&quot;, &quot;焦尾琴（藍）&quot;, &quot;鎏金箔80個&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;願聞其詳&quot;, &quot;智力126&quot;, &quot;金鞋50個&quot;], &quot;req&quot;: &quot;125美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;十不存一&quot;, &quot;智力131&quot;, &quot;檀紙80個&quot;], &quot;req&quot;: &quot;150美德,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">蔡文姬</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+            <div class="rc-card" data-hero-name="呂玲綺" data-rc='{&quot;name&quot;: &quot;呂玲綺&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;伸手觸摸&quot;, &quot;倚天劍（金）&quot;, &quot;精品盾牌9千件&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力115&quot;, &quot;新兵騎甲9千件&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;武力118&quot;, &quot;菜包130個、銀兩700萬&quot;], &quot;req&quot;: &quot;100英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力123&quot;, &quot;鎮鐵、寶鞍各110個&quot;], &quot;req&quot;: &quot;125英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;(呂玲綺+張遼)武力255&quot;, &quot;銀兩700萬&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">呂玲綺</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+            <div class="rc-card" data-hero-name="班育雙姝" data-rc='{&quot;name&quot;: &quot;班育雙姝&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;家風如此&quot;, &quot;雌雄雙股劍（紫）&quot;, &quot;勇武400片&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力95&quot;, &quot;無雙800片&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;焦尾琴（藍）&quot;, &quot;檀香16個&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力118&quot;, &quot;蜂蜜45個&quot;], &quot;req&quot;: &quot;125美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力123&quot;, &quot;精良鋼劍、鐵槍各9千件&quot;], &quot;req&quot;: &quot;150美德,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">班育雙姝</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+            <div class="rc-card" data-hero-name="關銀屏" data-rc='{&quot;name&quot;: &quot;關銀屏&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;表達不滿&quot;, &quot;武力108&quot;, &quot;鎮鐵110個、生鐵700萬&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;不當講&quot;, &quot;武力114&quot;, &quot;天隕金80個、生鐵700萬&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;戰力275萬&quot;, &quot;帝皇砂80個&quot;], &quot;req&quot;: &quot;100英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;金鞋50個&quot;], &quot;req&quot;: &quot;125英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;武力124&quot;, &quot;木材、生鐵700萬&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">關銀屏</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+            <div class="rc-card" data-hero-name="步練師" data-rc='{&quot;name&quot;: &quot;步練師&quot;, &quot;floor&quot;: &quot;第七層&quot;, &quot;level&quot;: &quot;22級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;見過哥哥&quot;, &quot;魅力117&quot;, &quot;胭脂16個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;拜見吳侯&quot;, &quot;魅力123&quot;, &quot;銀兩700萬&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;(步練師+孫尚香)智力223&quot;, &quot;銀兩700萬&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力120&quot;, &quot;口才400片&quot;], &quot;req&quot;: &quot;125美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力125&quot;, &quot;拜帖25個&quot;], &quot;req&quot;: &quot;150美德,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">步練師</div>
+              <div class="rc-card-floor">第七層・22級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第八層</h3>
+            <span>王之魂需求等級：24級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="張春華" data-rc='{&quot;name&quot;: &quot;張春華&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;勉強答應&quot;, &quot;(張春華+司馬懿)智力233&quot;, &quot;靈芝18個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;七星刀（金）&quot;, &quot;天隕金90個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;武力105&quot;, &quot;魚蝦、柴雞各85個&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;(張春華+司馬懿)智力248&quot;, &quot;精良鋼劍1萬件,銀兩800萬&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;(張春華+司馬懿)智力260&quot;, &quot;人參18個&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張春華</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+            <div class="rc-card" data-hero-name="張星彩" data-rc='{&quot;name&quot;: &quot;張星彩&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;據理力爭&quot;, &quot;武力113&quot;, &quot;柴雞85個、牛50個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;羨慕二哥&quot;, &quot;武力120&quot;, &quot;鎮鐵120個、生鐵800萬&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;孟德新書（紫）&quot;, &quot;檀紙120個、荒獸皮90個&quot;], &quot;req&quot;: &quot;100英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;金鞋50個&quot;], &quot;req&quot;: &quot;125英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;魅力123&quot;, &quot;胭脂18個&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張星彩</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+            <div class="rc-card" data-hero-name="吳國太" data-rc='{&quot;name&quot;: &quot;吳國太&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;輕浮狡詐&quot;, &quot;智力111&quot;, &quot;陶器50個、茶葉18個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;壓低聲音&quot;, &quot;典論（金）&quot;, &quot;金鞋50個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;青梅（綠）&quot;, &quot;木材、生鐵各800萬&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力117&quot;, &quot;茶葉18個&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力127&quot;, &quot;靈芝、人參各18個&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">吳國太</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+            <div class="rc-card" data-hero-name="王越" data-rc='{&quot;name&quot;: &quot;王越&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;師恩未報&quot;, &quot;照夜玉獅子（金）&quot;, &quot;玉龍泉90個、菜包135個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;法治&quot;, &quot;武117&quot;, &quot;精良法袍1萬件,檀紙120個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;樂意之至&quot;, &quot;(王越+于吉)戰力550萬&quot;, &quot;金鞋50個&quot;], &quot;req&quot;: &quot;60英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;分錢&quot;, &quot;武力128&quot;, &quot;高經書25個、勇武450片&quot;], &quot;req&quot;: &quot;75英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;婉拒&quot;, &quot;戰力325萬&quot;, &quot;鋒矢戰旗100個、心得18個&quot;], &quot;req&quot;: &quot;90英勇,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">王越</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+            <div class="rc-card" data-hero-name="馬忠" data-rc='{&quot;name&quot;: &quot;馬忠&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;領命出發&quot;, &quot;鐵胎弓（綠）&quot;, &quot;天隕金90個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;大宛馬（紫）&quot;, &quot;玉龍泉90個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;半路埋伏&quot;, &quot;戰力275萬&quot;, &quot;玉龍泉90個&quot;], &quot;req&quot;: &quot;60英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;心領神會&quot;, &quot;戰力300萬&quot;, &quot;火箭、暴烈各900片&quot;], &quot;req&quot;: &quot;75英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;收攏殘兵&quot;, &quot;戰力325萬&quot;, &quot;木材、生鐵各800萬&quot;], &quot;req&quot;: &quot;90英勇,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">馬忠</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+            <div class="rc-card" data-hero-name="兀突骨" data-rc='{&quot;name&quot;: &quot;兀突骨&quot;, &quot;floor&quot;: &quot;第八層&quot;, &quot;level&quot;: &quot;24級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;扔到一邊&quot;, &quot;貫石斧（金）&quot;, &quot;天隕金90個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力113&quot;, &quot;佳釀25個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;武力119&quot;, &quot;號角25個&quot;], &quot;req&quot;: &quot;60英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力130&quot;, &quot;銅鏡50個、檀香18個&quot;], &quot;req&quot;: &quot;75英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力325萬&quot;, &quot;胭脂18個&quot;], &quot;req&quot;: &quot;90英勇,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">兀突骨</div>
+              <div class="rc-card-floor">第八層・24級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第九層</h3>
+            <span>王之魂需求等級：26級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="華佗" data-rc='{&quot;name&quot;: &quot;華佗&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;開臚手術&quot;, &quot;麻沸散（綠）&quot;, &quot;人參、靈芝各20個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;五禽戲（金）&quot;, &quot;檀紙130個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;爪黃飛電（紫）&quot;, &quot;糧草900萬、豆子230個&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力325萬&quot;, &quot;勇武500片、高經書30個&quot;], &quot;req&quot;: &quot;125美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力126&quot;, &quot;檀紙130個&quot;], &quot;req&quot;: &quot;150美德,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">華佗</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+            <div class="rc-card" data-hero-name="童淵" data-rc='{&quot;name&quot;: &quot;童淵&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;要事相求&quot;, &quot;武力118&quot;, &quot;佳釀30個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力121&quot;, &quot;天隕金100個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;(童淵+趙雲)武力246&quot;, &quot;生鐵900萬、鎮鐵130個&quot;], &quot;req&quot;: &quot;100英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;責無旁貸&quot;, &quot;(童淵+趙雲)武力256&quot;, &quot;精良騎甲、馬鞍各1.1萬件&quot;], &quot;req&quot;: &quot;125英勇,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;武力135&quot;, &quot;金鞋60個&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">童淵</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+            <div class="rc-card" data-hero-name="司馬徽" data-rc='{&quot;name&quot;: &quot;司馬徽&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;好·很好&quot;, &quot;智力108&quot;, &quot;才學500片&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;智力115&quot;, &quot;佳釀30個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力120&quot;, &quot;木材、生鐵各900萬&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;魅力123&quot;, &quot;染料55個&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力126&quot;, &quot;柴雞、魚蝦各90個&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">司馬徽</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+            <div class="rc-card" data-hero-name="于吉" data-rc='{&quot;name&quot;: &quot;于吉&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;反客為主&quot;, &quot;武力112&quot;, &quot;900萬糧&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;(于吉+王越)武力237&quot;, &quot;金鞋60個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;牛55個&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力325萬&quot;, &quot;糧草、木材各900萬&quot;], &quot;req&quot;: &quot;125美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;精良鋼劍、鐵槍各1.1萬件&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">于吉</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+            <div class="rc-card" data-hero-name="左慈" data-rc='{&quot;name&quot;: &quot;左慈&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;欣喜若狂&quot;, &quot;智力120&quot;, &quot;靈芝20個、硝石90個&quot;], &quot;req&quot;: &quot;300迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;太平要術（金）&quot;, &quot;精良法杖1.1萬件&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;生死符（金）&quot;, &quot;絹紙55個&quot;], &quot;req&quot;: &quot;60文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;(左慈+南華老仙)武力190&quot;, &quot;金鞋60個&quot;], &quot;req&quot;: &quot;75文明,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;羊90個&quot;], &quot;req&quot;: &quot;90文明,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">左慈</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+            <div class="rc-card" data-hero-name="南華老仙" data-rc='{&quot;name&quot;: &quot;南華老仙&quot;, &quot;floor&quot;: &quot;第九層&quot;, &quot;level&quot;: &quot;26級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;出手制止&quot;, &quot;戰力250萬&quot;, &quot;絹紙90個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;太平要術（金）&quot;, &quot;高級經驗書30個&quot;], &quot;req&quot;: &quot;60荊棘,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;玉璽（金）&quot;, &quot;銀兩、木材各900萬&quot;], &quot;req&quot;: &quot;60美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;(南華老仙+華佗)智力250&quot;, &quot;玉石20個、帝皇砂100個&quot;], &quot;req&quot;: &quot;75美德,300迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;天隕金、荒獸皮各100個&quot;], &quot;req&quot;: &quot;90美德,300荊棘,300迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">南華老仙</div>
+              <div class="rc-card-floor">第九層・26級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第十層</h3>
+            <span>王之魂需求等級：28級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="曹操" data-rc='{&quot;name&quot;: &quot;曹操&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;正面迎擊&quot;, &quot;戰力250萬&quot;, &quot;木材1000萬&quot;], &quot;req&quot;: &quot;600迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;刺殺董卓&quot;, &quot;七星刀（金）&quot;, &quot;豆子230個、玉龍泉110個&quot;], &quot;req&quot;: &quot;120荊棘,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;全軍出擊&quot;, &quot;戰力275萬&quot;, &quot;銀兩、木材各1000萬&quot;], &quot;req&quot;: &quot;120美德,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;(曹操+劉備)戰力650萬&quot;, &quot;糧草1000萬&quot;], &quot;req&quot;: &quot;150美德,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;金鞋60個&quot;], &quot;req&quot;: &quot;180美德,600荊棘,600迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">曹操</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+            <div class="rc-card" data-hero-name="劉備" data-rc='{&quot;name&quot;: &quot;劉備&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;上前制止&quot;, &quot;武力116&quot;, &quot;佳釀30個&quot;], &quot;req&quot;: &quot;600迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;滿口答應&quot;, &quot;武力120&quot;, &quot;牛、羊各55個&quot;], &quot;req&quot;: &quot;120荊棘,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;請命出戰&quot;, &quot;(劉備+關羽)武力246&quot;, &quot;精良鋼劍、鐵槍各1.2萬件&quot;], &quot;req&quot;: &quot;120英勇,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;運籌決定&quot;, &quot;戰力325萬&quot;, &quot;拜帖30個&quot;], &quot;req&quot;: &quot;150英勇,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;好言相勸&quot;, &quot;(劉備+張飛)武力267&quot;, &quot;金鞋60個&quot;], &quot;req&quot;: &quot;180英勇,600荊棘,600迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">劉備</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+            <div class="rc-card" data-hero-name="孫權" data-rc='{&quot;name&quot;: &quot;孫權&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;為兄分憂&quot;, &quot;智力116&quot;, &quot;金募兵30個&quot;], &quot;req&quot;: &quot;600迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;智力120&quot;, &quot;拜帖30個&quot;], &quot;req&quot;: &quot;120荊棘,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;牛、羊各55個&quot;], &quot;req&quot;: &quot;120文明,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力325萬&quot;, &quot;金募兵30個&quot;], &quot;req&quot;: &quot;150文明,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;武力126&quot;, &quot;鎮鐵140個,精良鋼劍1.2萬&quot;], &quot;req&quot;: &quot;180文明,600荊棘,600迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">孫權</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+            <div class="rc-card" data-hero-name="張角" data-rc='{&quot;name&quot;: &quot;張角&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;拜問姓名&quot;, &quot;智力117&quot;, &quot;豆子230個&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力93&quot;, &quot;高經書30、靈石2000個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力123&quot;, &quot;人參、靈芝各20個&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力325萬&quot;, &quot;染料55個,精良布甲1.2萬件&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;精品盾牌,精良令旗各1.2萬&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張角</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+            <div class="rc-card" data-hero-name="袁紹" data-rc='{&quot;name&quot;: &quot;袁紹&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;誅殺宦官&quot;, &quot;武106&quot;, &quot;金鞋60&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;假意推遲&quot;, &quot;魅力111&quot;, &quot;精良令旗12000,佳釀30&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;多說無益&quot;, &quot;戰力300萬&quot;, &quot;精良長弓,箭簇各12000&quot;], &quot;req&quot;: &quot;100英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;依計而行&quot;, &quot;戰力325萬&quot;, &quot;玉龍泉110&quot;], &quot;req&quot;: &quot;125英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;力戰敵軍&quot;, &quot;戰力350萬&quot;, &quot;精鐵槍1.2萬,校尉披風6千&quot;], &quot;req&quot;: &quot;150英勇,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">袁紹</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+            <div class="rc-card" data-hero-name="紫虛上人" data-rc='{&quot;name&quot;: &quot;紫虛上人&quot;, &quot;floor&quot;: &quot;第十層&quot;, &quot;level&quot;: &quot;28級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;隱居終南&quot;, &quot;戰力250萬&quot;, &quot;人參、靈芝各50個&quot;], &quot;req&quot;: &quot;600迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;青梅（綠）&quot;, &quot;佳釀30個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力122&quot;, &quot;絹紙50個&quot;], &quot;req&quot;: &quot;100美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;武力116&quot;, &quot;帝皇砂110個&quot;], &quot;req&quot;: &quot;125美德,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力132&quot;, &quot;木材、生鐵各1000萬&quot;], &quot;req&quot;: &quot;150美德,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">紫虛上人</div>
+              <div class="rc-card-floor">第十層・28級</div>
+            </div>
+          </div>
+          <div class="rc-floor-title">
+            <h3>第十一層</h3>
+            <span>王之魂需求等級：35級</span>
+          </div>
+          <div class="rc-card-grid">
+            <div class="rc-card" data-hero-name="孫堅" data-rc='{&quot;name&quot;: &quot;孫堅&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;主動出擊&quot;, &quot;武力118&quot;, &quot;校尉披風、腿甲各6500件&quot;], &quot;req&quot;: &quot;600迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;領命出征&quot;, &quot;戰力300萬&quot;, &quot;酪乳、瓊漿各25個&quot;], &quot;req&quot;: &quot;120荊棘,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;武力124&quot;, &quot;虎賁長刀6500件&quot;], &quot;req&quot;: &quot;120英勇,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;金鞋70個&quot;], &quot;req&quot;: &quot;150英勇,600迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力115&quot;, &quot;鐵桶戰旗130個、心得30個&quot;], &quot;req&quot;: &quot;180英勇,600荊棘,600迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">孫堅</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+            <div class="rc-card" data-hero-name="項羽" data-rc='{&quot;name&quot;: &quot;項羽&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;乖乖就範&quot;, &quot;智力95&quot;, &quot;糧草、生鐵各1100萬&quot;], &quot;req&quot;: &quot;800迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;武力123&quot;, &quot;佳釀35個&quot;], &quot;req&quot;: &quot;160荊棘,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;統御124&quot;, &quot;金募兵20個&quot;], &quot;req&quot;: &quot;160英勇,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;戰力350萬&quot;, &quot;銀兩、糧草各1100萬&quot;], &quot;req&quot;: &quot;200英勇,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力375萬&quot;, &quot;木材、生鐵各1100萬&quot;], &quot;req&quot;: &quot;240英勇,800荊棘,800迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">項羽</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+            <div class="rc-card" data-hero-name="虞姬" data-rc='{&quot;name&quot;: &quot;虞姬&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;習武&quot;, &quot;倚天劍（金）&quot;, &quot;菜包150個&quot;], &quot;req&quot;: &quot;800迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;拜師學藝&quot;, &quot;(虞姬+項羽)武力216&quot;, &quot;染料55個、葛布150個&quot;], &quot;req&quot;: &quot;160荊棘,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;魅力125&quot;, &quot;精品玉龍泉、天隕金各65&quot;], &quot;req&quot;: &quot;160美德,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;魅力130&quot;, &quot;胭脂25個、銅鏡55個&quot;], &quot;req&quot;: &quot;200美德,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;魅力135&quot;, &quot;檀香25個&quot;], &quot;req&quot;: &quot;240美德,800荊棘,800迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">虞姬</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+            <div class="rc-card" data-hero-name="張良" data-rc='{&quot;name&quot;: &quot;張良&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;招攬力士&quot;, &quot;魅力118&quot;, &quot;銀兩1100萬&quot;], &quot;req&quot;: &quot;800迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;長柄鐵錘（綠）&quot;, &quot;天隕金120個&quot;], &quot;req&quot;: &quot;160荊棘,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力128&quot;, &quot;金鞋70個&quot;], &quot;req&quot;: &quot;160文明,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力133&quot;, &quot;銀兩、糧草各1100萬&quot;], &quot;req&quot;: &quot;200文明,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;智力138&quot;, &quot;精良令旗1.3萬件,染料55個&quot;], &quot;req&quot;: &quot;240文明,800荊棘,800迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">張良</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+            <div class="rc-card" data-hero-name="韓信" data-rc='{&quot;name&quot;: &quot;韓信&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;請命出戰&quot;, &quot;智力119&quot;, &quot;木材、生鐵各1100萬&quot;], &quot;req&quot;: &quot;800迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;戰力300萬&quot;, &quot;囤田、挖礦各30個&quot;], &quot;req&quot;: &quot;160荊棘,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;智力125&quot;, &quot;茶葉、靈芝各25個&quot;], &quot;req&quot;: &quot;160美德,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;智力132&quot;, &quot;銅鏡55個、檀香25個&quot;], &quot;req&quot;: &quot;200美德,800迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;戰力375萬&quot;, &quot;虎賁腕、虎賁履各6500件&quot;], &quot;req&quot;: &quot;240美德,800荊棘,800迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">韓信</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+            <div class="rc-card" data-hero-name="諸葛果" data-rc='{&quot;name&quot;: &quot;諸葛果&quot;, &quot;floor&quot;: &quot;第十一層&quot;, &quot;level&quot;: &quot;35級&quot;, &quot;tiers&quot;: [{&quot;cls&quot;: &quot;rc-green&quot;, &quot;label&quot;: &quot;綠色階段&quot;, &quot;items&quot;: [&quot;獻計&quot;, &quot;智力120&quot;, &quot;木材1100萬&quot;], &quot;req&quot;: &quot;500迴響&quot;}, {&quot;cls&quot;: &quot;rc-blue&quot;, &quot;label&quot;: &quot;藍色階段&quot;, &quot;items&quot;: [&quot;書香門第&quot;, &quot;智力125&quot;, &quot;硝石120個、靈石1萬個&quot;], &quot;req&quot;: &quot;100荊棘,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-purple&quot;, &quot;label&quot;: &quot;紫色階段&quot;, &quot;items&quot;: [&quot;恩師授書&quot;, &quot;智力130&quot;, &quot;極品玉龍泉48個&quot;], &quot;req&quot;: &quot;100文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-gold&quot;, &quot;label&quot;: &quot;金色階段&quot;, &quot;items&quot;: [&quot;思念家父&quot;, &quot;智力135&quot;, &quot;極品帝皇砂48個&quot;], &quot;req&quot;: &quot;125文明,500迴響&quot;}, {&quot;cls&quot;: &quot;rc-red&quot;, &quot;label&quot;: &quot;紅色階段&quot;, &quot;items&quot;: [&quot;師父珍重&quot;, &quot;戰力375萬&quot;, &quot;木材、生鐵各1100萬&quot;], &quot;req&quot;: &quot;150文明,500荊棘,500迴響&quot;}]}' onclick="showRcModal(this)">
+              <div class="rc-card-name">諸葛果</div>
+              <div class="rc-card-floor">第十一層・35級</div>
+            </div>
+          </div>
+</div>
       </div>
     </div>
     <!-- 神靈頁 -->
@@ -4035,7 +4442,7 @@
       <span id="authToggleText">還沒有帳號？</span>
       <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color:var(--gold-bright);">註冊一個</a>
     </div>
-    <div id="authForgotRow" style="margin-top:6px;font-size:12px;color:var(--text-dim);text-align:center;">
+    <div id="authForgotRow" style="display:none;margin-top:6px;font-size:12px;color:var(--text-dim);text-align:center;">
       <a href="javascript:void(0)" onclick="sendForgotPasswordEmail()" style="color:var(--gold-bright);">忘記密碼？</a>
     </div>
     <div id="authError" style="margin-top:10px;font-size:12px;color:#e08b8b;"></div>
@@ -4139,6 +4546,19 @@
         <div id="modalTags"></div>
       </div>
       <div class="modal-body" id="modalStats"></div>
+    </div>
+  </div>
+
+  <!-- 輪迴條件 Modal -->
+  <div id="rcModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="closeRcModal()">×</button>
+        <div class="modal-rarity-bar" id="rcModalRarityBar" style="background:var(--gold-bright);"></div>
+        <div class="modal-name" id="rcModalName"></div>
+        <div id="rcModalFloor" style="font-size:12px;color:var(--text-dim);margin-top:4px;"></div>
+      </div>
+      <div class="modal-body" id="rcModalBody"></div>
     </div>
   </div>
 
@@ -7952,6 +8372,45 @@ function renderBattleplans(filteredList) {
   });
 }
 
+function showRcModal(el) {
+  const data = JSON.parse(el.getAttribute('data-rc'));
+  document.getElementById('rcModalName').textContent = data.name;
+  document.getElementById('rcModalFloor').textContent = data.floor + '・王之魂需求等級：' + data.level;
+  const body = document.getElementById('rcModalBody');
+  body.innerHTML = `
+    <table class="rc-modal-table">
+      <tbody>
+        ${data.tiers.map(t => `
+          ${t.items.map(it => `<tr class="${t.cls}"><td class="rc-modal-items">${it}</td></tr>`).join('')}
+          <tr class="${t.cls}"><td class="rc-modal-req">輪迴需求：${t.req}</td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  document.getElementById('rcModal').style.display = 'block';
+  const c = document.querySelector('#rcModal .modal-content');
+  if (c) c.scrollTop = 0;
+}
+function closeRcModal() {
+  document.getElementById('rcModal').style.display = 'none';
+}
+document.getElementById('rcModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('rcModal')) closeRcModal();
+});
+
+function filterReincarnCondCards() {
+  const keyword = document.getElementById('reincarnCondSearch').value.trim();
+  document.querySelectorAll('.rc-card[data-hero-name]').forEach(card => {
+    const match = !keyword || card.getAttribute('data-hero-name').includes(keyword);
+    card.classList.toggle('rc-hidden', !match);
+  });
+  document.querySelectorAll('.rc-card-grid').forEach(grid => {
+    const anyVisible = Array.from(grid.children).some(c => !c.classList.contains('rc-hidden'));
+    grid.previousElementSibling.style.display = anyVisible ? '' : 'none';
+    grid.style.display = anyVisible ? '' : 'none';
+  });
+}
+
 function filterBattleplans() {
   const keyword = document.getElementById('battleplanSearch').value.toLowerCase();
   const filtered = battleplans.filter(bp => 
@@ -9536,6 +9995,29 @@ function parseDerivedStatRules(text) {
   }
   return rules;
 }
+// 解析「(武力/智力/魅力/統御)比 N 每高 1，[兵種/前後軍](基礎)?(暴擊率|傷害|免傷|攻擊|防禦...) +X%」這類跟「固定基準值」比較（而非跟對手比較）的加成規則。
+// 因為基準值固定，屬性低於基準時效果視為 0（不會產生負值），且不需要對手資料即可算出（例：方天畫戟「武力比95每高1，前軍暴擊率提升1%」）
+function parseStatVsFixedBaselineRules(text) {
+  const rules = [];
+  if (!text) return rules;
+  const re = new RegExp(
+    `(${STAT_NAMES.join("|")})比\\s*(\\d+)\\s*每高\\s*1[，,、\\s]*(前後軍|前軍|後軍|步兵|騎兵|弓兵|方士)?(基礎)?(暴擊率|命中率|閃避率|格擋率|傷害|免傷|攻擊|防禦)\\s*(?:提升|增加)?\\s*\\+?\\s*(\\d+(?:\\.\\d+)?)%`,
+    "g"
+  );
+  let m;
+  while ((m = re.exec(text))) {
+    rules.push({
+      full: m[0],
+      sourceStat: STAT_KEY_BY_NAME[m[1]],
+      baseline: Number(m[2]),
+      troop: m[3] || null,
+      isBase: !!m[4],
+      statType: m[5],
+      perUnit: Number(m[6])
+    });
+  }
+  return rules;
+}
 const TROOP_GROUP_BY_NAME = { 前軍: "front", 後軍: "back", 步兵: "front", 騎兵: "front", 弓兵: "back", 方士: "back" };
 
 // 解析「每提升 N 點[四維]，[兵種/前後軍](基礎)?(攻防|攻擊|防禦|兵力) +X」這類天賦/覺醒/輪迴連動規則
@@ -9549,6 +10031,7 @@ function parseTroopStatRules(text) {
   let m;
   while ((m = re.exec(text))) {
     rules.push({
+      full: m[0],
       perPoint: Number(m[1] || 1),
       sourceStat: m[2] === "任意四維" ? "any" : STAT_KEY_BY_NAME[m[2]],
       troop: m[3],
@@ -9564,6 +10047,7 @@ function parseTroopStatRules(text) {
   );
   while ((m = re2.exec(text))) {
     rules.push({
+      full: m[0],
       perPoint: 1,
       sourceStat: STAT_KEY_BY_NAME[m[1]],
       troop: m[2],
@@ -9663,29 +10147,56 @@ function parseSkillLevelTroopRules(text) {
   const rules = [];
   if (!text) return rules;
   const triggerRe = new RegExp(`每(?:提升|有)\\s*(\\d+)?\\s*級【([^】]+)】`, "g");
-  const clauseRe = /^[，,、]?\s*(前軍|後軍|步兵|騎兵|弓兵|方士)?(基礎)?(攻防|攻擊|防禦|兵力)\s*\+(\d+)/;
+  // 修正：
+  // 1) 加入「前後軍」選項（原本只認得「前軍」「後軍」單一詞，漏掉「前後軍」這種同時指定兩邊的寫法，
+  //    導致周瑜「每提升1級【業火】，前後軍兵力+12」等技能等級連動加成完全沒被解析出規則）
+  // 2) 加入「暴擊率／格擋率／速度」這幾種原本不支援的類型（太史慈「弓兵暴擊率+2%」、孫策「步兵格擋率+1.5%」
+  //    這類技能等級連動的機率/速度加成，原本完全沒有解析器支援）
+  const clauseRe = /^[，,、]?\s*(前軍|後軍|前後軍|步兵|騎兵|弓兵|方士)?(基礎)?(攻防|攻擊|防禦|兵力|暴擊率|格擋率|速度)\s*\+(\d+(?:\.\d+)?)(%)?/;
   let tm;
   while ((tm = triggerRe.exec(text))) {
     const perLevel = Number(tm[1] || 1);
     const skillName = tm[2];
+
+    // 修正：限定這個觸發語能管轄的文字範圍──從觸發語結束處開始，
+    // 到下一個句號、或下一個「每...級【...】」觸發語（不含）為止，避免誤吃到別的觸發語底下的子句
+    let scopeEnd = text.length;
+    const nextTriggerRe = new RegExp(triggerRe.source, "g");
+    nextTriggerRe.lastIndex = tm.index + tm[0].length;
+    const nm = nextTriggerRe.exec(text);
+    if (nm) scopeEnd = Math.min(scopeEnd, nm.index);
+    const periodIdx = text.indexOf("。", tm.index + tm[0].length);
+    if (periodIdx !== -1) scopeEnd = Math.min(scopeEnd, periodIdx);
+
     let cursor = tm.index + tm[0].length;
     let lastTroop = null;
-    while (true) {
-      const cm = text.slice(cursor).match(clauseRe);
-      if (!cm) break;
-      const troop = cm[1] || lastTroop;
-      if (!troop) break; // 沒有兵種可承接，中止（避免誤吃到其他句子）
-      lastTroop = troop;
-      rules.push({
-        full: cm[0],
-        perLevel,
-        skillName,
-        troop,
-        isBase: !!cm[2],
-        statType: cm[3],
-        amount: Number(cm[4])
-      });
-      cursor += cm[0].length;
+    while (cursor < scopeEnd) {
+      const slice = text.slice(cursor, scopeEnd);
+      const cm = slice.match(clauseRe);
+      if (cm) {
+        const troop = cm[1] || lastTroop;
+        if (troop) {
+          lastTroop = troop;
+          rules.push({
+            full: cm[0],
+            perLevel,
+            skillName,
+            troop,
+            isBase: !!cm[2],
+            statType: cm[3],
+            isPercent: !!cm[5],
+            amount: Number(cm[4])
+          });
+        }
+        cursor += cm[0].length;
+        continue;
+      }
+      // 修正：這個子句不是兵種數值加成（例如郭嘉「每提升1級【疾風】，【奇策】技能傷害+2.5%，
+      // 方士基礎攻擊+6」中間夾的技能傷害說明），以前遇到這種狀況會直接整條中止、
+      // 漏掉後面真正的兵種加成；現在改成跳到下一個分隔符之後繼續找，而不是整條放棄
+      const delimMatch = slice.match(/[，,、；;]/);
+      if (!delimMatch || delimMatch.index === undefined) break;
+      cursor += delimMatch.index + 1;
     }
   }
   return rules;
@@ -10238,7 +10749,15 @@ function computeStatBonus(member, hero) {
     // 不是真的送出1點智力，這條保護只套用在天賦/技能/覺醒/輪迴文字，裝備文字的原有行為不受影響）
     flatText = flatText.replace(/每(?:提升|增加|學習)\s*\d*\s*點(?:武力|智力|魅力|統御)/g, "");
     const parsed = parseStatBonus(flatText);
-    Object.keys(totals).forEach(key => { totals[key] += parsed[key] || 0; bonus[key] += parsed[key] || 0; });
+    // 修正：原本只呼叫 parseStatBonus（只認得「單一四維+N」），沒有呼叫 parseStatBonusEach
+    // （認得「四維各+N」「武力、智力、魅力、統御各+N」這種一次列舉多項四維的寫法），
+    // 導致像公孫瓚輪迴「四維各+2」、何進輪迴「四維各+5」這類加成完全沒被算進去
+    const parsedEach = parseStatBonusEach(flatText);
+    Object.keys(totals).forEach(key => {
+      const amt = (parsed[key] || 0) + (parsedEach[key] || 0);
+      totals[key] += amt;
+      bonus[key] += amt;
+    });
   });
 
   // 輪迴「英雄可自由分配四維」：把玩家自己分配好的點數加進總計（需已輪迴才生效）
@@ -10431,7 +10950,15 @@ function getActiveEffectText(text, hero, member) {
 function resolveConditionalTexts(rawTexts, hero, member) {
   const resolved = [];
   rawTexts.forEach(text => {
-    resolved.push(...splitTextByConditions(text, hero, member));
+    // 修正：splitTextByConditions 內部會依「兵種/身分/等級」等條件關鍵字位置切成多段，
+    // 但這只是用來判斷「哪些片段該保留、哪些該濾掉」，不代表每段之間彼此無關；
+    // 以前直接把每一段各自 push 成陣列裡獨立的元素，會導致像「每提升1級【無雙】，騎兵基礎攻擊+5」
+    // 這種「觸發語」跟「加成值」分屬不同片段的句子，被拆到不同的陣列字串裡，讓後續逐句比對的
+    // 連動規則解析器（parseSkillLevelTroopRules 等）再也配對不到，整條加成就沒被算進去。
+    // 這裡改成把同一段輸入文字切出的片段重新接回同一個字串（跟 getActiveEffectText 的 join("") 做法一致），
+    // 只有「整段都被判定不成立而濾掉」的部分才會真的消失，其餘連動語意維持完整、不受切段影響。
+    const joined = splitTextByConditions(text, hero, member).join("");
+    if (joined) resolved.push(joined);
   });
   return resolved;
 }
@@ -10706,6 +11233,41 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
   // 套用在自己身上並乘以固定倍數（如劉禪/張星彩/關銀屏/馬忠/鄧艾）
   texts.push(...getSelfMultiplierEffectTexts(member, hero));
 
+  // 天賦/技能/覺醒/輪迴文字（供下面troopRules/baselineRules/skillLevelTroopRules等連動規則使用，
+  // 挪到這裡先宣告，讓下方的固定數值掃描迴圈也能用到）
+  const talentTexts = [
+    ...(hero.talent ? [hero.talent] : []),
+    ...(Array.isArray(hero.skills) ? hero.skills : []),
+    ...(member.awakened && Array.isArray(hero.awakens) ? hero.awakens : []),
+    ...(member.reincarnated ? getHeroReincarnList(hero) : [])
+  ];
+  const resolvedTalentTexts = resolveConditionalTexts(talentTexts, hero, member);
+
+  // 修正：英雄自己天賦/技能/覺醒/輪迴文字裡，若寫的是「固定寫死、沒有連動條件」的兵種基礎攻防/兵力/
+  // 暴擊率/格擋率/速度加成（例如步練師覺醒「步兵基礎兵力+200」、張飛覺醒「騎兵暴擊率+40%」），
+  // 以前完全沒有進到下面的固定數值掃描迴圈（該迴圈只掃描裝備文字），導致這類加成完全沒被算進「屬性」面板。
+  // 這裡把天賦文字也併入掃描，但要先把「已經被下面 troopRules/skillLevelTroopRules/baselineRules
+  // 這幾種連動規則解析器吃掉」的片段從文字中移除，避免同一句「統御 +N」既被當成連動加成、
+  // 又被固定數值掃描迴圈重複疊加一次（例如李儒「每提升3點智力，前後軍防禦+45」是比例連動，不是固定值）
+  resolvedTalentTexts.forEach(rawText => {
+    let residual = rawText;
+    parseTroopStatRules(residual).forEach(r => { if (r.full) residual = residual.replace(r.full, ""); });
+    parseSkillLevelTroopRules(residual).forEach(r => { if (r.full) residual = residual.replace(r.full, ""); });
+    parseStatVsFixedBaselineRules(residual).forEach(r => { if (r.full) residual = residual.replace(r.full, ""); });
+    // 安全防護：找出「每／若／觸發／發動...時／對戰...時」這類尚未有專用解析器支援的
+    // 連動或條件觸發字樣「第一次出現的位置」，只保留它之前的文字送進固定值掃描，之後的整段捨棄
+    // （例如諸葛亮「每學習一種相關智力的任意類型技能，全軍暴擊率+2%」、
+    //  孫堅「...並且每觸發一次【怒盾】，前軍攻擊+5%」這類戰鬥中機率觸發或計數連動的效果，
+    //  以及董白「弓兵暴擊率+30%，若敵方武力為其最高四維，...」這種「若」出現在後段子句的情況——
+    //  這種情況下，觸發字樣「之前」原本就是固定值的部分（弓兵暴擊率+30%）仍要保留，
+    //  不能因為同一句話後段有連動效果，就連前段一起漏算）。
+    // 用「直接截斷」而不是拆子句重組，是為了避免文字內千分位逗號的數值（例如「10,000」）被誤拆壞掉。
+    const triggerWordRe = /每|若|觸發|發動[^，,、；;]*時|對戰[^，,、；;]*時/;
+    const tmatch = residual.match(triggerWordRe);
+    const safeResidual = tmatch ? residual.slice(0, tmatch.index) : residual;
+    if (safeResidual.trim()) texts.push(safeResidual);
+  });
+
   const groups = { front: {}, back: {}, attack: {}, defend: {}, other: {} };
   const phase = { r1: [], r2: [], n1: [], n2: [] };
   const add = (g, key, val) => { groups[g][key] = (groups[g][key] || 0) + val; };
@@ -10860,17 +11422,11 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
     }
   });
 // 天賦/技能/覺醒/輪迴中，隨四維連動增加的兵種攻防/兵力加成
-  const talentTexts = [
-    ...(hero.talent ? [hero.talent] : []),
-    ...(Array.isArray(hero.skills) ? hero.skills : []),
-    ...(member.awakened && Array.isArray(hero.awakens) ? hero.awakens : []),
-    ...(member.reincarnated ? getHeroReincarnList(hero) : [])
-  ];
-  const resolvedTalentTexts = resolveConditionalTexts(talentTexts, hero, member);
+  // （talentTexts / resolvedTalentTexts 已在函式前段宣告過，這裡直接沿用）
   // 「每提升N點X，兵種+M」這類隨四維連動的加成，寶物效果文字偶爾也會用同樣句型撰寫（例如統御連動兵力），
   // 所以連同已解析好條件的裝備文字（texts）一起納入解析，不只天賦/技能/覺醒/輪迴
   const troopRules = [...resolvedTalentTexts, ...texts].flatMap(t => parseTroopStatRules(t));
-  const { bonus: statBonus } = computeStatBonus(member, hero);
+  const { bonus: statBonus, totals: statTotals } = computeStatBonus(member, hero);
 
   troopRules.forEach(rule => {
     const sourceVal = rule.sourceStat === "any"
@@ -10897,22 +11453,65 @@ const texts = resolveConditionalTexts(rawTexts, hero, member);
     }
   });
 
+  // 「屬性比 N 每高 1，兵種/前後軍(基礎)?統計項目 +M%」：跟固定基準值比較（不是跟對手比較），
+  // 用配裝後最終算出的屬性總值（statTotals，已含天賦/裝備/星辰等加成）去比對基準值；
+  // 屬性未超過基準值時效果視為 0，不會產生負值加成（例：方天畫戟「武力比95每高1，前軍暴擊率提升1%」）
+  const baselineRules = [...resolvedTalentTexts, ...texts].flatMap(t => parseStatVsFixedBaselineRules(t));
+  baselineRules.forEach(rule => {
+    const finalStat = Number(statTotals[rule.sourceStat] || 0);
+    const diff = finalStat - rule.baseline;
+    if (diff <= 0) return;
+    const totalAmount = diff * rule.perUnit;
+    const basePrefix = rule.isBase ? "基礎" : "";
+    const applyBaseline = (group, label) => add(group, `${label}${basePrefix}${rule.statType}`, totalAmount);
+    if (!rule.troop) {
+      add("front", rule.statType, totalAmount);
+      add("back", rule.statType, totalAmount);
+    } else if (rule.troop === "前後軍") {
+      applyBaseline("front", "");
+      applyBaseline("back", "");
+    } else if (rule.troop === "前軍" || rule.troop === "後軍") {
+      applyBaseline(TROOP_GROUP_BY_NAME[rule.troop], "");
+    } else {
+      const group = TROOP_GROUP_BY_NAME[rule.troop];
+      if (group) applyBaseline(group, rule.troop);
+    }
+  });
+
   // 「每提升/有 N 級【技能】，兵種(基礎)?攻防/攻擊/防禦/兵力 +M」：依已裝備該技能的目前等級計算（例：陸遜「每提升1級【誘敵】，弓兵基礎攻擊+11，兵力+50」）
   // 同樣一併涵蓋裝備效果文字，避免寶物若寫出同樣句型時被漏算
   const skillLevelTroopRules = [...resolvedTalentTexts, ...texts].flatMap(t => parseSkillLevelTroopRules(t));
+  const RATE_STAT_TYPES = new Set(["暴擊率", "格擋率", "速度"]);
   skillLevelTroopRules.forEach(rule => {
     const level = getEquippedSkillLevel(member, rule.skillName);
     const times = Math.floor(level / rule.perLevel);
     if (times <= 0) return;
     const totalAmount = times * rule.amount;
-    const group = TROOP_GROUP_BY_NAME[rule.troop];
-    if (!group) return;
     const basePrefix = rule.isBase ? "基礎" : "";
-    if (rule.statType === "攻防") {
-      add(group, `${rule.troop}${basePrefix}攻擊`, totalAmount);
-      add(group, `${rule.troop}${basePrefix}防禦`, totalAmount);
+    const isRateType = RATE_STAT_TYPES.has(rule.statType);
+    const applySkillLevelGroup = (group, troopLabel, isGroupLevel) => {
+      if (rule.statType === "攻防") {
+        add(group, `${troopLabel}${basePrefix}攻擊`, totalAmount);
+        add(group, `${troopLabel}${basePrefix}防禦`, totalAmount);
+      } else if (isRateType) {
+        // 修正：暴擊率/格擋率/速度的 key 命名跟攻防/兵力不同──跟主要固定數值掃描迴圈（critRe/blockRe/
+        // groupSpeedRe/troopSpeedRe）保持一致：前軍/後軍層級不加兵種前綴，步兵/騎兵/弓兵/方士才加前綴，
+        // 否則同一個效果會因為 key 名稱不同而被畫面上顯示成兩筆、或跟裝備來源的同類加成對不起來加總
+        add(group, isGroupLevel ? rule.statType : `${troopLabel}${rule.statType}`, totalAmount);
+      } else {
+        add(group, `${troopLabel}${basePrefix}${rule.statType}`, totalAmount);
+      }
+    };
+    // 「前後軍」需同時套用到前軍跟後軍兩邊（原本 TROOP_GROUP_BY_NAME 查無此鍵值，直接被 return 掉、整條漏算）
+    if (rule.troop === "前後軍") {
+      applySkillLevelGroup("front", "前軍", true);
+      applySkillLevelGroup("back", "後軍", true);
+    } else if (rule.troop === "前軍" || rule.troop === "後軍") {
+      const group = TROOP_GROUP_BY_NAME[rule.troop];
+      applySkillLevelGroup(group, rule.troop, true);
     } else {
-      add(group, `${rule.troop}${basePrefix}${rule.statType}`, totalAmount);
+      const group = TROOP_GROUP_BY_NAME[rule.troop];
+      if (group) applySkillLevelGroup(group, rule.troop, false);
     }
   });
   return { groups, phase };
@@ -11811,9 +12410,19 @@ async function submitAuthForm() {
   }
 }
 
+// 忘記密碼功能開關：還沒有接自訂 SMTP／驗證網域之前先關閉，
+// 因為 Supabase 預設寄信服務一小時只能寄 2 封、且只會寄給專案團隊成員，
+// 一般使用者用這個功能實際上收不到信。之後把 Custom SMTP 設定好，
+// 把這裡改回 true，並把上面 authForgotRow 的 display:none 移除，就能重新開放。
+const FORGOT_PASSWORD_ENABLED = false;
+
 async function sendForgotPasswordEmail() {
-  const db = initWallSupabase();
   const errorEl = document.getElementById("authError");
+  if (!FORGOT_PASSWORD_ENABLED) {
+    if (errorEl) { errorEl.style.color = "#e08b8b"; errorEl.textContent = "忘記密碼功能目前暫時關閉，請聯絡網站管理者協助重設。"; }
+    return;
+  }
+  const db = initWallSupabase();
   if (errorEl) { errorEl.textContent = ""; errorEl.style.color = "#e08b8b"; }
   if (!db) { if (errorEl) errorEl.textContent = "資料庫尚未設定，請聯絡網站管理者。"; return; }
   const email = (document.getElementById("authEmail")?.value || "").trim();
