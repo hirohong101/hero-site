@@ -1762,6 +1762,25 @@
       font-weight: 700;
       min-width: 0;
     }
+    .loadout-hero-select-btn {
+      height: 35px;
+      border-radius: 6px;
+      border: 1px solid rgba(200,168,75,.45);
+      background: #080b0c;
+      color: #fff;
+      padding: 0 14px;
+      outline: none;
+      font: inherit;
+      font-weight: 700;
+      min-width: 0;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .loadout-hero-select-btn:hover {
+      border-color: rgba(200,168,75,.85);
+    }
     .loadout-checks {
       grid-column: 1 / -1;
       display: flex;
@@ -4307,11 +4326,8 @@
       <select id="loadoutSetSelect" onchange="applyLoadoutSet()">
             <option value="">-- &#35531;&#36984;&#25799;&#22871;&#35037; --</option>
           </select>
-          <label for="loadoutHeroSelect">&#33521;&#38596;&#65306;</label>
-          <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
-            <input type="text" id="loadoutHeroSearch" placeholder="&#25628;&#23563;&#33521;&#38596;&#21517;&#31281;..." oninput="renderLoadoutHeroSelectOptions()" style="height:28px;border-radius:6px;border:1px solid rgba(200,168,75,.45);background:#080b0c;color:#fff;padding:0 10px;outline:none;font:inherit;font-weight:700;min-width:0;">
-            <select id="loadoutHeroSelect" onchange="onLoadoutHeroChange()"></select>
-          </div>
+          <label for="loadoutHeroSelectBtn">&#33521;&#38596;&#65306;</label>
+          <button type="button" id="loadoutHeroSelectBtn" class="loadout-hero-select-btn" onclick="openLoadoutHeroPicker()">&#35531;&#36984;&#25799;&#33521;&#38596;</button>
 <label for="loadoutHeroLevel">英雄等級：</label>
 <input type="number" id="loadoutHeroLevel" min="1" max="144" value="1" onchange="onLoadoutHeroLevelChange()">
 <label for="loadoutHeroGrade">英雄品質：</label>
@@ -8687,34 +8703,52 @@ function getUsedHeroIds() {
   return used;
 }
 
-// 重新產生主將下拉選單：已經被別的位置用掉的英雄（不管是主將還是副將）會變成灰色不可選
-// 目前這個位置自己選的英雄仍會正常顯示、可以維持選取
-// 新增：搭配上方的搜尋框，依名稱（含「神·」前綴或去掉前綴後的名字）過濾選單內容，方便英雄很多時快速找到目標；
-// 目前已選取的英雄不論是否符合搜尋文字，都一定會保留在清單中，避免打字篩選時把目前選取的英雄濾掉、導致選取被重置
+// 更新左上角「英雄」按鈕顯示的文字（目前選中英雄的名字，或提示尚未選擇），
+// 真正的搜尋／選擇是點開按鈕後，在跟裝備、副將共用的選擇面板裡進行（見 openLoadoutHeroPicker）
 function renderLoadoutHeroSelectOptions() {
-  const heroSelect = document.getElementById("loadoutHeroSelect");
-  if (!heroSelect) return;
+  const btn = document.getElementById("loadoutHeroSelectBtn");
+  if (!btn) return;
   const member = loadoutTeam[loadoutState.activeMember];
-  const currentValue = member?.hero || "";
-  const used = getUsedHeroIds();
-  const query = (document.getElementById("loadoutHeroSearch")?.value || "").trim();
-  const filteredHeroes = heroes.filter(h => {
-    if (h.id === currentValue) return true;
-    if (!query) return true;
-    return h.name.includes(query) || stripShenPrefix(h.name).includes(query);
-  });
-  const withFlag = filteredHeroes.map(h => ({ h, isUsedElsewhere: used.has(h.id) && h.id !== currentValue }));
-  const sorted = [...withFlag.filter(x => !x.isUsedElsewhere), ...withFlag.filter(x => x.isUsedElsewhere)];
-  heroSelect.innerHTML = `<option value="">請選擇英雄</option>` +
-    sorted.map(({ h, isUsedElsewhere }) => {
-      return `<option value="${escapeHtml(h.id)}" ${isUsedElsewhere ? "disabled" : ""}>${escapeHtml(stripShenPrefix(h.name))}${isUsedElsewhere ? "（已在隊上）" : ""}</option>`;
-    }).join("");
-  heroSelect.value = currentValue;
+  const hero = heroes.find(h => h.id === member?.hero);
+  btn.textContent = hero ? stripShenPrefix(hero.name) : "請選擇英雄";
+}
+
+// 點開「英雄：」按鈕：打開跟裝備／副將共用的選擇面板，切到「選英雄」模式，
+// 面板上方就有搜尋框，可以直接打字篩選英雄名稱
+function openLoadoutHeroPicker() {
+  loadoutState.activeCat = "英雄";
+  loadoutState.pickerMode = "hero";
+  showLoadoutPicker();
+  renderLoadoutPicker();
+}
+
+// 在選英雄面板裡點選某位英雄：等同原本下拉選單 onchange 的邏輯（換主將、自動裝備自帶技能、
+// 卸下不符兵種的副將等），選好後直接關閉面板
+function selectLoadoutHero(heroId) {
+  const member = loadoutTeam[loadoutState.activeMember];
+  member.hero = heroId;
+  member.chosen = true;
+  member.freeAlloc = { force: 0, intel: 0, charm: 0, command: 0 };
+  const hero = heroes.find(h => h.id === member.hero);
+  applyHeroInitSkills(member, hero);
+  updateLoadoutAwakenReincarnControls(member, hero);
+  const removedDeputies = clearIneligibleDeputies(member, hero);
+  renderLoadoutHeroSelectOptions();
+  hideLoadoutPicker();
+  if (member.initSkillUnassigned && member.initSkillUnassigned.length) {
+    alert(`已自動裝備${escapeHtml(stripShenPrefix(hero?.name || ""))}的自帶技能。\n以下技能目前尚無資料庫，暫無法自動裝備：${member.initSkillUnassigned.join("、")}`);
+  }
+  if (removedDeputies.length) {
+    alert(`已更換主將，以下副將因兵種不符已自動卸下：${removedDeputies.join("、")}`);
+  }
+  renderLoadoutSlots();
+  renderLoadoutMemberTabs();
+  renderLoadoutSummary();
 }
 
 function initLoadoutPage() {
-  const heroSelect = document.getElementById("loadoutHeroSelect");
-  if (!heroSelect) return;
+  const heroBtn = document.getElementById("loadoutHeroSelectBtn");
+  if (!heroBtn) return;
   renderLoadoutHeroSelectOptions();
 
   // 不再自動塞入 heroes[0]，保持空白直到玩家手動選擇
@@ -8825,25 +8859,6 @@ document.getElementById("loadoutHeroGrade").value = member.heroGrade || "藍";
   if (!skipTabRerender) renderLoadoutMemberTabs();
   renderLoadoutSlots();
   hideLoadoutPicker();
-  renderLoadoutSummary();
-}
-function onLoadoutHeroChange() {
-  const member = loadoutTeam[loadoutState.activeMember];
-  member.hero = document.getElementById("loadoutHeroSelect").value;
-  member.chosen = true;
-  member.freeAlloc = { force: 0, intel: 0, charm: 0, command: 0 };
-  const hero = heroes.find(h => h.id === member.hero);
-  applyHeroInitSkills(member, hero);
-  updateLoadoutAwakenReincarnControls(member, hero);
-  const removedDeputies = clearIneligibleDeputies(member, hero);
-  if (member.initSkillUnassigned && member.initSkillUnassigned.length) {
-    alert(`已自動裝備${escapeHtml(stripShenPrefix(hero?.name || ""))}的自帶技能。\n以下技能目前尚無資料庫，暫無法自動裝備：${member.initSkillUnassigned.join("、")}`);
-  }
-  if (removedDeputies.length) {
-    alert(`已更換主將，以下副將因兵種不符已自動卸下：${removedDeputies.join("、")}`);
-  }
-  renderLoadoutSlots();
-  renderLoadoutMemberTabs();
   renderLoadoutSummary();
 }
 function onLoadoutAwakenChange() {
@@ -9667,6 +9682,47 @@ function hideLoadoutPicker() {
   const title = document.getElementById("loadoutPickerTitle");
   const listEl = document.getElementById("loadoutGearList");
   if (!listEl) return;
+
+  if (loadoutState.pickerMode === "hero") {
+    title.textContent = "選擇英雄";
+    const query = (document.getElementById("loadoutGearSearch")?.value || "").trim();
+    const sortKeys = [...document.querySelectorAll("[data-loadout-sort]:checked")].map(input => input.dataset.loadoutSort);
+    const member = loadoutTeam[loadoutState.activeMember];
+    const currentHeroId = member.hero || "";
+    const used = getUsedHeroIds();
+    const list = heroes.filter(h => !query || h.name.includes(query) || stripShenPrefix(h.name).includes(query));
+    const withFlag = list.map(h => {
+      const isCurrent = currentHeroId === h.id;
+      const isUsedElsewhere = used.has(h.id) && !isCurrent;
+      return { h, isCurrent, disabled: isUsedElsewhere, reason: isUsedElsewhere ? "(已在隊上)" : "" };
+    });
+    // 依武力/智力/魅力/統御排序時，直接用英雄自己的四維數值排序（跟副將面板不同，這裡不是算加成，是英雄本身的數值）
+    if (sortKeys.length) {
+      withFlag.sort((a, b) => sortKeys.reduce((sum, key) => sum + (b.h[key] || 0) - (a.h[key] || 0), 0));
+    }
+    const sorted = [...withFlag.filter(x => !x.disabled), ...withFlag.filter(x => x.disabled)];
+    const clearOptionHtml = currentHeroId
+      ? `<div class="loadout-gear-item" onclick="selectLoadoutHero('')">
+          <div class="loadout-gear-icon">✕</div>
+          <div><div class="loadout-gear-name">-- 清除英雄選擇 --</div></div>
+        </div>`
+      : "";
+    listEl.innerHTML = clearOptionHtml + (sorted.map(({ h, isCurrent, disabled, reason }) => {
+      let metaHtml = `${escapeHtml(h.rarity)}・${escapeHtml(h.type)}`;
+      if (sortKeys.length && !disabled) {
+        const sortStatsText = sortKeys.map(key => `${SKILL_STAT_LABEL[key] || key}${h[key] || 0}`).join("　");
+        if (sortStatsText) metaHtml += `　<span style="color:#7bd88f;font-weight:700;">${escapeHtml(sortStatsText)}</span>`;
+      }
+      return `<div class="loadout-gear-item ${isCurrent ? "current" : ""} ${disabled ? "disabled" : ""}" ${disabled ? "" : `onclick="selectLoadoutHero('${escapeHtml(h.id)}')"`}>
+        <div class="loadout-gear-icon">★</div>
+        <div>
+          <div class="loadout-gear-name">${escapeHtml(stripShenPrefix(h.name))}${isCurrent ? ' <span style="color:#e8c96a;font-size:11px">(目前選擇)</span>' : ""}${reason ? ` <span style="color:#888;font-size:11px">${reason}</span>` : ""}</div>
+          <div class="loadout-gear-meta">${metaHtml}</div>
+        </div>
+      </div>`;
+    }).join("") || (clearOptionHtml ? "" : `<div class="loadout-empty">沒有符合的英雄</div>`));
+    return;
+  }
 
   if (loadoutState.pickerMode === "deputy") {
     title.textContent = `選擇${cat}`;
