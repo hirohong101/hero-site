@@ -2543,13 +2543,13 @@
       <div class="nav-item" id="navReincarn" onclick="switchTab('reincarnCond')">
         <span class="icon">♾</span><span>輪迴條件</span>
       </div>
-      <div class="nav-item" id="navGod" onclick="switchTab('god')">
+      <div class="nav-item" id="navGod" onclick="switchTab('god')" style="display:none;">
         <span class="icon">🌟</span><span>神靈</span>
       </div>
-      <div class="nav-item" id="navPuppet" onclick="switchTab('puppet')">
+      <div class="nav-item" id="navPuppet" onclick="switchTab('puppet')" style="display:none;">
         <span class="icon">🎭</span><span>魁儡</span>
       </div>
-      <div class="nav-item" id="navHolyAwaken" onclick="switchTab('holyawaken')">
+      <div class="nav-item" id="navHolyAwaken" onclick="switchTab('holyawaken')" style="display:none;">
         <span class="icon">💫</span><span>聖覺醒</span>
       </div>
     </nav>
@@ -4308,7 +4308,10 @@
             <option value="">-- &#35531;&#36984;&#25799;&#22871;&#35037; --</option>
           </select>
           <label for="loadoutHeroSelect">&#33521;&#38596;&#65306;</label>
-          <select id="loadoutHeroSelect" onchange="onLoadoutHeroChange()"></select>
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <input type="text" id="loadoutHeroSearch" placeholder="&#25628;&#23563;&#33521;&#38596;&#21517;&#31281;..." oninput="renderLoadoutHeroSelectOptions()" style="height:28px;border-radius:6px;border:1px solid rgba(200,168,75,.45);background:#080b0c;color:#fff;padding:0 10px;outline:none;font:inherit;font-weight:700;min-width:0;">
+            <select id="loadoutHeroSelect" onchange="onLoadoutHeroChange()"></select>
+          </div>
 <label for="loadoutHeroLevel">英雄等級：</label>
 <input type="number" id="loadoutHeroLevel" min="1" max="144" value="1" onchange="onLoadoutHeroLevelChange()">
 <label for="loadoutHeroGrade">英雄品質：</label>
@@ -8613,10 +8616,29 @@ function getDeputySlotAwakened(value) {
   return !!value.awakened;
 }
 
+// 判斷兩位英雄之間，是否互相擁有「連攜屬性」的宿命關係——即宿命清單的第一條
+// （唯一一種需要指定英雄同時上陣才會生效的宿命，其餘三條是被動的，見 isLoadoutDestinyPartnerPresent 的說明）。
+// 只要任一方的第一條宿命指定對象是另一方，就視為連攜宿命成立（不要求雙向都寫，單向宣告即可）。
+function getDestinyLinkPartnerName(hero) {
+  const first = Array.isArray(hero?.destiny) ? hero.destiny[0] : null;
+  if (!first || !first.hero || first.hero === "合擊技") return null;
+  return first.hero;
+}
+function isLinkedDestinyPair(heroA, heroB) {
+  if (!heroA || !heroB) return false;
+  const nameA = stripShenPrefix(heroA.name);
+  const nameB = stripShenPrefix(heroB.name);
+  const aLinksB = getDestinyLinkPartnerName(heroA) === nameB;
+  const bLinksA = getDestinyLinkPartnerName(heroB) === nameA;
+  return aLinksB || bLinksA;
+}
+
 // 判斷某位英雄能不能擔任「這個主將」在「這個位置（前軍/後軍）」的副將：
 // 沒有萬能副將天賦的話，副將自己在同一側（前軍副將看副將的前軍兵種、後軍副將看副將的後軍兵種）
 // 必須跟主將同一側的兵種相同，才能上陣。例如司馬懿（騎兵/方士），關羽（騎兵/弓兵）——
 // 兩人前軍同為騎兵，關羽可以當司馬懿的前軍副將；但後軍司馬懿是方士、關羽是弓兵，兵種不同，不能當後軍副將。
+// 新增：若主將和這位英雄之間擁有「連攜屬性」宿命（宿命第一條、需要同時上陣才生效），
+// 則不論兵種是否相符，前軍／後軍都一定可以選擇這位英雄擔任副將，確保玩家能讓宿命生效。
 function isDeputyTroopEligible(deputyHero, mainHero, cat) {
   if (!deputyHero) return false;
   // 修正：即使副將擁有「可擔當任意英雄的任意兵種副將」天賦，也不能讓同一位英雄同時身兼
@@ -8624,6 +8646,7 @@ function isDeputyTroopEligible(deputyHero, mainHero, cat) {
   if (mainHero && deputyHero.id === mainHero.id) return false;
   if (heroHasUniversalDeputyTalent(deputyHero)) return true;
   if (!mainHero) return true; // 主將還沒選，先不限制，避免卡住流程
+  if (isLinkedDestinyPair(mainHero, deputyHero)) return true;
   const mainTroop = heroTroopType[mainHero.id];
   const deputyTroop = heroTroopType[deputyHero.id];
   if (!mainTroop || !deputyTroop) return true; // 兵種資料不齊全時不誤擋
@@ -8666,13 +8689,21 @@ function getUsedHeroIds() {
 
 // 重新產生主將下拉選單：已經被別的位置用掉的英雄（不管是主將還是副將）會變成灰色不可選
 // 目前這個位置自己選的英雄仍會正常顯示、可以維持選取
+// 新增：搭配上方的搜尋框，依名稱（含「神·」前綴或去掉前綴後的名字）過濾選單內容，方便英雄很多時快速找到目標；
+// 目前已選取的英雄不論是否符合搜尋文字，都一定會保留在清單中，避免打字篩選時把目前選取的英雄濾掉、導致選取被重置
 function renderLoadoutHeroSelectOptions() {
   const heroSelect = document.getElementById("loadoutHeroSelect");
   if (!heroSelect) return;
   const member = loadoutTeam[loadoutState.activeMember];
   const currentValue = member?.hero || "";
   const used = getUsedHeroIds();
-  const withFlag = heroes.map(h => ({ h, isUsedElsewhere: used.has(h.id) && h.id !== currentValue }));
+  const query = (document.getElementById("loadoutHeroSearch")?.value || "").trim();
+  const filteredHeroes = heroes.filter(h => {
+    if (h.id === currentValue) return true;
+    if (!query) return true;
+    return h.name.includes(query) || stripShenPrefix(h.name).includes(query);
+  });
+  const withFlag = filteredHeroes.map(h => ({ h, isUsedElsewhere: used.has(h.id) && h.id !== currentValue }));
   const sorted = [...withFlag.filter(x => !x.isUsedElsewhere), ...withFlag.filter(x => x.isUsedElsewhere)];
   heroSelect.innerHTML = `<option value="">請選擇英雄</option>` +
     sorted.map(({ h, isUsedElsewhere }) => {
@@ -9661,7 +9692,9 @@ if (cat === L.frontSkill || cat === L.backSkill) {
       const isUsedElsewhere = used.has(h.id) && !isCurrent;
       const troopEligible = isDeputyTroopEligible(h, mainHero, cat);
       const disabled = isUsedElsewhere || (!troopEligible && !isCurrent);
-      const reason = isUsedElsewhere ? "(已在隊上)" : (!troopEligible ? "(兵種不符)" : "");
+      // 若是靠「連攜屬性」宿命突破兵種限制才能選（本身兵種其實不符），標註提示讓玩家知道原因
+      const isDestinyLinkOverride = troopEligible && mainHero && !heroHasUniversalDeputyTalent(h) && isLinkedDestinyPair(mainHero, h);
+      const reason = isUsedElsewhere ? "(已在隊上)" : (!troopEligible ? "(兵種不符)" : (isDestinyLinkOverride ? "(宿命連攜，不受兵種限制)" : ""));
       return { h, isCurrent, disabled, reason };
     });
     if (sortKeys.length) {
