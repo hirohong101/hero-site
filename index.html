@@ -9775,12 +9775,14 @@ if (cat === L.frontSkill || cat === L.backSkill) {
 
   title.textContent = `選擇${cat}`;
   const query = (document.getElementById("loadoutGearSearch")?.value || "").trim();
-  const setFilter = document.getElementById("loadoutSetSelect")?.value || "";
   const sortKeys = [...document.querySelectorAll("[data-loadout-sort]:checked")].map(input => input.dataset.loadoutSort);
 
+  // 注意：這裡故意不再依「套裝：」下拉選單目前選到的套裝名稱去篩選清單。
+  // 「套裝」下拉只負責一鍵套用整套（見 applyLoadoutSet()），選過套裝之後，
+  // 每一格仍要能自由換成任何寶物；如果在這裡也用 setFilter 篩掉其他套裝/無套裝的寶物，
+  // 會變成選過套裝後，之後每一格的挑選清單都被鎖死只剩同一套裝的品項（之前的 bug）。
   let items = getLoadoutCatalog(cat).filter(item => {
     if (query && !item.name.includes(query)) return false;
-    if (setFilter && item.set !== setFilter) return false;
     return true;
   });
 
